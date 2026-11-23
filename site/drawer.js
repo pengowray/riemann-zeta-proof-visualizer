@@ -23,7 +23,7 @@ export async function openModule(i) {
     <a class="path" href="${blobUrl(path)}" target="_blank" rel="noopener">${esc(path)}</a>
     <dl>
       <dt>Size</dt><dd>${moduleFacts(i)}</dd>
-      <dt>Field</dt><dd>${esc(meta.fields[col.field[i]].name)} (keyword estimate)</dd>
+      <dt>Field</dt><dd>${esc(meta.fields[col.field[i]].name)} (estimate)</dd>
       ${col.kind[i] ? `<dt>Kind</dt><dd>${kindNote[col.kind[i]]}</dd>` : ""}
       <dt>Imported by</dt><dd>${plural(col.indeg[i], "module")} directly, ${fmt(col.dependents[i])} in total</dd>
       <dt>Import depth</dt><dd>${col.height[i]} of ${meta.totals.longestChain}</dd>

@@ -10,6 +10,7 @@ Outputs in <site-data-dir>:
   terms.bin   one bitset per search term
 """
 import glob
+import math
 import json
 import os
 import re
@@ -215,11 +216,71 @@ def main():
         if adj[i]:
             bits[i] = acc
 
+    # ---- field classifier: multinomial naive Bayes over each module's identifiers,
+    # namespaces and keyword counts, trained on modules a language model read and
+    # labelled (data/train). It replaces the keyword estimate; data/truth is kept
+    # apart to measure it.
+    base = os.path.dirname(labels_dir.rstrip("/"))
+    keyword_stats = None
+    train_key_path = os.path.join(base, "train", "key.json")
+    trained = 0
+    if os.path.exists(train_key_path):
+        def features(r):
+            f = Counter()
+            for tok, c in r["tk"]:
+                w = 1 + math.log(c)
+                f["t:" + tok] += w
+                if "." in tok:
+                    f["h:" + tok.split(".")[0]] += w
+            for ns in r["ns"]:
+                for part in ns.split("."):
+                    f["n:" + part] += 1
+            for j, c in enumerate(r["fc"]):
+                if c:
+                    f["k:" + scan_fields[j]] += 1 + math.log(c)
+            return f
+
+        train_key = json.load(open(train_key_path))
+        class_n, feat_n, total_n, vocab = Counter(), defaultdict(Counter), Counter(), set()
+        for path in sorted(glob.glob(os.path.join(base, "train", "batch_*.json"))):
+            for entry in json.load(open(path)):
+                i = index.get(train_key.get(entry.get("id"), ""))
+                label = entry.get("field")
+                if i is None or label not in scan_fields:
+                    continue
+                trained += 1
+                class_n[label] += 1
+                for k, v in features(rows[i]).items():
+                    feat_n[label][k] += v
+                    total_n[label] += v
+                    vocab.add(k)
+        alpha = 0.5
+        classes = sorted(class_n)
+        log_prior = {c: math.log(class_n[c] / trained) for c in classes}
+        log_default = {c: math.log(alpha / (total_n[c] + alpha * len(vocab))) for c in classes}
+        log_feat = {c: {k: math.log((v + alpha) / (total_n[c] + alpha * len(vocab))) for k, v in feat_n[c].items()} for c in classes}
+        keyword_snapshot = list(field_col)
+        for i, r in enumerate(rows):
+            f = features(r)
+            if not f:
+                continue
+            best, best_score = None, -1e300
+            for c in classes:
+                table, default = log_feat[c], log_default[c]
+                score = log_prior[c]
+                for k, v in f.items():
+                    score += v * table.get(k, default)
+                if score > best_score:
+                    best, best_score = c, score
+            field_col[i] = field_ids.index(best)
+        print("classifier trained on", trained, "modules")
+
     # ---- check against a random sample of modules whose field a language model judged
     # from the module text (data/truth). Reported on the page as the estimate's accuracy.
     family = {f[0]: f[2] for f in FIELDS}
     family.update({"combinatorics": "algebra", "computation": "algebra"})
-    truth_stats = {"n": 0, "exact": 0, "family": 0, "familyOrSecond": 0, "dirExact": 0, "dirFamily": 0}
+    truth_stats = {"n": 0, "exact": 0, "family": 0, "familyOrSecond": 0, "dirExact": 0, "dirFamily": 0,
+                   "keywordExact": 0, "keywordFamily": 0, "trained": trained}
     truth_counts = [0] * len(FIELDS)
     key_path = os.path.join(os.path.dirname(labels_dir.rstrip("/")), "truth", "key.json")
     if os.path.exists(key_path):
@@ -235,6 +296,10 @@ def main():
                 truth_stats["exact"] += mine == entry["field"]
                 truth_stats["family"] += family[mine] == family[entry["field"]]
                 truth_stats["familyOrSecond"] += family[mine] in (family[entry["field"]], family.get(entry.get("second")))
+                if trained:
+                    kw = field_ids[keyword_snapshot[i]]
+                    truth_stats["keywordExact"] += kw == entry["field"]
+                    truth_stats["keywordFamily"] += family[kw] == family[entry["field"]]
                 truth_stats["dirExact"] += theirs == entry["field"]
                 truth_stats["dirFamily"] += family[theirs] == family[entry["field"]]
         print("sample check:", truth_stats)

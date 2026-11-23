@@ -164,6 +164,8 @@ def scan_file(root, rel, prev_raw=b""):
         "fc": [len(rx.findall(nocomment)) for _name, rx in FIELD_RES],
         "tm": sum(1 << t for t, rx in enumerate(TERM_RES) if rx.search(nocomment)),
         "k": kind,
+        # most frequent capitalised identifiers, used as features by the field classifier
+        "tk": Counter(CAP_IDENT_RE.findall(nocomment)).most_common(40),
     }
     opens = Counter()
     for line in OPEN_RE.findall(nocomment):

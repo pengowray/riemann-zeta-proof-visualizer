@@ -55,7 +55,7 @@ $("find").addEventListener("input", (e) => {
 });
 
 const truth = meta.totals.truth;
-$("agree-note").textContent = `The field of a module is a keyword estimate, and a rough one. A language model read ${fmt(truth.n)} randomly chosen modules and named each one's field. The keyword estimate gave the same field for ${pct(truth.exact / truth.n)} of them and a field of the same colour family for ${pct(truth.family / truth.n)} (${pct(truth.familyOrSecond / truth.n)} when the model's second choice also counts). The directory labels did worse: ${pct(truth.dirFamily / truth.n)} in the same family. Adjusting the keyword weights on half of the sample did not improve the other half.`;
+$("agree-note").textContent = `The field of a module is a statistical estimate. A language model read ${fmt(truth.trained + truth.n)} randomly chosen modules and named each one's field. A naive Bayes classifier learned from ${fmt(truth.trained)} of them, using the identifiers and namespaces each module mentions, and was then tested on the other ${fmt(truth.n)}. It gave the same field as the model for ${pct(truth.exact / truth.n)} of them and a field of the same colour family for ${pct(truth.family / truth.n)} (${pct(truth.familyOrSecond / truth.n)} when the model's second choice also counts). Hand-written keyword rules reached ${pct(truth.keywordFamily / truth.n)} in the same family, and the directory labels ${pct(truth.dirFamily / truth.n)}.`;
 
 // rows that preview a highlight on the map while the pointer is over them
 document.addEventListener("pointerover", (e) => {
