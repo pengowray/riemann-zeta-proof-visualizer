@@ -564,7 +564,7 @@ function moduleLookup(name) {
   }
   return moduleIndex.get(name);
 }
-const DECL_RE = /^[ \t]*(?:@\[[^\]\n]*\]\s*)*(?:(?:private|protected|noncomputable|nonrec|scoped|local)\s+)*(theorem|lemma|def|abbrev|instance|structure|class|inductive)\s+([^\s:({\[]*)/gm;
+const DECL_RE = /^[ \t]*(?:@\[[^\]\n]*\]\s*)*(?:(?:private|protected|noncomputable|nonrec|unsafe|partial|scoped|local)\s+)*(theorem|lemma|def|abbrev|instance|structure|class|inductive|example|opaque|axiom)\b[ \t]*([^\s:({\[]*)/gm;
 const SHOWN = 12; // rows shown before "Show all"
 function foldedList(items, noun) {
   if (items.length <= SHOWN) return items.join("");

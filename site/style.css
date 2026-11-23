@@ -78,7 +78,7 @@ pre.lean .kw { color: var(--accent); }
 pre.lean .sym { color: var(--ink); }
 pre.lean .var { text-decoration: underline dotted var(--ink-3); text-underline-offset: 3px; }
 pre.lean .tk[data-tip] { cursor: help; }
-#codetip { position: fixed; z-index: 30; max-width: 420px; padding: 8px 10px; background: var(--ink); color: var(--paper); font: 0.8rem/1.4 var(--mono); white-space: pre-wrap; pointer-events: none; }
+#codetip { position: fixed; z-index: 30; max-width: 420px; padding: 8px 10px; background: var(--ink); color: var(--paper); font: 0.8rem/1.4 var(--mono); white-space: pre-wrap; overflow-wrap: anywhere; pointer-events: none; }
 #codetip .say { display: block; font-family: var(--serif); font-size: 0.9rem; margin-top: 4px; opacity: 0.85; }
 .plain { background: var(--paper-2); padding: 10px 14px; }
 
