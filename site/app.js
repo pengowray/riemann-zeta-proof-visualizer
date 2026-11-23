@@ -2,7 +2,7 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import { renderLean } from "./speech.js";
 import { drawZeta } from "./zeta.js";
-import { rawUrl, $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, darkQuery, state, names, namesReady, termsReady } from "./data.js";
+import { moduleFamily, rawUrl, $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, darkQuery, state, names, namesReady, termsReady } from "./data.js";
 import { recolour, requestDraw, refreshMini, countMask, maskWhere, setMask, setPreview, renderLegend, chainMask, chainLabel } from "./map.js";
 import "./graph.js";
 
@@ -121,6 +121,12 @@ document.addEventListener("pointerover", (e) => {
     return;
   }
   if (state.marker >= 0 && !state.preview) { state.marker = -1; requestDraw(); refreshMini(); }
+  const famEl = e.target.closest?.("[data-preview-family]");
+  if (famEl) {
+    const g = +famEl.dataset.previewFamily, label = famEl.children[1].textContent;
+    if (state.previewLabel !== label) setPreview(maskWhere((i) => moduleFamily(i) === g), label);
+    return;
+  }
   const row = e.target.closest?.("[data-preview-field],[data-preview-dir]");
   if (!row) { if (state.preview) setPreview(null); return; }
   if (row.dataset.previewField !== undefined) {

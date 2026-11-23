@@ -32,7 +32,10 @@ export function renderCharts() {
     FAMILIES.forEach((f, g) => { if (t[g]) rows.push({ measure: label, family: f.name, g, share: t[g] / all, total: t[g] }); });
   }
   const byBytes = rows.filter((r) => r.measure === "Bytes").sort((a, b) => b.share - a.share);
-  $("space-text").textContent = `Fields are estimated from the identifiers each module uses. By that estimate no single area dominates. By bytes, the largest is ${byBytes[0].family.toLowerCase()} with ${pct(byBytes[0].share)}, followed by ${byBytes[1].family.toLowerCase()} (${pct(byBytes[1].share)}) and ${byBytes[2].family.toLowerCase()} (${pct(byBytes[2].share)}). Analytic number theory, where the theorem is stated, is ${pct(rows.find((r) => r.measure === "Bytes" && r.g === 0)?.share || 0)}. The shares are similar under every measure.`;
+  $("space-text").textContent = "Fields are estimated from the identifiers each module uses. The shares are similar under every measure.";
+  // key for the chart below: every area with its colour and its share of the bytes, largest first
+  $("space-key").innerHTML = byBytes.map((r) => `<li data-preview-family="${r.g}"><span class="sw" style="background:${famColour(r.g)}"></span><span>${esc(r.family)}</span><span class="num">${pct(r.share)}</span></li>`).join("")
+    + `<li class="key-head"><span></span><span></span><span class="num">of bytes</span></li>`;
   const order = byBytes.map((r) => r.family);
   mount("space-chart", Plot.plot({
     style: plotStyle(), width: 1000, height: 270, marginLeft: 130, marginRight: 20, marginBottom: 44,
