@@ -238,6 +238,7 @@ def main():
     # apart to measure it.
     base = os.path.dirname(labels_dir.rstrip("/"))
     keyword_stats = None
+    random_counts = [0] * len(FIELDS)  # field given by the reading model, over every randomly sampled module
     train_key_path = os.path.join(base, "train", "key.json")
     trained = 0
     if os.path.exists(train_key_path):
@@ -260,6 +261,10 @@ def main():
         for folder in sorted(glob.glob(os.path.join(base, "train*"))):
             train_key.update(json.load(open(os.path.join(folder, "key.json"))))
             train_files += sorted(glob.glob(os.path.join(folder, "batch_*.json")))
+        # modules that were picked to cover particular directories, not at random
+        not_random = set()
+        for path in glob.glob(os.path.join(base, "train*", "stratified.json")):
+            not_random.update(json.load(open(path)))
         class_n, feat_n, total_n, vocab = Counter(), defaultdict(Counter), Counter(), set()
         for path in train_files:
             for entry in json.load(open(path)):
@@ -267,6 +272,8 @@ def main():
                 label = entry.get("field")
                 if i is None or label not in scan_fields:
                     continue
+                if rows[i]["p"] not in not_random:
+                    random_counts[field_ids.index(label)] += 1
                 trained += 1
                 class_n[label] += 1
                 for k, v in features(rows[i]).items():
@@ -310,6 +317,7 @@ def main():
                 if i is None or entry.get("field") not in family:
                     continue
                 truth_counts[field_ids.index(entry["field"])] += 1
+                random_counts[field_ids.index(entry["field"])] += 1
                 mine, theirs = field_ids[field_col[i]], field_ids[group_list[group_col[i]]["field"]]
                 truth_stats["n"] += 1
                 truth_stats["exact"] += mine == entry["field"]
@@ -461,6 +469,8 @@ def main():
             "fieldJudged": judged,
             "truth": truth_stats,
             "truthCounts": truth_counts,
+            "randomCounts": random_counts,
+            "randomN": sum(random_counts),
             "labelledGroups": sum(1 for g in group_list if g["confidence"]),
         },
     }
