@@ -1,0 +1,1318 @@
+[
+ {
+  "id": "Formalism/FormalGroupLog/FormalGroupLogProofs",
+  "label": "Formal group logarithms",
+  "field": "padic-hodge",
+  "field2": "algebra",
+  "objects": [
+   "Formal group law",
+   "Formal group logarithm",
+   "Power series substitution",
+   "Formal power series with constant term zero"
+  ],
+  "gloss": "Proofs that a logarithm series satisfies the defining identity of a formal group under substitution.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/FormalGroupWitt",
+  "label": "Formal group laws and Witt integrality",
+  "field": "padic-hodge",
+  "field2": "algebra",
+  "objects": [
+   "Formal group law",
+   "Witt vectors",
+   "Lubin–Tate formal group",
+   "Multivariate power series"
+  ],
+  "gloss": "Statements and examples about formal group laws over p-adic integers, including laws that fail the required conditions.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/FormalGroupWitt/FormalGroupWittProofs",
+  "label": "Formal group law coefficient bounds",
+  "field": "padic-hodge",
+  "field2": "algebra",
+  "objects": [
+   "Formal group law",
+   "Witt vectors",
+   "Frobenius lift",
+   "Ultrametric norm"
+  ],
+  "gloss": "Proofs of coefficient bounds and integrality for formal group laws over p-adic integers.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/FrobeniusBaseCase",
+  "label": "Frobenius weight base-case identities",
+  "field": "padic-hodge",
+  "field2": "combinatorics",
+  "objects": [
+   "Slope sum identity",
+   "Frobenius weight",
+   "Additive valuation",
+   "Weighted multiplication rule"
+  ],
+  "gloss": "Base-case algebraic identities about Frobenius weights and valuations used in the main argument.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/FrobeniusBaseCase/FrobeniusBaseCaseProofs",
+  "label": "Frobenius weight base cases",
+  "field": "padic-hodge",
+  "field2": "combinatorics",
+  "objects": [
+   "Frobenius weight",
+   "Additive valuation",
+   "Weighted power rule",
+   "Identity twenty"
+  ],
+  "gloss": "Proofs of weight bounds and identities for Frobenius base cases, using the valuation rules they need.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/FrobeniusContraction",
+  "label": "Wach cohomology and Euler characteristic",
+  "field": "padic-hodge",
+  "field2": "cohomology",
+  "objects": [
+   "Wach module",
+   "Euler characteristic",
+   "Laurent series ring",
+   "Module length"
+  ],
+  "gloss": "Facts about cohomology of Wach-type modules over Laurent series, including Euler characteristics and Frobenius contraction.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/FrobeniusContraction/FrobeniusContractionProofs",
+  "label": "Wach cohomology contraction bijections",
+  "field": "padic-hodge",
+  "field2": "cohomology",
+  "objects": [
+   "Wach module",
+   "Euler characteristic",
+   "Frobenius contraction",
+   "Module length"
+  ],
+  "gloss": "Proofs of contraction bijections and length bounds for Wach cohomology, including the Euler characteristic step.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/FrobeniusOrbits",
+  "label": "Frobenius orbits in number fields",
+  "field": "algebraic-nt",
+  "field2": "rep-theory",
+  "objects": [
+   "Arithmetic Frobenius",
+   "CM type",
+   "Two-power cyclotomic decomposition",
+   "Galois group"
+  ],
+  "gloss": "Counts orbits of arithmetic Frobenius on places of number fields, mostly for cyclotomic and CM fields.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/FrobeniusOrbits/FrobeniusOrbitsProofs",
+  "label": "Frobenius orbit lemmas in number fields",
+  "field": "algebraic-nt",
+  "field2": "rep-theory",
+  "objects": [
+   "Arithmetic Frobenius",
+   "Hensel's lemma",
+   "Galois group",
+   "Fractional ideal"
+  ],
+  "gloss": "Proofs about Galois orbits, stabilizers and unit lemmas in number fields, using Hensel-type arguments.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/GL3MeanSquares",
+  "label": "Hermitian lattice mean squares",
+  "field": "analytic-nt",
+  "field2": "lattices",
+  "objects": [
+   "Siegel mass formula",
+   "Zero-density estimate",
+   "Prime number theorem",
+   "Dirichlet character"
+  ],
+  "gloss": "Top-level results on mean squares of Hermitian lattice counts, tied to prime and zero-density estimates.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/GL3MeanSquares/GenusMeanAsymptotics",
+  "label": "Genus mean asymptotics for lattices",
+  "field": "lattices",
+  "field2": "analytic-nt",
+  "objects": [
+   "Genus of a lattice",
+   "Dirichlet L-function",
+   "Primes in arithmetic progressions",
+   "Logarithmic integral"
+  ],
+  "gloss": "Asymptotic counts of lattice genera over number fields, using Dirichlet characters and primes in progressions.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/GL3MeanSquares/HookFormulaTorsion",
+  "label": "Explicit analytic bounds for lattice counts",
+  "field": "analysis",
+  "field2": "analytic-nt",
+  "objects": [
+   "Prime number theorem",
+   "Zero-free region",
+   "Hecke spectral gap",
+   "Hilbert–Schmidt norm"
+  ],
+  "gloss": "Explicit real-analytic inequalities used in the lattice mean-square argument, including zero-free and spectral-gap bounds.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/GaloisCohomology",
+  "label": "Galois cohomology and Selmer groups",
+  "field": "cohomology",
+  "field2": "algebraic-nt",
+  "objects": [
+   "Tate local duality",
+   "Selmer group",
+   "Shafarevich group",
+   "Places of a number field"
+  ],
+  "gloss": "Galois cohomology of local and global fields, with Selmer-type groups and Tate local duality.",
+  "confidence": "high"
+ },
+ {
+  "id": "Formalism/GaloisCohomology/GaloisCohomologyProofs",
+  "label": "Local L-data and torsion developments",
+  "field": "cohomology",
+  "field2": "algebraic-nt",
+  "objects": [
+   "Tate local duality",
+   "Dedekind domain",
+   "Ideal factorisation",
+   "Unramified outside a set of primes"
+  ],
+  "gloss": "Proofs that local L-data exist and that torsion developments behave as the main statements say.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/GaloisIrreducibility",
+  "label": "Irreducibility via Galois permutation groups",
+  "field": "algebra",
+  "field2": "algebraic-nt",
+  "objects": [
+   "Jordan's theorem on primes",
+   "Primitive permutation group",
+   "Alternating group",
+   "Characteristic polynomial"
+  ],
+  "gloss": "Irreducibility criteria for characteristic polynomials, using transitive and primitive permutation group arguments.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/GaloisIrreducibility/GaloisIrreducibilityProofs",
+  "label": "Permutation group irreducibility lemmas",
+  "field": "algebra",
+  "field2": "rep-theory",
+  "objects": [
+   "Jordan's theorem",
+   "Primitive permutation group",
+   "Bordered matrices",
+   "Characteristic polynomial"
+  ],
+  "gloss": "Proofs of matrix and permutation lemmas behind the irreducibility criteria, including non-existence of solvable groups.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/GammaFactorNonvanishing",
+  "label": "Gamma factor nonvanishing on the critical line",
+  "field": "analytic-nt",
+  "field2": "analysis",
+  "objects": [
+   "Riemann hypothesis",
+   "Dirichlet L-function",
+   "Gamma function",
+   "Critical line"
+  ],
+  "gloss": "Shows the gamma factor of a Dirichlet L-function does not vanish, which the critical-line argument uses.",
+  "confidence": "high"
+ },
+ {
+  "id": "Formalism/GaussIdealIdentity",
+  "label": "Gram determinant identity over DVRs",
+  "field": "algebra",
+  "field2": "lattices",
+  "objects": [
+   "Gram determinant",
+   "Discrete valuation ring",
+   "Module length",
+   "Polynomial ring over a DVR"
+  ],
+  "gloss": "Algebraic identity about Gram determinants and dual projections over discrete valuation rings.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/GaussIdealIdentity/GaussIdealPrimality",
+  "label": "Primality of Gauss ideals",
+  "field": "algebra",
+  "field2": "algebraic-nt",
+  "objects": [
+   "Module length",
+   "Discrete valuation ring",
+   "Faithfully flat module",
+   "Polynomial ring"
+  ],
+  "gloss": "Shows a certain ideal in a Gauss-type polynomial ring is prime, using flatness and length arguments.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/GaussJetBounds",
+  "label": "Dwork power series weight bounds",
+  "field": "padic-hodge",
+  "field2": "analysis",
+  "objects": [
+   "Dwork power series",
+   "Unramified extension",
+   "Ultrametric norm",
+   "Jet bounds"
+  ],
+  "gloss": "Coefficient bounds for p-adic power series under weighted substitution, including jet-style estimates.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/GaussJetBounds/GaussJetProofs",
+  "label": "Jet bounds for substitution and minors",
+  "field": "padic-hodge",
+  "field2": "algebra",
+  "objects": [
+   "Power series substitution",
+   "Minor determinant expansion",
+   "Ultrametric norm",
+   "Gauss norm"
+  ],
+  "gloss": "Proofs for jet-bound estimates, covering substitution weight bounds and determinant minors over p-adic power series.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/GaussJetBounds/OneLetterGaussJets",
+  "label": "One-letter Gauss jet bounds",
+  "field": "analysis",
+  "field2": "padic-hodge",
+  "objects": [
+   "Unramified extension",
+   "Odd-level gain bounds",
+   "Dwork power series weights",
+   "Jet bounds"
+  ],
+  "gloss": "Jet-bound estimates for single-letter Gauss power series, covering odd-level gain and unramified cases.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/GaussValuationBounds",
+  "label": "Gauss valuation bounds for power series",
+  "field": "padic-hodge",
+  "field2": "analysis",
+  "objects": [
+   "Gauss valuation",
+   "Discrete valuation ring",
+   "Power series ring",
+   "Logarithmic valuation bound"
+  ],
+  "gloss": "Valuation bounds for Gauss-type elements of power series rings, with truncation and contraction estimates.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/GaussValuationBounds/GaussValueContraction",
+  "label": "Gauss value contraction estimates",
+  "field": "padic-hodge",
+  "field2": "analysis",
+  "objects": [
+   "Gauss valuation",
+   "Ideal span of a power series",
+   "Discrete valuation ring",
+   "Power series coefficients"
+  ],
+  "gloss": "Proofs that evaluating Gauss-type power series contracts valuations, with explicit exponent bounds.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/GelfandTransference",
+  "label": "Grassmann formula and Hadamard bounds",
+  "field": "algebra",
+  "field2": "combinatorics",
+  "objects": [
+   "Hadamard inequality",
+   "Grassmann formula",
+   "Free orbits of a group action",
+   "Energy identity"
+  ],
+  "gloss": "Hadamard-type determinant bounds and an energy argument for free group orbits in lattices.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/GelfandTransference/HadamardGelfand",
+  "label": "Hadamard maximal inequality for lattices",
+  "field": "lattices",
+  "field2": "algebra",
+  "objects": [
+   "Hadamard inequality",
+   "Gelfand transference",
+   "Gram matrix",
+   "Dual lattice"
+  ],
+  "gloss": "Proofs of Hadamard-type maximum inequalities for lattice bases, using a transference argument.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/GradedWeylDivisibility",
+  "label": "Standard monomial theory and Weyl divisibility",
+  "field": "rep-theory",
+  "field2": "combinatorics",
+  "objects": [
+   "Standard monomial",
+   "Bideterminant",
+   "Semistandard Young tableau",
+   "Weyl module"
+  ],
+  "gloss": "Graded divisibility facts for polynomial rings, proved with standard monomials, tableaux and bideterminants.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/GradedWeylDivisibility/FockSpaceTableaux",
+  "label": "Fock space tableaux and highest weights",
+  "field": "rep-theory",
+  "field2": "combinatorics",
+  "objects": [
+   "Fock space",
+   "Semistandard Young tableau",
+   "Highest weight vector",
+   "Bideterminant"
+  ],
+  "gloss": "Tableau and highest-weight lemmas for Fock-space-type polynomial modules, used in the Weyl divisibility argument.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/GrowthSums",
+  "label": "Growth bounds for power sums",
+  "field": "combinatorics",
+  "field2": "analysis",
+  "objects": [
+   "Bernoulli polynomials",
+   "Harmonic number",
+   "Multinomial coefficient",
+   "Gaussian binomial coefficient"
+  ],
+  "gloss": "Growth estimates for sums of powers and binomial-type counts, with explicit segment and dichotomy bounds.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/GrowthSums/FactorialBaseGrowth",
+  "label": "Factorial and p-adic growth lemmas",
+  "field": "combinatorics",
+  "field2": "analysis",
+  "objects": [
+   "Bernoulli polynomials",
+   "p-adic valuation of factorials",
+   "Harmonic number",
+   "Power sum polynomial"
+  ],
+  "gloss": "Growth lemmas for factorial products, p-adic valuations and power sums, feeding the segment bounds.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/HalfLinks",
+  "label": "Half-link windows for CM types",
+  "field": "algebraic-nt",
+  "field2": "analytic-nt",
+  "objects": [
+   "CM type",
+   "Riemann hypothesis",
+   "Euler–Mascheroni constant",
+   "Galois group"
+  ],
+  "gloss": "Half-link windows for CM-type Galois data, with a statement linking them to the Riemann hypothesis.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/HarderNarasimhan",
+  "label": "Harder–Narasimhan filtrations for lattices",
+  "field": "lattices",
+  "field2": "algebraic-nt",
+  "objects": [
+   "Harder–Narasimhan filtration",
+   "Covolume",
+   "Hermitian lattice",
+   "Infinite place"
+  ],
+  "gloss": "Harder–Narasimhan slope filtrations of Hermitian lattices over number fields, with covolume and degree bounds.",
+  "confidence": "high"
+ },
+ {
+  "id": "Formalism/HarderNarasimhan/HarderNarasimhanProofs",
+  "label": "Harder–Narasimhan slope inequalities",
+  "field": "lattices",
+  "field2": "algebra",
+  "objects": [
+   "Harder–Narasimhan filtration",
+   "Gram matrix",
+   "Covolume",
+   "Dual polygon"
+  ],
+  "gloss": "Proofs of slope inequalities and frame lemmas for Harder–Narasimhan filtrations of lattices.",
+  "confidence": "high"
+ },
+ {
+  "id": "Formalism/HermitianCurvature",
+  "label": "Herglotz functions and Fourier decay",
+  "field": "analysis",
+  "field2": "harmonic",
+  "objects": [
+   "Herglotz representation",
+   "Fourier decay",
+   "Wave equation",
+   "Riemann zeta function"
+  ],
+  "gloss": "Analytic lemmas on Herglotz functions and wave equations that bound Fourier decay for zeta-related sums.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/HermitianCurvature/HermitianCurvatureProofs",
+  "label": "Fourier decay via Bessel bounds",
+  "field": "harmonic",
+  "field2": "analysis",
+  "objects": [
+   "Herglotz function",
+   "Bessel decay bound",
+   "Quantum determinant",
+   "Hermitian matrix"
+  ],
+  "gloss": "Proofs of Fourier decay and smoothness estimates for Herglotz and Bessel-type functions of matrices.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/HermitianLattices",
+  "label": "Hermitian lattices over number fields",
+  "field": "lattices",
+  "field2": "algebraic-nt",
+  "objects": [
+   "Hermitian lattice",
+   "Genus",
+   "Unimodular lattice",
+   "Covolume"
+  ],
+  "gloss": "Definitions and statements for Hermitian lattices over number fields, including mass, genus and discriminant.",
+  "confidence": "high"
+ },
+ {
+  "id": "Formalism/HermitianLattices/HermitianLatticesProofs",
+  "label": "Genus and mass of Hermitian lattices",
+  "field": "lattices",
+  "field2": "algebraic-nt",
+  "objects": [
+   "Hermitian lattice",
+   "Genus",
+   "Mass formula",
+   "Class set"
+  ],
+  "gloss": "Proofs about lattice genus, mass telescoping and unimodular classes over number fields.",
+  "confidence": "high"
+ },
+ {
+  "id": "Formalism/HyperbolicPlaceProducts",
+  "label": "Hyperbolic product bounds over places",
+  "field": "lattices",
+  "field2": "algebraic-nt",
+  "objects": [
+   "Torsion index",
+   "Infinite place",
+   "Hyperbolic product inequality",
+   "Gram determinant"
+  ],
+  "gloss": "Hyperbolic product inequalities over infinite places of number fields, with torsion and determinant indices.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/HyperbolicPlaceProducts/SubgroupIndexCounts",
+  "label": "Subgroup index counts for units",
+  "field": "algebraic-nt",
+  "field2": "lattices",
+  "objects": [
+   "Unit group torsion",
+   "Dedekind zeta function",
+   "Infinite place",
+   "Norm of an ideal"
+  ],
+  "gloss": "Counts of subgroups and index bounds for unit groups and lattice automorphisms in number fields.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/IncomingBounds",
+  "label": "Incoming weight bounds for Frobenius orbits",
+  "field": "padic-hodge",
+  "field2": "combinatorics",
+  "objects": [
+   "Frobenius orbit period",
+   "Cayley identity",
+   "Valuation window",
+   "Maximum flow"
+  ],
+  "gloss": "Flow and valuation-window bounds on incoming weights, used to bound Frobenius orbit periods.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/IncomingBounds/FlowDegreeBounds",
+  "label": "Flow degree bounds and Cayley identities",
+  "field": "combinatorics",
+  "field2": "algebra",
+  "objects": [
+   "Maximum flow value",
+   "Cayley identity",
+   "Alternating binomial sums",
+   "Forward difference operator"
+  ],
+  "gloss": "Degree bounds for flows and Cayley-type identities, with binomial sum identities and derivation rules.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/JacobiWeightFamilies",
+  "label": "Jacobi-weighted sieve families",
+  "field": "analytic-nt",
+  "field2": "combinatorics",
+  "objects": [
+   "Weighted sieve",
+   "Jacobi symbol",
+   "Dirichlet L-function",
+   "Mertens' theorem"
+  ],
+  "gloss": "Weighted sieve families built from Jacobi characters, with a result that they imply the Riemann hypothesis.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/JacquetSubsetSums",
+  "label": "Jacquet subset-sum separation",
+  "field": "rep-theory",
+  "field2": "combinatorics",
+  "objects": [
+   "Jacquet subset sum",
+   "Packet sum",
+   "Strictly antitone sequence",
+   "Permutation sign"
+  ],
+  "gloss": "Subset-sum separation lemmas for packet sums of representations, with permutation sign and cone conditions.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/JumpKernelCokernel",
+  "label": "Kernel and cokernel lengths over DVRs",
+  "field": "algebra",
+  "field2": "lattices",
+  "objects": [
+   "Module length",
+   "Discrete valuation ring",
+   "Determinant length formula",
+   "Power series ring"
+  ],
+  "gloss": "Length formulas for kernels and cokernels of matrices over discrete valuation rings, used in truncated series counts.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/JumpKernelCokernel/JumpShiftProofs",
+  "label": "Kernel and cokernel length proofs",
+  "field": "algebra",
+  "field2": "lattices",
+  "objects": [
+   "Module length",
+   "Determinant length formula",
+   "Power binomial bound",
+   "Ideal power sums"
+  ],
+  "gloss": "Proofs of length and torsion-kernel identities for kernels and cokernels, with determinant and power bounds.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/LFunctionBounds",
+  "label": "Explicit bounds for Dirichlet L-functions",
+  "field": "analytic-nt",
+  "field2": "analysis",
+  "objects": [
+   "Dirichlet L-function",
+   "Hurwitz zeta function",
+   "Logarithmic derivative bound",
+   "Lerch zeta function"
+  ],
+  "gloss": "Explicit bounds on Dirichlet L-functions and their logarithmic derivatives, including positivity and Landau-type estimates.",
+  "confidence": "high"
+ },
+ {
+  "id": "Formalism/LFunctionBounds/LFunctionBoundsProofs",
+  "label": "Partial sums of L-functions",
+  "field": "analytic-nt",
+  "field2": "analysis",
+  "objects": [
+   "Dirichlet L-function",
+   "Divisor bound",
+   "Partial sum of an L-function",
+   "Complex power function"
+  ],
+  "gloss": "Proofs of partial-sum formulas and tail bounds for Dirichlet L-functions, using integrals over rectangles.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/LagrangeIdealLifts",
+  "label": "Lagrange ideal lifts over p-adic integers",
+  "field": "padic-hodge",
+  "field2": "algebra",
+  "objects": [
+   "Lagrange ideal",
+   "Lifting of ideals",
+   "Cocycle",
+   "p-adic valuation"
+  ],
+  "gloss": "Lifting statements for Lagrange ideals in polynomial rings over p-adic integers, with cocycle and torsion lemmas.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/LagrangeIdealLifts/CocyclePolynomialDivision",
+  "label": "Cocycle decomposition by polynomial division",
+  "field": "algebra",
+  "field2": "cohomology",
+  "objects": [
+   "Lagrange ideal",
+   "Cocycle",
+   "Polynomial aeval map",
+   "Graded decomposition"
+  ],
+  "gloss": "Polynomial-division decompositions of cocycles in graded submodules, used to lift Lagrange ideals.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/LandauZeroFreeBounds",
+  "label": "Landau zero-free regions for Dirichlet L-functions",
+  "field": "analytic-nt",
+  "field2": "analysis",
+  "objects": [
+   "Landau zero-free region",
+   "Siegel–Walfisz theorem",
+   "Dirichlet L-function",
+   "Logarithmic derivative"
+  ],
+  "gloss": "Zero-free region and Siegel–Walfisz-type bounds for Dirichlet L-functions, including exceptional-zero cases.",
+  "confidence": "high"
+ },
+ {
+  "id": "Formalism/LandauZeroFreeBounds/ExceptionalZeroBounds",
+  "label": "Exceptional zero bounds and Perron contours",
+  "field": "analytic-nt",
+  "field2": "analysis",
+  "objects": [
+   "Exceptional zero",
+   "Perron's formula",
+   "Dirichlet L-function",
+   "Möbius inversion"
+  ],
+  "gloss": "Proofs of exceptional-zero and contour-shift bounds for Dirichlet L-functions, via Perron-type formulas.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/LatticeLocalGlobal",
+  "label": "Lattices over Dedekind localisations",
+  "field": "lattices",
+  "field2": "algebraic-nt",
+  "objects": [
+   "Height one spectrum",
+   "Dedekind domain",
+   "Gram matrix",
+   "Dual lattice"
+  ],
+  "gloss": "Local-to-global statements for lattices over Dedekind domains, with uniqueness and integrality conditions.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/LatticeRigidity",
+  "label": "Rigidity of lattice packings",
+  "field": "lattices",
+  "field2": "algebra",
+  "objects": [
+   "Height minimum",
+   "Packing count",
+   "Unipotent matrix",
+   "Hadamard inequality"
+  ],
+  "gloss": "Rigidity statements about lattice packings and heights, including minimal-height and recursion bounds.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/LatticeRigidity/HeightMinimum",
+  "label": "Height minimum via eigenvalue bounds",
+  "field": "lattices",
+  "field2": "algebra",
+  "objects": [
+   "Absolute norm of an ideal",
+   "Infinite place",
+   "Generalised eigenspace",
+   "Chebyshev polynomial"
+  ],
+  "gloss": "Lower bounds on heights through norms and generalised eigenspaces of matrices over number fields.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/LatticeSlopes",
+  "label": "Lattice slopes and covolumes",
+  "field": "lattices",
+  "field2": "algebraic-nt",
+  "objects": [
+   "Lattice slope",
+   "Covolume",
+   "Saturated sublattice",
+   "Gram determinant"
+  ],
+  "gloss": "Definitions and basic facts on lattice slopes, covolumes and saturated sublattices.",
+  "confidence": "high"
+ },
+ {
+  "id": "Formalism/LatticeSlopes/LatticeSlopesProofs",
+  "label": "Covolume and slope inequality proofs",
+  "field": "lattices",
+  "field2": "measure",
+  "objects": [
+   "Covolume",
+   "Lattice slope",
+   "Gram determinant",
+   "Fundamental domain"
+  ],
+  "gloss": "Proofs of covolume, saturation and slope inequalities for lattices, using Gram determinants and fundamental domains.",
+  "confidence": "high"
+ },
+ {
+  "id": "Formalism/LatticeTheta",
+  "label": "Lattice theta functions and Poisson duality",
+  "field": "theta",
+  "field2": "harmonic",
+  "objects": [
+   "Theta function of a lattice",
+   "Dual lattice",
+   "Poisson summation",
+   "Fourier transform"
+  ],
+  "gloss": "Theta functions of lattices, with dual lattices, Poisson decay and inversion statements.",
+  "confidence": "high"
+ },
+ {
+  "id": "Formalism/LatticeTheta/LatticeThetaProofs",
+  "label": "Poisson summation for lattice theta",
+  "field": "theta",
+  "field2": "harmonic",
+  "objects": [
+   "Poisson summation",
+   "Gaussian Fourier transform",
+   "Schwartz function",
+   "Torus Fourier coefficients"
+  ],
+  "gloss": "Proofs of Poisson summation and Fourier series identities for lattice theta functions, using Schwartz decay.",
+  "confidence": "high"
+ },
+ {
+  "id": "Formalism/LocalRingCardinality",
+  "label": "Local ring data for lattice counts",
+  "field": "algebraic-nt",
+  "field2": "lattices",
+  "objects": [
+   "Ramified prime",
+   "Minkowski number",
+   "Discrete valuation ring",
+   "Local field"
+  ],
+  "gloss": "Local ring data for lattices over number fields, including classification of ramified primes and local class counts.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/LocalRingCardinality/AdicCompletionLocal",
+  "label": "Fontaine rings and adic completions",
+  "field": "padic-hodge",
+  "field2": "algebra",
+  "objects": [
+   "Fontaine's ring A_inf",
+   "B_dR ring",
+   "Crystalline period ring B_cris",
+   "Witt vector theta map"
+  ],
+  "gloss": "Definitions and facts about Fontaine period rings and adic completions, used in p-adic Hodge theory.",
+  "confidence": "high"
+ },
+ {
+  "id": "Formalism/LocalRingCardinality/SpanPowerMembership",
+  "label": "Ideal span membership in local rings",
+  "field": "algebra",
+  "field2": "algebraic-nt",
+  "objects": [
+   "Ideal span",
+   "Height one spectrum",
+   "Finite adele ring",
+   "Algebraic closure of Q_p"
+  ],
+  "gloss": "Checks of ideal-span and power-membership facts over Dedekind and local rings, mostly explicit examples.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/LocalToGlobal",
+  "label": "Local-to-global principle for lattices",
+  "field": "lattices",
+  "field2": "algebraic-nt",
+  "objects": [
+   "Local-to-global principle",
+   "Height one spectrum",
+   "Linked family",
+   "Indefinite Hermitian form"
+  ],
+  "gloss": "Top-level local-to-global statements that glue local lattice data into global Hermitian forms.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/AdelicCompactOpens",
+  "label": "Compact open sets in adeles",
+  "field": "algebraic-nt",
+  "field2": "measure",
+  "objects": [
+   "Finite adele ring",
+   "Integer adeles",
+   "Compact open subgroup",
+   "Hermitian form"
+  ],
+  "gloss": "Compact open subsets of adelic and integer-adelic groups, with uniqueness and density facts for forms.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/AlgebraicTheory",
+  "label": "Self-dual forms and eigenframes",
+  "field": "lattices",
+  "field2": "algebra",
+  "objects": [
+   "Self-dual Hermitian form",
+   "Eigenframe",
+   "Skew-symmetric form",
+   "Power series jets"
+  ],
+  "gloss": "Algebraic lemmas on self-dual forms, eigenframes and jets, used in the local-to-global argument.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/BesselHermitianTheta",
+  "label": "Hermitian theta series with Bessel terms",
+  "field": "theta",
+  "field2": "automorphic",
+  "objects": [
+   "Weil representation",
+   "Hermitian theta series",
+   "Hecke character",
+   "Heisenberg group"
+  ],
+  "gloss": "Hermitian theta-series lemmas with Bessel-type terms, built on Weil-tied data and volume identities.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/CMDeterminantIdeals",
+  "label": "Determinant ideals of CM lattices",
+  "field": "algebraic-nt",
+  "field2": "lattices",
+  "objects": [
+   "Fractional ideal",
+   "Absolute norm of an ideal",
+   "CM field",
+   "Multiplicative height"
+  ],
+  "gloss": "Ideal-valued determinants of CM lattices, with norm and valuation identities for their counts.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/CharacterGerms",
+  "label": "Formal power series bounds for character germs",
+  "field": "analysis",
+  "field2": "algebra",
+  "objects": [
+   "Formal power series substitution",
+   "Multivariate power series",
+   "Formal logarithm",
+   "Cokernel length"
+  ],
+  "gloss": "Bounds on formal power series germs attached to characters, with substitution and derivative identities.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/Columns",
+  "label": "Column determinants of lattice data",
+  "field": "lattices",
+  "field2": "algebraic-nt",
+  "objects": [
+   "Hermitian lattice",
+   "Column determinant",
+   "Stabilizer of a subgroup",
+   "Dual Hermitian form"
+  ],
+  "gloss": "Column-by-column lattice constructions and determinant identities over number fields, with large case analysis.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/CyclotomicLocalNorms",
+  "label": "Local norms in cyclotomic extensions",
+  "field": "algebraic-nt",
+  "field2": null,
+  "objects": [
+   "Local class field theory",
+   "Maximal unramified extension",
+   "Frobenius element",
+   "p-adic norm"
+  ],
+  "gloss": "Local norm and unramified-extension facts for cyclotomic and p-adic fields, using local class field theory.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/Divisibility",
+  "label": "Divisibility of local-to-global lattice data",
+  "field": "lattices",
+  "field2": "algebraic-nt",
+  "objects": [
+   "Division value",
+   "Infinite place",
+   "Height one spectrum",
+   "Hermitian form"
+  ],
+  "gloss": "Divisibility conditions and size bounds for local-to-global lattice data over number fields.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/ExponentGrids",
+  "label": "Exponent grids for valuation data",
+  "field": "algebraic-nt",
+  "field2": "lattices",
+  "objects": [
+   "Place over a prime",
+   "Valuation jet",
+   "Height bound",
+   "Unit period bound"
+  ],
+  "gloss": "Exponent grids and valuation bounds over number field places, used to bound local lattice sizes.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/GaloisLevelStructure",
+  "label": "Galois-level structure of tied representations",
+  "field": "rep-theory",
+  "field2": "algebraic-nt",
+  "objects": [
+   "Galois representation",
+   "CM field",
+   "Maximal real subfield",
+   "Frobenius element"
+  ],
+  "gloss": "Galois-level structure of tied representations, with checks on maximal real subfields and CM fields.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/GenusGluing",
+  "label": "Genus gluing via adelic approximation",
+  "field": "lattices",
+  "field2": "algebraic-nt",
+  "objects": [
+   "Genus of a lattice",
+   "Weak approximation",
+   "Adelic lattice",
+   "Idempotent in the adeles"
+  ],
+  "gloss": "Glues local lattice data into a global genus, using weak approximation and idempotents in the adeles.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/GlobalTheory",
+  "label": "Global theory of Hermitian lattices",
+  "field": "lattices",
+  "field2": "analytic-nt",
+  "objects": [
+   "Kronecker limit formula",
+   "Hermitian form",
+   "Shortest vector",
+   "Homothety"
+  ],
+  "gloss": "Global lattice facts on Hermitian forms, including trace integrality, the Kronecker limit and character sums.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/GroupLattices",
+  "label": "Lattice models of group actions",
+  "field": "rep-theory",
+  "field2": "lattices",
+  "objects": [
+   "Fock space",
+   "Stabilizer of a lattice",
+   "Perfect ring",
+   "Edge lattice of a graph"
+  ],
+  "gloss": "Lattice models attached to group actions, including Fock-space models and stabilizer counts.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/HeckeThetaElements",
+  "label": "Hecke elements in theta series",
+  "field": "automorphic",
+  "field2": "theta",
+  "objects": [
+   "Hecke operator",
+   "Theta series",
+   "Idempotent in the Hecke algebra",
+   "Weight of a level"
+  ],
+  "gloss": "Hecke-type theta elements and weights used in the theta-series constructions.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/HermitianColumns",
+  "label": "Hermitian column lattices at a level",
+  "field": "lattices",
+  "field2": "algebraic-nt",
+  "objects": [
+   "Hermitian lattice",
+   "Unitary group",
+   "Local level",
+   "Tied lattice"
+  ],
+  "gloss": "Column-type lattices of Hermitian forms at local levels, with tied and surjectivity lemmas.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/HermitianForms",
+  "label": "Tied Hermitian forms and twisted characters",
+  "field": "lattices",
+  "field2": "rep-theory",
+  "objects": [
+   "Hermitian form",
+   "Twisted character",
+   "Symmetric Hermitian form",
+   "Local Hermitian form"
+  ],
+  "gloss": "Definitions and tied-form lemmas for Hermitian forms over number fields, including twisted characters.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/HilbertRowConditions",
+  "label": "Hilbert row conditions for lattices",
+  "field": "lattices",
+  "field2": "algebra",
+  "objects": [
+   "Hilbert row condition",
+   "Joins of tied data",
+   "Divisibility datum",
+   "Discriminant of a number field"
+  ],
+  "gloss": "Row-side conditions and joins of tied data for Hilbert-type lattice families.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/IndefiniteForms",
+  "label": "Indefinite Hermitian forms and trees",
+  "field": "lattices",
+  "field2": "algebraic-nt",
+  "objects": [
+   "Indefinite Hermitian form",
+   "Archimedean leaf bound",
+   "Slope bound",
+   "Infinite place"
+  ],
+  "gloss": "Indefinite Hermitian forms over number fields, organised as trees with archimedean leaf bounds.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/IndefiniteReal",
+  "label": "Indefinite real lattices and theta functions",
+  "field": "theta",
+  "field2": "lattices",
+  "objects": [
+   "Hermitian theta function",
+   "Weil representation",
+   "Double coset operator",
+   "Haar measure"
+  ],
+  "gloss": "Real indefinite lattice data with theta-function growth bounds, frames and Haar-measure transfers.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/InertKernelTheory",
+  "label": "Kernels at inert primes",
+  "field": "algebraic-nt",
+  "field2": "padic-hodge",
+  "objects": [
+   "Inert prime",
+   "Formal group law",
+   "Maximal unramified extension",
+   "Power series substitution"
+  ],
+  "gloss": "Kernel lattices and formal group lemmas at inert primes of number fields.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/JointCharacters",
+  "label": "Joint characters at all places",
+  "field": "theta",
+  "field2": "algebraic-nt",
+  "objects": [
+   "Infinite place",
+   "Theta function",
+   "Idempotent in the adeles",
+   "Tensor product"
+  ],
+  "gloss": "Joint character data at infinite and finite places, with idempotents and theta-series identities.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/KernelLattices",
+  "label": "Kernel lattices of Hermitian data",
+  "field": "lattices",
+  "field2": "algebraic-nt",
+  "objects": [
+   "Kernel lattice",
+   "Taylor log metric",
+   "Standard lattice GL3",
+   "Pairing index"
+  ],
+  "gloss": "Kernel lattices of Hermitian data over number fields, with level-based isometry and density counts.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/LatticeGeometry",
+  "label": "Geometry and norm bounds of Hermitian lattices",
+  "field": "lattices",
+  "field2": "algebra",
+  "objects": [
+   "Plücker relations",
+   "Hadamard inequality",
+   "Operator norm",
+   "Weyl polynomial algebra"
+  ],
+  "gloss": "Geometric definitions and norm bounds for Hermitian lattices, including Plücker and Hadamard-type identities.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/LocalInduction",
+  "label": "Local induction for bridge data",
+  "field": "padic-hodge",
+  "field2": "algebraic-nt",
+  "objects": [
+   "Weakly admissible filtration",
+   "Local field",
+   "Bridge induction",
+   "Representation"
+  ],
+  "gloss": "Induction step for local bridge data, linking weakly admissible filtrations to tied local lattices.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/NormalizedHeckeFactors",
+  "label": "Normalised Hecke factors",
+  "field": "automorphic",
+  "field2": "algebraic-nt",
+  "objects": [
+   "Hecke eigenvalue",
+   "Galois representation",
+   "Characteristic polynomial transport",
+   "Integral element"
+  ],
+  "gloss": "Normalised Hecke local factors and their integrality, with twisted Galois compatibility.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/NumberFieldFamilies",
+  "label": "Families of number field lattices",
+  "field": "algebraic-nt",
+  "field2": "lattices",
+  "objects": [
+   "Ramified prime",
+   "Theta series",
+   "Local component",
+   "Infinite place"
+  ],
+  "gloss": "Families of lattice data indexed by number fields, with ramification and theta-type constraints.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/PairingIndexBounds",
+  "label": "Pairing index bounds for lattices",
+  "field": "lattices",
+  "field2": "algebra",
+  "objects": [
+   "Pairing index",
+   "Taylor log metric",
+   "Unitary group",
+   "Heisenberg group"
+  ],
+  "gloss": "Index bounds for pairings of lattices, with Heisenberg-type and bicharacter conditions.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/PlaceMapInjectivity",
+  "label": "Injectivity of maps on places",
+  "field": "algebraic-nt",
+  "field2": null,
+  "objects": [
+   "Height one spectrum",
+   "Algebraic closure",
+   "Dedekind domain",
+   "Intermediate field"
+  ],
+  "gloss": "A single lemma showing that a map between places of number fields is injective.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/ProjectiveLattices",
+  "label": "Projective families of lattices",
+  "field": "arith-geom",
+  "field2": "lattices",
+  "objects": [
+   "Projective lattice",
+   "Fundamental domain",
+   "Moduli of Hermitian lattices",
+   "Cusp"
+  ],
+  "gloss": "Projective families of lattices over number fields, with cusp and fundamental domain data.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/RatioJoints",
+  "label": "Ratio joints of local data",
+  "field": "algebraic-nt",
+  "field2": "lattices",
+  "objects": [
+   "Linked family",
+   "Ratio of local factors",
+   "Character product",
+   "Idempotent at a place"
+  ],
+  "gloss": "Joint ratio data linking local family members, with character product identities.",
+  "confidence": "low"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/SiegelLatticeTheory",
+  "label": "Siegel mass ratios and lattice volumes",
+  "field": "lattices",
+  "field2": "rep-theory",
+  "objects": [
+   "Siegel mass formula",
+   "Casimir operator",
+   "Haar measure",
+   "Discrete series of a real group"
+  ],
+  "gloss": "Siegel-type lattice theory with mass ratios, volume estimates and Bessel discrete-series terms.",
+  "confidence": "medium"
+ },
+ {
+  "id": "Formalism/LocalToGlobal/ThetaOperatorCommutation",
+  "label": "Theta series and operator commutation",
+  "field": "theta",
+  "field2": "rep-theory",
+  "objects": [
+   "Fock model",
+   "Theta summability",
+   "Coinvariants",
+   "Casimir element"
+  ],
+  "gloss": "Commutation facts relating theta series and Lie-algebra operators on the real Fock model.",
+  "confidence": "low"
+ }
+]

@@ -45,6 +45,26 @@ TACTICS = [
     "by_contra", "by_cases", "classical", "infer_instance", "rfl", "trivial", "tauto",
     "fun_prop", "measurability", "continuity", "grind", "exact_mod_cast", "convert", "sorry",
 ]
+# Identifier patterns that indicate a field of mathematics. Counted per file; the
+# builder picks the field whose count is highest relative to its average over all files.
+FIELD_PATTERNS = {
+    "analytic-nt": r"riemannZeta|LSeries|LFunction|DirichletCharacter|vonMangoldt|ArithmeticFunction|primeCounting|EulerProduct|ZeroFree|Nat\.Prime|Chebyshev|PrimeNumberTheorem",
+    "algebraic-nt": r"NumberField|RingOfIntegers|𝓞|InfinitePlace|ClassGroup|IsDedekindDomain|absNorm|FractionalIdeal|Adele|Idele|𝔸|IsCyclotomicExtension|Padic|ℚ_\[|ℤ_\[|HeightOneSpectrum|IsDiscreteValuationRing|Valued|ClassField|Artin|IsGalois|Gal\(",
+    "cohomology": r"groupCohomology|[Cc]ocycle|[Cc]oboundary|[Cc]ohomology|Etale|Brauer|Cochain|Inflation|Corestriction|Shapiro|Profinite",
+    "automorphic": r"Automorphic|ModularForm|CuspForm|Hecke|Eisenstein|SlashAction|UpperHalfPlane|ℍ|[Cc]uspidal|TraceFormula|Petersson|Whittaker|Satake|PoincareSeries|Maass|Langlands|Jacquet|Rankin",
+    "theta": r"[Tt]heta|WeilRep|Heisenberg|SiegelWeil|Metaplectic|Seesaw|Howe|Rallis|Oscillator",
+    "rep-theory": r"Representation|FDRep|LieAlgebra|LieGroup|unitaryGroup|GeneralLinearGroup|SpecialLinearGroup|HarishChandra|DiscreteSeries|WeylGroup|RootSystem|RootPairing|HighestWeight|Casimir|Capelli|Unipotent|Borel|Parabolic|Iwasawa|Bessel|IsIrreducible|Schur",
+    "arith-geom": r"AbelianVariety|AbelianScheme|EllipticCurve|WeierstrassCurve|Isogeny|Jacobian|ComplexMultiplication|CMType|GoodReduction|Neron|Shimura|Moduli|GaloisField|FiniteField|Polarization|Tate[A-Z]|PointCount|WeilBound|RiemannForm|PeriodMatrix",
+    "padic-hodge": r"WittVector|𝕎|Crystalline|FormalGroup|PerfectRing|Perfection|Fontaine|Tilt|PhiGamma|deRham|HodgeTate|PDiv|Dieudonn|ArtinHasse|Wach|Verschiebung|Lubin|Teichm",
+    "alg-geom": r"AlgebraicGeometry|Scheme|Sheaf|Divisor|LineBundle|BlowUp|Blowup|IsAffine|LocallyRingedSpace|Presheaf|Spec\b|Proj\b|Variety|ResolutionOfSing|Birational|Toroidal|Bertini",
+    "algebra": r"MvPolynomial|TensorProduct|CategoryTheory|Localization|IsNoetherian|Coalgebra|Bialgebra|HopfAlgebra|ExteriorAlgebra|Homological|IsLocalRing|Polynomial\.|Ideal\.|Algebra\.|Module\.|LinearMap\.|Matrix\.det|Resultant|Derivation|GradedAlgebra|AdicCompletion",
+    "lattices": r"Lattice|ZLattice|[Cc]ovolume|Minkowski|[Ss]uccessiveMinim|[Ss]lope|Height|[Gg]ram|ZSpan|fundamentalDomain|Hermitian|HarderNarasimhan|Arakelov|ConvexBody|Unimodular|QuadraticForm",
+    "harmonic": r"Fourier|𝓕|SchwartzMap|Lp\b|InnerProductSpace|ContinuousLinearMap|[Ss]pectr|IsSelfAdjoint|Hilbert|Laplac|Plancherel|Parseval|Convolution|OrthonormalBasis|IsCompactOperator|Sobolev",
+    "analysis": r"Real\.log|Real\.exp|Complex\.exp|HasDerivAt|deriv\b|Asymptotics|IsBigO|IsLittleO|Tendsto|Summable|tsum|Differentiable|AnalyticAt|Complex\.Gamma|Real\.Gamma|Real\.sqrt|Real\.rpow|ContinuousOn|Real\.pi|Convex",
+    "measure": r"MeasureTheory|Measure\b|∫|Integrable|volume|[Hh]aar|ae_|Measurable|IntervalIntegral",
+    "combinatorics": r"Finset\.card|Fintype\.card|Nat\.choose|SimpleGraph|powerset|Partition|Equiv\.Perm|Multiset|YoungDiagram|Nat\.factorial|Finset\.sum|Finset\.prod|Behrend|Pigeonhole",
+}
+FIELD_RES = [(name, re.compile(pat)) for name, pat in FIELD_PATTERNS.items()]
 TACTIC_RE = re.compile(r"(?<![A-Za-z0-9_.'])(" + "|".join(TACTICS) + r")(?![A-Za-z0-9_.'])")
 
 
@@ -105,6 +125,7 @@ def scan_file(root, rel, prev_raw=b""):
         "ns": NAMESPACE_RE.findall(nocomment)[:4],
         "t": dict(tactics),
         "sh": shape_hash,
+        "fc": [len(rx.findall(nocomment)) for _name, rx in FIELD_RES],
         "k": kind,
     }
     opens = Counter()
