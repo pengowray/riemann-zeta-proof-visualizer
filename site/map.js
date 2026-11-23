@@ -7,8 +7,10 @@ import { openModule, openDirectory } from "./drawer.js";
 // ---------------------------------------------------------------- treemap layout
 export const canvas = $("treemap");
 export const ctx = canvas.getContext("2d");
-export const HEADER = [0, 18, 13]; // height in px at zoom 1 of a directory's name strip, by depth
-export const GAP = [4, 2, 1];
+// Directories are separated by outlines drawn at a fixed width on screen (px, by depth).
+// Gaps or name strips built into the layout grow with the zoom and become thick bands
+// once you zoom into a small directory.
+export const OUTLINE = [0, 3, 2, 1];
 export let W = 0, H = 0, root = null;
 export const LX0 = new Float32Array(N), LY0 = new Float32Array(N), LX1 = new Float32Array(N), LY1 = new Float32Array(N);
 
@@ -26,9 +28,7 @@ export function buildHierarchy() {
 export function layout() {
   const values = state.size.values;
   root.sum((d) => (d.leaf === undefined ? 0 : values[d.leaf]));
-  d3.treemap().size([W, H]).round(false)
-    .paddingTop((n) => HEADER[n.depth] || 0)
-    .paddingInner((n) => GAP[n.depth] || 0)(root);
+  d3.treemap().size([W, H]).round(false)(root);
   for (const n of root.leaves()) {
     const i = n.data.leaf;
     if (i === undefined) continue;
@@ -86,7 +86,7 @@ export function draw() {
   ctx.fillStyle = paper2; ctx.fillRect(0, 0, W, H);
   const vx0 = -tx / k, vy0 = -ty / k, vx1 = (W - tx) / k, vy1 = (H - ty) / k;
 
-  // directory backgrounds (they show through as the name strips and the gaps)
+  // directory backgrounds (they show through as the gaps)
   for (const d of dirs) {
     if (quads || d.depth === 0 || d.depth > 2) continue;
     const n = d.node;
@@ -130,9 +130,26 @@ export function draw() {
     }
   }
 
-  // directory names: the two outer levels have a name strip; deeper directories get a
-  // name plate in their top-left corner once they are large on screen and the plate
-  // would not cover a plate already drawn
+  // directory outlines, deepest first so that the outer ones stay on top
+  if (!quads) {
+    ctx.strokeStyle = paper2;
+    for (let depth = OUTLINE.length - 1; depth >= 1; depth--) {
+      ctx.lineWidth = OUTLINE[depth];
+      ctx.beginPath();
+      for (const d of dirs) {
+        if (d.depth !== depth) continue;
+        const n = d.node;
+        if (n.x1 < vx0 || n.x0 > vx1 || n.y1 < vy0 || n.y0 > vy1) continue;
+        const w = (n.x1 - n.x0) * k, h = (n.y1 - n.y0) * k;
+        if (w < 12 || h < 12) continue; // outlines would swallow a directory this small
+        ctx.rect(n.x0 * k + tx, n.y0 * k + ty, w, h);
+      }
+      ctx.stroke();
+    }
+  }
+
+  // directory names: a name plate in the top-left corner, drawn once the directory is large enough
+  // on screen and the plate would not cover a plate already drawn
   ctx.textBaseline = "middle";
   const plates = [];
   for (const d of dirs) {
@@ -140,31 +157,25 @@ export function draw() {
     const n = d.node;
     if (n.x1 < vx0 || n.x0 > vx1 || n.y1 < vy0 || n.y0 > vy1) continue;
     const w = (n.x1 - n.x0) * k, h = (n.y1 - n.y0) * k;
-    const strip = (HEADER[d.depth] || 0) * k;
-    const plate = !strip;
-    if (plate ? w < 150 || h < 60 : strip < 11 || w < 34 || h < strip) continue;
-    const size = plate ? 11 : Math.min(14, Math.max(10.5, strip * 0.7));
+    // every directory name is a plate in its top-left corner; the top-level ones are bold and appear first
+    const top = d.depth === 1;
+    if (top ? w < 60 || h < 24 : d.depth === 2 ? w < 90 || h < 40 : w < 150 || h < 60) continue;
+    const size = top ? 13 : 11;
     ctx.font = `${d.depth === 1 ? 600 : 400} ${size}px "STIX Two Text", serif`;
     const x = Math.max(n.x0 * k + tx, 0) + 4;
-    const room = Math.min(n.x1 * k + tx - x - 4, plate ? 260 : 1e9);
+    const room = Math.min(n.x1 * k + tx - x - 4, 260);
     let text = d.name.replace(/([a-z0-9])([A-Z])/g, "$1 $2");
     if (ctx.measureText(text).width > room) {
       while (text.length > 3 && ctx.measureText(text + "…").width > room) text = text.slice(0, -1);
       if (text.length <= 3) continue;
       text += "…";
     }
-    const y = Math.max(n.y0 * k + ty, plate ? 0 : -1e9);
-    if (plate) {
-      const pw = ctx.measureText(text).width + 8, ph = 15;
-      if (plates.some((p) => x - 4 < p[0] + p[2] && p[0] < x - 4 + pw && y < p[1] + p[3] && p[1] < y + ph)) continue;
-      plates.push([x - 4, y, pw, ph]);
-      ctx.fillStyle = paper; ctx.fillRect(x - 4, y, pw, ph);
-      ctx.fillStyle = ink2; ctx.fillText(text, x, y + ph / 2 + 0.5);
-    } else {
-      plates.push([x - 4, y, ctx.measureText(text).width + 8, Math.min(strip, 20)]);
-      ctx.fillStyle = d.depth === 1 ? ink : ink2;
-      ctx.fillText(text, x, y + Math.min(strip, 20) / 2 + 0.5);
-    }
+    const y = Math.max(n.y0 * k + ty, 0);
+    const pw = ctx.measureText(text).width + 8, ph = top ? 18 : 15;
+    if (plates.some((p) => x - 4 < p[0] + p[2] && p[0] < x - 4 + pw && y < p[1] + p[3] && p[1] < y + ph)) continue;
+    plates.push([x - 4, y, pw, ph]);
+    ctx.fillStyle = paper; ctx.fillRect(x - 4, y, pw, ph);
+    ctx.fillStyle = top ? ink : ink2; ctx.fillText(text, x, y + ph / 2 + 0.5);
   }
 
   // module names, once the rectangles are large enough to hold them
