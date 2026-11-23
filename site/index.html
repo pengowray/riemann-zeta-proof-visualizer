@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Lean proof of the Riemann Hypothesis: a map</title>
+<meta name="description" content="An explorable map of the 175,187 Lean modules in Levent Alpöge's formalization of the Riemann Hypothesis and GRH for Dirichlet L-functions.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<aside id="rail" aria-label="Where you are">
+  <canvas id="minimap" width="200" height="125" aria-hidden="true"></canvas>
+  <p id="rail-note"></p>
+  <nav id="toc">
+    <a href="#statement">The statement</a>
+    <a href="#map">Map of every module</a>
+    <a href="#space">What takes up the space</a>
+    <a href="#modules">Why so many modules</a>
+    <a href="#fields">Areas of mathematics</a>
+    <a href="#imports">How modules depend on each other</a>
+    <a href="#numbers">Numbers and tactics</a>
+    <a href="#sources">Sources and method</a>
+  </nav>
+</aside>
+
+<main>
+<header id="top">
+  <div class="hero-text">
+    <h1>The Lean proof of the Riemann Hypothesis, as a map</h1>
+    <p class="lede">On 20 November 2026 Levent Alpöge released a Lean 4 formalization, written with Claude, that states and proves the Riemann Hypothesis and its generalization to Dirichlet <i>L</i>-functions. The source is 175,187 modules (a module is one <code>.lean</code> file). This page shows what is in them.</p>
+    <dl id="facts"></dl>
+  </div>
+  <figure class="hero-art">
+    <canvas id="zeta" width="460" height="460"></canvas>
+    <figcaption>The values ζ(½ + <i>it</i>) in the complex plane, for <i>t</i> from 0 to <span id="zeta-t">60</span>. The curve passes through 0 once for each zero of ζ on the critical line. <span id="zeta-zeros"></span></figcaption>
+  </figure>
+</header>
+
+<section id="statement">
+  <h2>The statement</h2>
+  <p>These two files are the whole claim. <code>Statements.lean</code> defines four propositions. <code>Main.lean</code> proves them, and Mathlib's own <code>RiemannHypothesis</code>, by citing theorems from the other 175,185 modules. Point at a symbol to see how to say it and what type it has.</p>
+  <div class="code-pair">
+    <figure class="codebox"><figcaption>Statements.lean</figcaption><pre class="lean" id="code-statements"></pre></figure>
+    <figure class="codebox"><figcaption>Main.lean</figcaption><pre class="lean" id="code-main"></pre></figure>
+  </div>
+  <p class="plain"><b>In words:</b> every zero of the Riemann zeta function, other than the trivial zeros −2, −4, −6, … , has real part ½. For every Dirichlet character χ, every zero of <i>L</i>(<i>s</i>, χ) with real part strictly between 0 and 1 has real part ½.</p>
+</section>
+
+<section id="map">
+  <h2>Map of every module</h2>
+  <p>Each rectangle is one module. Modules are grouped by directory, and a larger rectangle means more of the chosen size measure.</p>
+  <div class="controls">
+    <div class="control"><span class="control-label">Size by</span><div class="seg" id="size-by" role="radiogroup" aria-label="Size by"></div></div>
+    <div class="control"><span class="control-label">Colour by</span><div class="seg" id="colour-by" role="radiogroup" aria-label="Colour by"></div></div>
+  </div>
+  <div id="legend"></div>
+  <div id="map-wrap">
+    <canvas id="treemap" tabindex="0" aria-label="Treemap of all modules"></canvas>
+    <div id="tip" role="status"></div>
+    <button id="reset-zoom" type="button" hidden>Show whole map</button>
+  </div>
+  <p class="hint">Scroll over the map to zoom, drag to move, click a module to read its code.</p>
+  <div id="highlight-bar" hidden><span id="highlight-text"></span> <button type="button" id="highlight-clear">Clear highlight</button></div>
+  <h3>Highlight modules that mention</h3>
+  <div id="terms" class="chips"></div>
+  <p class="note">Terms come from Alpöge's announcement and from standard number theory. A module is counted if the term's identifier appears anywhere in its text.</p>
+  <label class="find">Find in module names <input id="find" type="search" placeholder="e.g. Eisenstein" autocomplete="off" spellcheck="false"></label>
+  <span id="find-count" class="note"></span>
+</section>
+
+<section id="space">
+  <h2>What takes up the space</h2>
+  <p id="space-text"></p>
+  <div id="space-chart" class="chart"></div>
+  <h3>By top-level library</h3>
+  <table id="lib-table" class="data"></table>
+</section>
+
+<section id="modules">
+  <h2>Why so many modules</h2>
+  <p id="modules-text"></p>
+  <div class="chart-pair">
+    <figure><figcaption>Modules by length</figcaption><div id="length-chart" class="chart"></div></figure>
+    <figure><figcaption>How much of each module repeats the module before it in the same directory</figcaption><div id="repeat-chart" class="chart"></div></figure>
+  </div>
+  <p id="repeat-text"></p>
+</section>
+
+<section id="fields">
+  <h2>Areas of mathematics</h2>
+  <p>Each module is assigned a field from the Mathlib and project identifiers it uses. Point at a row to see where that field sits on the map.</p>
+  <table id="field-table" class="data"></table>
+  <p class="note">Named objects come from labels that a language model gave to each of 746 directories after reading a digest of its identifiers. Treat them as a guide, not a census.</p>
+</section>
+
+<section id="imports">
+  <h2>How modules depend on each other</h2>
+  <p id="imports-text"></p>
+  <figure><figcaption>Imports between fields. Each row shows where that field's imports go.</figcaption><div id="matrix-chart" class="chart"></div></figure>
+  <h3>Longest import chain</h3>
+  <p id="chain-text"></p>
+  <div id="chain-strip" class="chart"></div>
+  <h3>Modules that the most other modules depend on</h3>
+  <table id="hub-table" class="data"></table>
+</section>
+
+<section id="numbers">
+  <h2>Numbers and tactics</h2>
+  <p id="numbers-text"></p>
+  <h3>Modules with the largest share of digits</h3>
+  <table id="digit-table" class="data"></table>
+  <h3>Tactics used</h3>
+  <div id="tactic-chart" class="chart"></div>
+</section>
+
+<section id="sources">
+  <h2>Sources and method</h2>
+  <ul>
+    <li>The Lean source is from <a href="https://alpo.ge/remark.pdf">Alpöge's announcement</a>, read from the mirror <a id="repo-link" href="https://github.com/1337isnot1337/riemann-hypothesis-solved">1337isnot1337/riemann-hypothesis-solved</a> at commit <code>6193bb5</code>.</li>
+    <li>This page did not compile or check the proof. The statements that all 175,187 modules compile, that the kernel accepts every declaration, and that the theorems depend only on the axioms <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code> are from <a href="https://mrubinst.github.io/grh-lean-verification/">Michael Rubinstein's independent check</a>.</li>
+    <li>All counts on this page come from a script that reads every file once. Its totals match Rubinstein's: 175,187 files, 17,374,215 lines, longest import chain 203.</li>
+    <li>Declarations are counted by matching keywords such as <code>theorem</code> and <code>def</code> at the start of a line. Lean's kernel sees more declarations (1,484,729 in Rubinstein's check) because Lean generates auxiliary ones.</li>
+    <li>The field of a module is a keyword estimate. It is wrong for some modules.</li>
+    <li>No per-module compile times have been published, so the page has no compile-time measure.</li>
+  </ul>
+</section>
+</main>
+
+<aside id="drawer" hidden aria-label="Details">
+  <button type="button" id="drawer-close" aria-label="Close details">Close</button>
+  <div id="drawer-body"></div>
+</aside>
+<div id="codetip" hidden></div>
+<script type="module" src="app.js"></script>
+</body>
+</html>
