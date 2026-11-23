@@ -32,7 +32,11 @@ HEARTBEAT_RE = re.compile(r"set_option[ \t]+maxHeartbeats[ \t]+(\d+)")
 IDENT_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_'!?₀-₉]*(?:\.[A-Za-z_][A-Za-z0-9_'!?₀-₉]*)*")
 CAP_IDENT_RE = re.compile(r"(?<![A-Za-z0-9_.'])[A-Z][A-Za-z0-9]{3,}(?:\.[A-Za-z][A-Za-z0-9_']*)*")
 NUM_RE = re.compile(r"\d+")
+SET_OPTION_RE = re.compile(r"set_option[ \t]+\S+[ \t]+\S+")
 LONGNUM_RE = re.compile(r"\d{7,}")
+# A numeric literal: a run of digits (optionally with a decimal part) that is not part of a
+# name such as h1, x₂ or foo.2
+LITERAL_RE = re.compile(r"(?<![A-Za-z_\d.'₀-₉!?])\d+(?:\.\d+)?(?![A-Za-z_\d'])")
 BLOCK_COMMENT_RE = re.compile(r"/-.*?-/", re.S)
 LINE_COMMENT_RE = re.compile(r"--[^\n]*")
 SHIM_RE = re.compile(r":=\s*by\s*\n?\s*first\s*\|\s*exact\b")
@@ -93,7 +97,9 @@ def scan_file(root, rel, prev_raw=b""):
     else:
         kind = "math"
 
-    digits = sum(len(x) for x in NUM_RE.findall(nocomment))
+    # numbers in `set_option` lines are settings, not mathematics, so they are left out of the counts
+    maths = SET_OPTION_RE.sub("", nocomment)
+    digits = sum(len(x) for x in NUM_RE.findall(maths))
     row = {
         "p": rel,
         "b": len(raw),
@@ -102,7 +108,9 @@ def scan_file(root, rel, prev_raw=b""):
         "zd": compress_after(raw, prev_raw),
         "ml": max((len(s) for s in text.split("\n")), default=0),
         "dg": digits,
-        "ln": len(LONGNUM_RE.findall(nocomment)),
+        "ln": len(LONGNUM_RE.findall(maths)),
+        "nl": len(LITERAL_RE.findall(maths)),
+        "nb": len(set(LITERAL_RE.findall(maths)) - {"0", "1", "2"}),  # distinct literals other than 0, 1 and 2
         "na": len(NONASCII_RE.findall(nocomment)),
         "cb": comment_bytes,
         "d": dict(decls),

@@ -73,7 +73,8 @@ export const COLOUR_MODES = [
   { id: "dependents", label: "Dependents", kind: "seq", values: col.dependents, scale: "log", low: "no module depends on it", high: `${fmt(d3.max(col.dependents))} modules depend on it`, noun: "dependents" },
   { id: "repeat", label: "Similarity to previous module", kind: "seq", values: col.repeat, scale: "linear", max: 100, missing: 255, low: "0% repeats the previous module", high: "100%", noun: "repeated" },
   { id: "build", label: "Build time", kind: "seq", values: col.build, scale: "log", low: "under a second", high: `${fmt(Math.round(d3.max(col.build) / 10))} seconds`, noun: "build time" },
-  { id: "digits", label: "Share of digits", kind: "seq", values: col.digits, scale: "sqrt", max: 12, low: "0% digits", high: "12% digits or more", noun: "digits" }, // almost every module is under 12%, so the scale stops there
+  { id: "literals", label: "Numeric literals", kind: "seq", values: col.literalRate, scale: "sqrt", max: 125, low: "no numeric literals", high: "125 or more per 100 lines", noun: "numeric literals" },
+  { id: "digits", label: "Digit characters 0–9", kind: "seq", values: col.digits, scale: "sqrt", max: 12, low: "0% of characters are digits", high: "12% or more", noun: "digits" }, // almost every module is under 12%, so the scale stops there
 ];
 export const state = { size: SIZE_MODES[0], colour: COLOUR_MODES[0], mask: null, maskLabel: "", maskKey: "", preview: null, previewLabel: "", chain: false, previewChain: false, marker: -1, bend: 0, hover: -1, pinned: -1 };
 

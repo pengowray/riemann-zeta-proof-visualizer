@@ -77,10 +77,12 @@ fetch("data/checks.json").then((r) => r.json()).then((data) => {
 });
 
 // Numbers section: switch the map to the digit colouring
-$("digits-on-map").onclick = () => {
-  [...$("colour-by").children].find((b) => b.textContent === "Share of digits")?.click();
-  $("map").scrollIntoView();
-};
+for (const [id, label] of [["digits-on-map", "Digit characters 0–9"], ["literals-on-map", "Numeric literals"]]) {
+  $(id).onclick = () => {
+    [...$("colour-by").children].find((b) => b.textContent === label)?.click();
+    $("map").scrollIntoView();
+  };
+}
 
 let findTimer = 0;
 $("find").addEventListener("input", (e) => {
@@ -98,7 +100,7 @@ $("find").addEventListener("input", (e) => {
 });
 
 const truth = meta.totals.truth;
-$("agree-note").textContent = `The field of a module is a statistical estimate. A language model read ${fmt(truth.trained + truth.n)} randomly chosen modules and named each one's field. A naive Bayes classifier learned from ${fmt(truth.trained)} of them, using the identifiers and namespaces each module mentions, and was then tested on the other ${fmt(truth.n)}. It gave the same field as the model for ${pct(truth.exact / truth.n)} of them and a field of the same colour family for ${pct(truth.family / truth.n)} (${pct(truth.familyOrSecond / truth.n)} when the model's second choice also counts). Hand-written keyword rules reached ${pct(truth.keywordFamily / truth.n)} in the same family, and the directory labels ${pct(truth.dirFamily / truth.n)}.`;
+$("agree-note").textContent = `The field of a module is a statistical estimate. A language model read ${fmt(truth.trained + truth.n)} sampled modules and named each one's field. A naive Bayes classifier learned from ${fmt(truth.trained)} of them, using the identifiers and namespaces each module mentions, and was then tested on the other ${fmt(truth.n)}. It gave the same field as the model for ${pct(truth.exact / truth.n)} of them and a field of the same colour family for ${pct(truth.family / truth.n)} (${pct(truth.familyOrSecond / truth.n)} when the model's second choice also counts). Hand-written keyword rules reached ${pct(truth.keywordFamily / truth.n)} in the same family, and the directory labels ${pct(truth.dirFamily / truth.n)}.`;
 
 // rows that preview a highlight on the map while the pointer is over them
 document.addEventListener("pointerover", (e) => {

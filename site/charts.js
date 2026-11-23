@@ -126,7 +126,7 @@ export function renderCharts() {
   const tactics = meta.tactics.filter((t) => t[0] !== "sorry").slice(0, 24).map(([name, n]) => ({ name, n }));
   const tc = Object.fromEntries(meta.tactics);
   const longDigits = d3.sum(col.digits, (d) => (d >= 20 ? 1 : 0));
-  $("numbers-text").textContent = `The source is proof text, not data. Only ${fmt(longDigits)} of the ${fmt(N)} modules are 20% digits or more. The proof never uses native_decide, and it uses decide ${fmt(tc.decide || 0)} times. The module with the most digits, Primes.lean, holds primality certificates checked with decide. The most common steps are have (state an intermediate fact, ${fmt(tc.have)} times), rw (rewrite with an equation, ${fmt(tc.rw)}) and exact (give the proof term, ${fmt(tc.exact)}).`;
+  $("numbers-text").textContent = `The source is proof text, not data. It contains ${fmt(meta.totals.literals)} numeric literals such as 2 or 1/2, about ${Math.round(meta.totals.literals / N)} per module, but only ${fmt(meta.totals.longLiterals)} of them have seven or more digits, and those sit in ${fmt(meta.totals.modulesWithLongLiterals)} modules. Counting characters instead, ${fmt(longDigits)} of the ${fmt(N)} modules are 20% digits or more. Numbers in set_option lines are settings and are not counted. The proof never uses native_decide, and it uses decide ${fmt(tc.decide || 0)} times. The most common proof steps are have (state an intermediate fact, ${fmt(tc.have)} times), rw (rewrite with an equation, ${fmt(tc.rw)}) and exact (give the proof term, ${fmt(tc.exact)}).`;
   const tacticModules = meta.tacticBits.map((_, b) => { let n = 0; for (let i = 0; i < N; i++) n += (col.tactics[i] >>> b) & 1; return n; });
   const tacticInfo = (name) => (KEYWORDS[name] || "").replace(/^tactic: /, "");
   previewOnHover(mount("tactic-chart", Plot.plot({
@@ -145,6 +145,6 @@ export function renderNameTables() {
   $("hub-table").innerHTML = `<tr><th>Module</th><th>Directory label</th><th class="num">Modules that depend on it</th><th class="num">Import it directly</th></tr>`
     + hubs.map((i) => `<tr><td><button class="link" data-open="${i}">${esc(pathOf(i))}</button></td><td>${esc(labelOf(i))}</td><td class="num">${fmt(col.dependents[i])} (${pct(col.dependents[i] / N)})</td><td class="num">${fmt(col.indeg[i])}</td></tr>`).join("");
   const digitTop = d3.range(N).filter((i) => col.bytes[i] > 2000).sort((a, b) => col.digits[b] - col.digits[a]).slice(0, 10);
-  $("digit-table").innerHTML = `<tr><th>Module</th><th>Directory label</th><th class="num">Digits</th><th class="num">Size</th></tr>`
-    + digitTop.map((i) => `<tr><td><button class="link" data-open="${i}">${esc(pathOf(i))}</button></td><td>${esc(labelOf(i))}</td><td class="num">${col.digits[i]}%</td><td class="num">${bytesFmt(col.bytes[i])}</td></tr>`).join("");
+  $("digit-table").innerHTML = `<tr><th>Module</th><th>Directory label</th><th class="num">Digit characters</th><th class="num">Numeric literals</th><th class="num">Size</th></tr>`
+    + digitTop.map((i) => `<tr><td><button class="link" data-open="${i}">${esc(pathOf(i))}</button></td><td>${esc(labelOf(i))}</td><td class="num">${col.digits[i]}%</td><td class="num">${fmt(col.literals[i])}</td><td class="num">${bytesFmt(col.bytes[i])}</td></tr>`).join("");
 }

@@ -110,7 +110,9 @@ def main():
 
     # ---- labels (written by the labelling agents, one entry per directory group)
     labels = {}
-    for path in sorted(glob.glob(os.path.join(labels_dir, "batch_*.json"))):
+    # batch_*.json label directories three levels deep; sub_*.json label the larger
+    # subdirectories of oversized ones, from a sample of their modules
+    for path in sorted(glob.glob(os.path.join(labels_dir, "batch_*.json")) + glob.glob(os.path.join(labels_dir, "sub_*.json"))):
         try:
             for entry in json.load(open(path)):
                 labels[entry["id"]] = entry
@@ -121,7 +123,10 @@ def main():
     field_col = array("B")
     group_col = array("H")
     for r in rows:
-        g = "/".join(r["p"].split("/")[:-1][:3]) or "(root)"
+        parts = r["p"].split("/")[:-1]
+        g = "/".join(parts[:4])
+        if len(parts) < 4 or g not in labels:
+            g = "/".join(parts[:3]) or "(root)"
         if g not in group_index:
             lab = labels.get(g, {})
             field = lab.get("field") if lab.get("field") in field_ids else "unknown"
@@ -140,6 +145,7 @@ def main():
                 "objects": lab.get("objects") or [],
                 "gloss": lab.get("gloss") or "",
                 "confidence": lab.get("confidence") or "",
+                "sampled": lab.get("sampled") or 0,
             })
         gi = group_index[g]
         group_col.append(gi)
@@ -250,9 +256,12 @@ def main():
                     f["k:" + scan_fields[j]] += 1 + math.log(c)
             return f
 
-        train_key = json.load(open(train_key_path))
+        train_key, train_files = {}, []
+        for folder in sorted(glob.glob(os.path.join(base, "train*"))):
+            train_key.update(json.load(open(os.path.join(folder, "key.json"))))
+            train_files += sorted(glob.glob(os.path.join(folder, "batch_*.json")))
         class_n, feat_n, total_n, vocab = Counter(), defaultdict(Counter), Counter(), set()
-        for path in sorted(glob.glob(os.path.join(base, "train", "batch_*.json"))):
+        for path in train_files:
             for entry in json.load(open(path)):
                 i = index.get(train_key.get(entry.get("id"), ""))
                 label = entry.get("field")
@@ -369,6 +378,9 @@ def main():
         ("repeat", "B", [255 if r["zd"] < 0 else max(0, min(100, round(100 - 100 * r["zd"] / max(r["z"], 1)))) for r in rows]),
         # build time in tenths of a second (0 = not measured)
         ("build", "H", [min(65535, max(1, round(build_seconds[r["p"]] * 10))) if r["p"] in build_seconds else 0 for r in rows]),
+        # numeric literals: how many, and how many per 100 lines
+        ("literals", "H", [min(65535, r["nl"]) for r in rows]),
+        ("literalRate", "B", [min(255, round(100 * r["nl"] / max(r["l"], 1))) for r in rows]),
         ("digits", "B", [min(100, round(100 * r["dg"] / max(r["b"], 1))) for r in rows]),
     ]
     layout, offset = [], 0
@@ -439,6 +451,9 @@ def main():
             "importEdges": sum(len(a) for a in adj),
             "wholeMathlibImports": sum("Mathlib" in r["i"] for r in rows),
             "longestChain": len(chain),
+            "literals": sum(r["nl"] for r in rows),
+            "longLiterals": sum(r["ln"] for r in rows),
+            "modulesWithLongLiterals": sum(1 for r in rows if r["ln"]),
             "buildSeconds": round(sum(build_seconds.values())),
             "buildMeasured": len(build_seconds),
             "fieldByKeywords": by_keywords,
