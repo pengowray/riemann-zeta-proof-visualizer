@@ -188,10 +188,15 @@ export function draw() {
       const w = (x1 - x0) * k, h = (y1 - y0) * k;
       if (w < 60 || h < 15) continue;
       if (mask && !mask[i]) continue;
+      // a directory's name plate sits in the same corner as its first module's name: move the module name below it
+      const nx = x0 * k + tx + 3;
+      let ny = y0 * k + ty + 3;
+      for (const p of plates) if (nx < p[0] + p[2] && nx + 60 > p[0] && ny < p[1] + p[3] && ny + 12 > p[1]) ny = p[1] + p[3] + 2;
+      if (ny + 12 > y1 * k + ty) continue;
       ctx.save();
       ctx.beginPath(); ctx.rect(x0 * k + tx, y0 * k + ty, w - 2, h); ctx.clip();
       ctx.fillStyle = paletteInk[cidx[i]];
-      ctx.fillText(names[i], x0 * k + tx + 3, y0 * k + ty + 3);
+      ctx.fillText(names[i], nx, ny);
       ctx.restore();
     }
   }
