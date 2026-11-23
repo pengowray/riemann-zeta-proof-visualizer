@@ -69,6 +69,9 @@
   <p class="note">Terms come from Alpöge's announcement and from standard number theory. A module is counted if the term's identifier appears in its text, not counting import lines.</p>
   <label class="find">Find in module names <input id="find" type="search" placeholder="e.g. Eisenstein" autocomplete="off" spellcheck="false"></label>
   <span id="find-count" class="note"></span>
+  <h3>The same map, bent by ζ</h3>
+  <p>Here the flat map is placed on the rectangle 1.35 ≤ Re <i>s</i> ≤ 3.2, −1.7 ≤ Im <i>s</i> ≤ 1.7 of the complex plane, and each module is drawn at the point ζ(<i>s</i>). The left edge of the flat map lies nearest the pole of ζ at <i>s</i> = 1, so the modules there are stretched the most. Sizes, colours and highlights follow the map above.</p>
+  <div id="bent-wrap"><canvas id="bent" aria-label="The treemap drawn through the Riemann zeta function"></canvas><div id="bent-tip" class="maptip"></div></div>
 </section>
 
 <section id="space">
@@ -100,6 +103,9 @@
   <h2>How modules depend on each other</h2>
   <p id="imports-text"></p>
   <figure><figcaption>Imports between fields. Each row shows where that field's imports go.</figcaption><div id="matrix-chart" class="chart"></div></figure>
+  <h3>Import graph of the main directories</h3>
+  <p id="graph-text"></p>
+  <div id="graph-wrap"><div id="graph"></div><div id="graph-tip" class="maptip"></div></div>
   <h3>Longest import chain</h3>
   <p id="chain-text"></p>
   <div id="chain-strip" class="chart"></div>

@@ -2,6 +2,7 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.16/+esm";
 import { renderLean } from "./speech.js";
 import { drawZeta } from "./zeta.js";
+import { drawBent } from "./bent.js";
 
 const REPO = "https://github.com/1337isnot1337/riemann-hypothesis-solved";
 const SHA = "6193bb5ef61846c045c70c51ee05824f910d50cc";
@@ -75,7 +76,7 @@ const COLOUR_MODES = [
   { id: "repeat", label: "Repeats its neighbour", kind: "seq", values: col.repeat, scale: "linear", max: 100, missing: 255, low: "0% repeated", high: "100% repeated", noun: "repeated" },
   { id: "digits", label: "Digits", kind: "seq", values: col.digits, scale: "sqrt", low: "0% digits", high: `${d3.max(col.digits)}% digits`, noun: "digits" },
 ];
-const state = { size: SIZE_MODES[0], colour: COLOUR_MODES[0], mask: null, maskLabel: "", maskKey: "", preview: null, previewLabel: "", chain: false, hover: -1, pinned: -1 };
+const state = { size: SIZE_MODES[0], colour: COLOUR_MODES[0], mask: null, maskLabel: "", maskKey: "", preview: null, previewLabel: "", chain: false, previewChain: false, marker: -1, hover: -1, pinned: -1 };
 
 let names = null; // loaded after first paint
 const namesReady = fetch("data/names.txt").then((r) => r.text()).then((t) => { names = t.split("\n"); return names; });
@@ -255,7 +256,7 @@ function draw() {
     }
   }
 
-  if (state.chain) {
+  if (state.chain || state.previewChain) {
     // faint lines hint at the order; the dots carry the positions
     ctx.strokeStyle = ink; ctx.globalAlpha = 0.3; ctx.lineWidth = 0.7; ctx.lineJoin = "round"; ctx.beginPath();
     meta.chain.forEach((i, j) => {
@@ -275,6 +276,11 @@ function draw() {
     ctx.setLineDash([]); ctx.lineWidth = width;
     const w = Math.max((LX1[i] - LX0[i]) * k, 3), h = Math.max((LY1[i] - LY0[i]) * k, 3);
     ctx.strokeRect(LX0[i] * k + tx, LY0[i] * k + ty, w, h);
+  }
+  if (state.marker >= 0) {
+    const i = state.marker;
+    ctx.strokeStyle = ink; ctx.lineWidth = 2.5; ctx.beginPath();
+    ctx.arc(((LX0[i] + LX1[i]) / 2) * k + tx, ((LY0[i] + LY1[i]) / 2) * k + ty, 9, 0, 7); ctx.stroke();
   }
   $("reset-zoom").hidden = k < 1.02;
   drawMinimapOverlay();
@@ -316,6 +322,18 @@ function drawMinimapOverlay() {
   if (mini.width !== miniBase.width) { mini.width = miniBase.width; mini.height = miniBase.height; }
   miniCtx.setTransform(1, 0, 0, 1, 0, 0);
   miniCtx.drawImage(miniBase, 0, 0);
+  const mx = (200 / W) * dpr, my = (125 / H) * dpr, inkNow = cssVar("--ink");
+  const centre = (i) => [((LX0[i] + LX1[i]) / 2) * mx, ((LY0[i] + LY1[i]) / 2) * my];
+  if (state.chain || state.previewChain) {
+    miniCtx.strokeStyle = inkNow; miniCtx.globalAlpha = 0.35; miniCtx.lineWidth = 0.6 * dpr; miniCtx.beginPath();
+    meta.chain.forEach((i, j) => { const [x, y] = centre(i); j ? miniCtx.lineTo(x, y) : miniCtx.moveTo(x, y); });
+    miniCtx.stroke(); miniCtx.globalAlpha = 1; miniCtx.fillStyle = inkNow;
+    for (const i of meta.chain) { const [x, y] = centre(i); miniCtx.beginPath(); miniCtx.arc(x, y, 1.3 * dpr, 0, 7); miniCtx.fill(); }
+  }
+  if (state.marker >= 0) {
+    const [x, y] = centre(state.marker);
+    miniCtx.strokeStyle = inkNow; miniCtx.lineWidth = 2 * dpr; miniCtx.beginPath(); miniCtx.arc(x, y, 5 * dpr, 0, 7); miniCtx.stroke();
+  }
   if (transform.k > 1.02) {
     const sx = (200 / W) * dpr, sy = (125 / H) * dpr, { k, x, y } = transform;
     miniCtx.strokeStyle = cssVar("--ink"); miniCtx.lineWidth = 1.5 * dpr;
@@ -323,7 +341,30 @@ function drawMinimapOverlay() {
   }
 }
 let miniTimer = 0;
-const refreshMini = () => { clearTimeout(miniTimer); miniTimer = setTimeout(drawMinimapBase, 30); };
+const refreshMini = () => { clearTimeout(miniTimer); miniTimer = setTimeout(() => { drawMinimapBase(); refreshBent(); }, 30); };
+
+// ---------------------------------------------------------------- the map bent by ζ
+const bent = $("bent"), bentTip = $("bent-tip");
+let bentVisible = false, bentStale = true, bentPick = null;
+function refreshBent() {
+  bentStale = true;
+  if (!bentVisible || !W) return;
+  bentStale = false;
+  bentPick = drawBent(bent, { W, H, LX0, LY0, LX1, LY1, cidx, palette, mask: activeMask(), background: d3.rgb(cssVar("--paper")).formatHex(), n: N });
+}
+new IntersectionObserver((entries) => { bentVisible = entries[0].isIntersecting; if (bentVisible && bentStale) refreshBent(); }, { rootMargin: "300px" }).observe(bent);
+const bentLeaf = (e) => { const r = bent.getBoundingClientRect(); return bentPick ? bentPick(e.clientX - r.left, e.clientY - r.top) : -1; };
+bent.addEventListener("pointermove", (e) => {
+  const i = bentLeaf(e);
+  if (i < 0) { bentTip.style.display = "none"; return; }
+  const r = bent.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top;
+  bentTip.innerHTML = tipHtml({ leaf: i, dir: dirs[leafDir[i]] });
+  bentTip.style.display = "block";
+  bentTip.style.left = Math.max(0, Math.min(px + 14, r.width - bentTip.offsetWidth)) + "px";
+  bentTip.style.top = (py + 18 + bentTip.offsetHeight > r.height ? Math.max(0, py - bentTip.offsetHeight - 10) : py + 18) + "px";
+});
+bent.addEventListener("pointerleave", () => { bentTip.style.display = "none"; });
+bent.addEventListener("click", (e) => { const i = bentLeaf(e); if (i >= 0) openModule(i); });
 
 // ---------------------------------------------------------------- highlight masks
 function countMask(mask) { let n = 0; for (let i = 0; i < N; i++) n += mask[i]; return n; }
@@ -336,7 +377,12 @@ function setMask(key, mask, label, chain = false) {
   document.querySelectorAll("[data-mask-key]").forEach((el) => el.setAttribute("aria-pressed", String(el.dataset.maskKey === state.maskKey)));
   requestDraw(); refreshMini();
 }
-function setPreview(mask, label) { state.preview = mask; state.previewLabel = mask ? label : ""; requestDraw(); refreshMini(); }
+function setPreview(mask, label, { chain = false, marker = -1 } = {}) {
+  const maskChanged = mask !== state.preview;
+  state.preview = mask; state.previewLabel = mask ? label : ""; state.previewChain = chain; state.marker = marker;
+  requestDraw();
+  if (maskChanged) refreshMini(); else { drawMinimapOverlay(); $("rail-note").textContent = state.previewLabel || state.maskLabel || $("rail-note").textContent; }
+}
 $("highlight-clear").onclick = () => setMask("", null);
 
 // ---------------------------------------------------------------- controls and legend
@@ -468,7 +514,7 @@ const drawer = $("drawer"), drawerBody = $("drawer-body");
 function closeDrawer() { drawer.hidden = true; state.pinned = -1; requestDraw(); }
 $("drawer-close").onclick = closeDrawer;
 addEventListener("keydown", (e) => { if (e.key === "Escape" && !drawer.hidden) closeDrawer(); });
-addEventListener("pointerdown", (e) => { if (!drawer.hidden && !drawer.contains(e.target) && e.target !== canvas && !e.target.closest("button.link")) closeDrawer(); });
+addEventListener("pointerdown", (e) => { if (!drawer.hidden && !drawer.contains(e.target) && e.target !== canvas && e.target !== bent && !e.target.closest("#graph") && !e.target.closest("button.link")) closeDrawer(); });
 
 function groupBlock(g) {
   return `<p><b>${esc(g.label)}.</b> ${esc(g.gloss)}</p>` + (g.objects.length ? `<p class="note">Named in this directory's label: ${g.objects.map(esc).join(", ")}.</p>` : "");
@@ -489,6 +535,8 @@ async function openModule(i) {
       ${col.repeat[i] !== 255 ? `<dt>Repetition</dt><dd>${col.repeat[i]}% repeats the module before it in this directory</dd>` : ""}
     </dl>
     ${hasLabel(i) ? groupBlock(g) : ""}
+    <div id="drawer-outline"></div>
+    <h3>Source</h3>
     <pre class="lean" id="drawer-code">Loading the module from GitHub…</pre>
     <p class="spoken" id="drawer-spoken">Point at a line to read it aloud in words.</p>`;
   try {
@@ -496,6 +544,7 @@ async function openModule(i) {
     if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
     let text = await res.text();
     if (state.pinned !== i) return;
+    $("drawer-outline").innerHTML = outlineHtml(text);
     const limit = 60000;
     const cut = text.length > limit;
     if (cut) text = text.slice(0, text.lastIndexOf("\n", limit));
@@ -505,6 +554,46 @@ async function openModule(i) {
     if (state.pinned === i) $("drawer-code").textContent = `Couldn't load the module: ${err.message}. Open it on GitHub with the link above.`;
   }
 }
+// Module name such as "Formalism.VW.CritLine" -> file index, built on first use.
+let moduleIndex = null;
+function moduleLookup(name) {
+  if (!moduleIndex) {
+    moduleIndex = new Map();
+    const prefix = dirs.map((d) => (d.path ? d.path.replaceAll("/", ".") + "." : ""));
+    for (let i = 0; i < N; i++) moduleIndex.set(prefix[leafDir[i]] + names[i], i);
+  }
+  return moduleIndex.get(name);
+}
+const DECL_RE = /^[ \t]*(?:@\[[^\]\n]*\]\s*)*(?:(?:private|protected|noncomputable|nonrec|scoped|local)\s+)*(theorem|lemma|def|abbrev|instance|structure|class|inductive)\s+([^\s:({\[]*)/gm;
+const SHOWN = 12; // rows shown before "Show all"
+function foldedList(items, noun) {
+  if (items.length <= SHOWN) return items.join("");
+  return items.slice(0, SHOWN).join("") + `<div class="more" hidden>${items.slice(SHOWN).join("")}</div><button type="button" class="link show-all">Show all ${fmt(items.length)} ${noun}</button>`;
+}
+/** Declarations and imports of a module, read from its source text. */
+function outlineHtml(text) {
+  const decls = [];
+  let m;
+  DECL_RE.lastIndex = 0;
+  while ((m = DECL_RE.exec(text))) {
+    const rest = text.slice(m.index, m.index + 1500);
+    const end = rest.search(/:=|\bwhere\b|\n\s*\|/);
+    const statement = (end > 0 ? rest.slice(0, end) : rest.slice(0, 400)).trim();
+    decls.push(`<div class="decl"><span class="decl-kind">${m[1]}</span> <b>${esc(m[2] || "(unnamed)")}</b><pre class="lean">${renderLean(statement.length > 900 ? statement.slice(0, 900) + " …" : statement)}</pre></div>`);
+  }
+  const imports = [...text.matchAll(/^import[ \t]+(\S+)/gm)].map((x) => x[1]);
+  const importRows = imports.map((name) => {
+    const i = moduleLookup(name);
+    return i === undefined ? `<div class="mono">${esc(name)}</div>` : `<div><button class="link" data-open="${i}">${esc(name)}</button></div>`;
+  });
+  return `<h3>${plural(decls.length, "declaration")} in this module</h3>${decls.length ? foldedList(decls, "declarations") : '<p class="note">This module declares nothing of its own.</p>'}
+    <h3>Imports ${plural(imports.length, "module")}</h3><div class="import-list">${foldedList(importRows, "imports")}</div>`;
+}
+document.addEventListener("click", (e) => {
+  const b = e.target.closest(".show-all");
+  if (b) { b.previousElementSibling.hidden = false; b.remove(); }
+});
+
 async function openDirectory(d) {
   await namesReady;
   state.pinned = -1;
@@ -530,8 +619,9 @@ const codetip = $("codetip");
 document.addEventListener("pointermove", (e) => {
   const tk = e.target.closest?.(".tk[data-tip]"), ln = e.target.closest?.("pre.lean .ln");
   if (ln && ln.closest("#drawer")) $("drawer-spoken").textContent = ln.dataset.say ? `Read aloud: ${ln.dataset.say}` : "";
-  if (!tk && !(ln && !ln.closest("#drawer") && ln.dataset.say)) { codetip.hidden = true; return; }
-  codetip.innerHTML = (tk ? esc(tk.dataset.tip) : "") + (ln && !ln.closest("#drawer") && ln.dataset.say ? `<span class="say">Read aloud: ${esc(ln.dataset.say)}</span>` : "");
+  const cell = e.target.closest?.("[data-chain]");
+  if (!cell && !tk && !(ln && !ln.closest("#drawer") && ln.dataset.say)) { codetip.hidden = true; return; }
+  codetip.innerHTML = cell ? chainTip(+cell.dataset.chain) : (tk ? esc(tk.dataset.tip) : "") + (ln && !ln.closest("#drawer") && ln.dataset.say ? `<span class="say">Read aloud: ${esc(ln.dataset.say)}</span>` : "");
   codetip.hidden = false;
   codetip.style.left = Math.min(e.clientX + 14, innerWidth - codetip.offsetWidth - 8) + "px";
   codetip.style.top = (e.clientY + 20 + codetip.offsetHeight > innerHeight ? e.clientY - codetip.offsetHeight - 10 : e.clientY + 20) + "px";
@@ -553,6 +643,7 @@ recolour();
 resize();
 renderLegend();
 new ResizeObserver(() => resize()).observe(canvas);
+new ResizeObserver(() => refreshBent()).observe(bent);
 darkQuery.addEventListener("change", () => { recolour(); renderLegend(); requestDraw(); refreshMini(); renderCharts(); });
 namesReady.then(() => { requestDraw(); renderNameTables(); });
 
@@ -672,9 +763,9 @@ function renderCharts() {
   const objects = meta.fields.map(() => new Map());
   meta.groups.forEach((g, gi) => { for (const o of g.objects) objects[g.field].set(o, (objects[g.field].get(o) || 0) + 1); });
   const maxLines = d3.max(fieldTotals, (t) => t.lines);
-  $("field-table").innerHTML = `<tr><th>Field</th><th class="num">Modules</th><th>Lines</th><th>Objects and theorems named in directory labels</th></tr>`
+  $("field-table").innerHTML = `<tr><th>Field</th><th class="num">Modules</th><th class="num" title="Share of ${fmt(meta.totals.truth.n)} randomly chosen modules that a language model assigned to this field after reading them">In a sample of ${fmt(meta.totals.truth.n)}</th><th>Lines</th><th>Objects and theorems named in directory labels</th></tr>`
     + meta.fields.map((f, fi) => ({ f, fi, t: fieldTotals[fi] })).filter((r) => r.t.modules).sort((a, b) => b.t.lines - a.t.lines).map(({ f, fi, t }) =>
-      `<tr class="hoverable" data-preview-field="${fi}"><td style="white-space:nowrap"><span class="sw" style="background:${famColour(fieldFamily[fi])}"></span>${esc(f.name)}</td><td class="num">${fmt(t.modules)}</td>
+      `<tr class="hoverable" data-preview-field="${fi}"><td style="white-space:nowrap"><span class="sw" style="background:${famColour(fieldFamily[fi])}"></span>${esc(f.name)}</td><td class="num">${pct(t.modules / N)}</td><td class="num">${pct(meta.totals.truthCounts[fi] / meta.totals.truth.n)}</td>
        <td style="white-space:nowrap"><span class="bar" style="width:${(150 * t.lines) / maxLines}px;background:${famColour(fieldFamily[fi])}"></span>${fmt(t.lines)}</td>
        <td class="objects">${[...objects[fi]].sort((a, b) => b[1] - a[1]).slice(0, 14).map(([o]) => esc(o)).join(" · ")}</td></tr>`).join("");
 
@@ -698,14 +789,10 @@ function renderCharts() {
 
   // --- longest chain
   const chainRows = meta.chain.map((i, j) => ({ j: j + 1, i, family: FAMILIES[famOf(i)].name }));
-  $("chain-text").innerHTML = `The longest chain of imports is ${meta.chain.length} modules: each module in it imports the one before. It ends at Main.lean. Each cell below is one module in the chain, coloured by field. <button type="button" class="link" id="chain-show" data-mask-key="chain" aria-pressed="false">Draw the chain on the map</button>`;
+  $("chain-text").innerHTML = `The longest chain of imports is ${meta.chain.length} modules: each module in it imports the one before. It ends at Main.lean. Each cell below is one module in the chain, coloured by field. Point at a cell to see where that module is on the map, and click it to read it. <button type="button" class="link" id="chain-show" data-mask-key="chain" aria-pressed="false">Draw the chain on the map</button>`;
   $("chain-show").onclick = () => { const m = new Uint8Array(N); for (const i of meta.chain) m[i] = 1; setMask("chain", m, `the longest import chain, ${meta.chain.length} modules`, true); $("map").scrollIntoView(); };
-  mount("chain-strip", Plot.plot({
-    style: plotStyle(), width: 1000, height: 70, marginLeft: 10, marginRight: 10, padding: 0.1,
-    x: { label: "Position in the chain (1 imports no project module; 203 is Main.lean)", ticks: [1, 50, 100, 150, 203] }, y: { axis: null },
-    color: { domain: FAMILIES.map((f) => f.name), range: FAMILIES.map((_, g) => famColour(g)) },
-    marks: [Plot.cell(chainRows, { x: "j", fill: "family", tip: tipOpts, title: (d) => `${d.j}. ${names ? pathOf(d.i) : ""}\n${d.family}` })],
-  }));
+  $("chain-strip").innerHTML = `<div class="chain-cells">${chainRows.map((d) => `<button type="button" class="chain-cell" data-chain="${d.j}" data-open="${d.i}" style="background:${famColour(famOf(d.i))}" aria-label="Module ${d.j} of ${chainRows.length} in the chain"></button>`).join("")}</div>
+    <div class="chain-axis"><span>1: imports no project module</span><span>${chainRows.length}: Main.lean</span></div>`;
 
   // --- numbers and tactics
   const tactics = meta.tactics.filter((t) => t[0] !== "sorry").slice(0, 24).map(([name, n]) => ({ name, n }));
@@ -720,6 +807,80 @@ function renderCharts() {
   document.querySelectorAll("#tactic-chart [aria-label='y-axis tick label'] text").forEach((t) => { t.style.fontFamily = cssVar("--mono"); });
 }
 
+// ---------------------------------------------------------------- import graph of regions
+async function renderGraph() {
+  const [{ default: cytoscape }, { default: fcose }] = await Promise.all([
+    import("https://cdn.jsdelivr.net/npm/cytoscape@3.30.2/+esm"),
+    import("https://cdn.jsdelivr.net/npm/cytoscape-fcose@2.2.0/+esm"),
+  ]);
+  cytoscape.use(fcose);
+  const SPLIT = new Set(["Development", "GroundTheory", "CompanionTheory"]);
+  const regionIdx = new Map(meta.regions.map((r, i) => [r, i]));
+  const regionOfDir = dirs.map((d) => {
+    const parts = d.path ? d.path.split("/") : [];
+    if (!parts.length) return regionIdx.get("(top level)");
+    return regionIdx.get(SPLIT.has(parts[0]) && parts.length > 1 ? parts[0] + "/" + parts[1] : parts[0]);
+  });
+  const R = meta.regions.length;
+  const stats = Array.from({ length: R }, () => ({ modules: 0, bytes: 0, fam: new Float64Array(FAMILIES.length), first: N, last: 0 }));
+  for (let i = 0; i < N; i++) {
+    const st = stats[regionOfDir[leafDir[i]]];
+    st.modules++; st.bytes += col.bytes[i]; st.fam[moduleFamily(i)] += col.bytes[i];
+    if (i < st.first) st.first = i; if (i > st.last) st.last = i;
+  }
+  const M = meta.regionMatrix;
+  const shown = d3.range(R).filter((r) => stats[r].modules >= 5);
+  const elements = shown.map((r) => ({ data: { id: "r" + r, r, label: meta.regions[r].split("/").pop().replace(/([a-z])([A-Z])/g, "$1 $2"), size: 18 + Math.sqrt(stats[r].bytes / 1e6) * 7, colour: famColour(d3.maxIndex(stats[r].fam)) } }));
+  let drawn = 0, crossTotal = 0;
+  for (const a of shown) {
+    const out = d3.sum(shown, (b) => (b === a ? 0 : M[a][b]));
+    for (const b of shown) {
+      if (a === b) continue;
+      crossTotal += M[a][b];
+      // keep an edge when it carries at least 4% of the importing directory's outside imports
+      if (M[a][b] >= 20 && M[a][b] >= 0.04 * out) { elements.push({ data: { id: `e${a}_${b}`, source: "r" + a, target: "r" + b, n: M[a][b], w: 0.6 + Math.log10(M[a][b]) * 1.1 } }); drawn += M[a][b]; }
+    }
+  }
+  $("graph-text").textContent = `Each circle is a directory, sized by its bytes and coloured by its most common field. An arrow from A to B means modules in A import modules in B. The ${fmt(elements.length - shown.length)} arrows drawn carry ${pct(drawn / crossTotal)} of the imports between these directories; weaker links are left out. Point at a circle to see that directory on the map. Circles can be dragged.`;
+  const ink = cssVar("--ink"), ink3 = cssVar("--ink-3");
+  const cy = cytoscape({
+    container: $("graph"), elements,
+    userZoomingEnabled: false, userPanningEnabled: false, boxSelectionEnabled: false, // the page keeps the scroll wheel
+    style: [
+      { selector: "node", style: { width: "data(size)", height: "data(size)", "background-color": "data(colour)", label: "data(label)", color: ink, "font-family": "STIX Two Text, serif", "font-size": 12, "text-valign": "bottom", "text-margin-y": 3, "text-wrap": "wrap", "text-max-width": 110, "text-background-color": cssVar("--paper-2"), "text-background-opacity": 0.8, "text-background-padding": 1 } },
+      { selector: "edge", style: { width: "data(w)", "line-color": ink3, "target-arrow-color": ink3, "target-arrow-shape": "triangle", "arrow-scale": 0.8, "curve-style": "bezier", opacity: 0.45 } },
+      { selector: ".dim", style: { opacity: 0.08 } },
+      { selector: "edge.lit", style: { opacity: 1, "line-color": ink, "target-arrow-color": ink } },
+    ],
+    layout: { name: "fcose", animate: false, randomize: true, quality: "proof", nodeSeparation: 110, idealEdgeLength: 130, nodeRepulsion: 30000, padding: 24, nodeDimensionsIncludeLabels: true },
+  });
+  const tipEl = $("graph-tip");
+  const showTip = (html, pos) => {
+    tipEl.innerHTML = html; tipEl.style.display = "block";
+    const box = $("graph").getBoundingClientRect();
+    tipEl.style.left = Math.max(0, Math.min(pos.x + 14, box.width - tipEl.offsetWidth)) + "px";
+    tipEl.style.top = Math.max(0, Math.min(pos.y + 16, box.height - tipEl.offsetHeight)) + "px";
+  };
+  cy.on("mouseover", "node", (e) => {
+    const r = e.target.data("r"), st = stats[r];
+    cy.elements().addClass("dim"); e.target.closedNeighborhood().removeClass("dim"); e.target.connectedEdges().addClass("lit");
+    const top = shown.filter((b) => b !== r && M[r][b]).sort((a, b) => M[r][b] - M[r][a]).slice(0, 3);
+    showTip(`<b>${esc(meta.regions[r])}</b><br>${plural(st.modules, "module")} · ${bytesFmt(st.bytes)}<br>${pct(M[r][r] / d3.sum(M[r]))} of its imports stay inside it`
+      + (top.length ? `<br>Imports most from: ${top.map((b) => `${esc(meta.regions[b].split("/").pop())} (${fmt(M[r][b])})`).join(", ")}` : ""), e.renderedPosition);
+    setPreview(maskWhere((i) => regionOfDir[leafDir[i]] === r), meta.regions[r]);
+  });
+  cy.on("mouseover", "edge", (e) => {
+    const [a, b] = [e.target.source().data("r"), e.target.target().data("r")];
+    e.target.addClass("lit");
+    showTip(`<b>${esc(meta.regions[a])}</b> imports <b>${esc(meta.regions[b])}</b><br>${fmt(e.target.data("n"))} imports` + (M[b][a] ? `<br>${fmt(M[b][a])} imports in the other direction` : ""), e.renderedPosition);
+  });
+  cy.on("mouseout", "node, edge", () => { cy.elements().removeClass("dim lit"); tipEl.style.display = "none"; if (state.preview) setPreview(null); });
+}
+let graphStarted = false;
+new IntersectionObserver((entries) => {
+  if (entries[0].isIntersecting && !graphStarted) { graphStarted = true; renderGraph().catch((err) => { $("graph-text").textContent = `Couldn't draw the import graph: ${err.message}`; }); }
+}, { rootMargin: "400px" }).observe($("graph"));
+
 function renderNameTables() {
   const hubs = d3.range(N).sort((a, b) => col.dependents[b] - col.dependents[a]).slice(0, 12);
   $("hub-table").innerHTML = `<tr><th>Module</th><th>Directory label</th><th class="num">Modules that depend on it</th><th class="num">Import it directly</th></tr>`
@@ -729,10 +890,25 @@ function renderNameTables() {
     + digitTop.map((i) => `<tr><td><button class="link" data-open="${i}">${esc(pathOf(i))}</button></td><td>${esc(labelOf(i))}</td><td class="num">${col.digits[i]}%</td><td class="num">${bytesFmt(col.bytes[i])}</td></tr>`).join("");
 }
 renderCharts();
-$("agree-note").textContent = `The field of a module is a keyword estimate. In directories of at most 400 modules that were labelled with high confidence, it falls in the same colour family as the directory's label for ${pct(meta.totals.fieldAgree / meta.totals.fieldJudged)} of modules (${fmt(meta.totals.fieldAgree)} of ${fmt(meta.totals.fieldJudged)}). The map can be coloured by either.`;
+const truth = meta.totals.truth;
+$("agree-note").textContent = `The field of a module is a keyword estimate, and a rough one. A language model read ${fmt(truth.n)} randomly chosen modules and named each one's field. The keyword estimate gave the same field for ${pct(truth.exact / truth.n)} of them and a field of the same colour family for ${pct(truth.family / truth.n)} (${pct(truth.familyOrSecond / truth.n)} when the model's second choice also counts). The directory labels did worse: ${pct(truth.dirFamily / truth.n)} in the same family. Adjusting the keyword weights on half of the sample did not improve the other half.`;
+
+const chainMask = new Uint8Array(N);
+for (const i of meta.chain) chainMask[i] = 1;
+const chainLabel = `The longest import chain, ${meta.chain.length} modules`;
+function chainTip(j) {
+  const i = meta.chain[j - 1];
+  return `${j} of ${meta.chain.length}\n${esc(pathOf(i))}<span class="say">${esc(labelOf(i))} · ${esc(meta.fields[col.field[i]].name)}</span>`;
+}
 
 // rows that preview a highlight on the map while the pointer is over them
 document.addEventListener("pointerover", (e) => {
+  const cell = e.target.closest?.("[data-chain]");
+  if (cell || e.target.closest?.("#chain-show, #chain-strip")) {
+    const j = cell ? +cell.dataset.chain : 0;
+    setPreview(chainMask, cell ? `Module ${j} of ${meta.chain.length} in the longest import chain` : chainLabel, { chain: true, marker: cell ? meta.chain[j - 1] : -1 });
+    return;
+  }
   const row = e.target.closest?.("[data-preview-field],[data-preview-dir]");
   if (!row) { if (state.preview) setPreview(null); return; }
   if (row.dataset.previewField !== undefined) {

@@ -215,6 +215,30 @@ def main():
         if adj[i]:
             bits[i] = acc
 
+    # ---- check against a random sample of modules whose field a language model judged
+    # from the module text (data/truth). Reported on the page as the estimate's accuracy.
+    family = {f[0]: f[2] for f in FIELDS}
+    family.update({"combinatorics": "algebra", "computation": "algebra"})
+    truth_stats = {"n": 0, "exact": 0, "family": 0, "familyOrSecond": 0, "dirExact": 0, "dirFamily": 0}
+    truth_counts = [0] * len(FIELDS)
+    key_path = os.path.join(os.path.dirname(labels_dir.rstrip("/")), "truth", "key.json")
+    if os.path.exists(key_path):
+        key = json.load(open(key_path))
+        for path in sorted(glob.glob(os.path.join(os.path.dirname(key_path), "batch_*.json"))):
+            for entry in json.load(open(path)):
+                i = index.get(key.get(entry["id"], ""))
+                if i is None or entry.get("field") not in family:
+                    continue
+                truth_counts[field_ids.index(entry["field"])] += 1
+                mine, theirs = field_ids[field_col[i]], field_ids[group_list[group_col[i]]["field"]]
+                truth_stats["n"] += 1
+                truth_stats["exact"] += mine == entry["field"]
+                truth_stats["family"] += family[mine] == family[entry["field"]]
+                truth_stats["familyOrSecond"] += family[mine] in (family[entry["field"]], family.get(entry.get("second")))
+                truth_stats["dirExact"] += theirs == entry["field"]
+                truth_stats["dirFamily"] += family[theirs] == family[entry["field"]]
+        print("sample check:", truth_stats)
+
     regions, region_index = [], {}
     for r in rows:
         reg = region_of(r["p"])
@@ -285,8 +309,6 @@ def main():
 
     # ---- how often the keyword field agrees with the directory label, measured on
     # directories of at most 400 modules that the labelling model marked high confidence
-    family = {f[0]: f[2] for f in FIELDS}
-    family.update({"combinatorics": "algebra", "computation": "algebra", "theta": "theta"})
     group_size = Counter(group_col)
     agree = judged = 0
     for i in range(n):
@@ -327,6 +349,8 @@ def main():
             "fieldByKeywords": by_keywords,
             "fieldAgree": agree,
             "fieldJudged": judged,
+            "truth": truth_stats,
+            "truthCounts": truth_counts,
             "labelledGroups": sum(1 for g in group_list if g["confidence"]),
         },
     }

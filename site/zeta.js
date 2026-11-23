@@ -12,22 +12,23 @@ const D = (() => {
   return d;
 })();
 
-/** ζ(1/2 + it) as [re, im], by Borwein's method for the Dirichlet eta function. */
-export function zetaHalf(t) {
+/** ζ(σ + it) as [re, im], by Borwein's method for the Dirichlet eta function (σ > 0, s ≠ 1). */
+export function zeta(sigma, t) {
   let re = 0, im = 0;
   for (let k = 0; k < N; k++) {
-    const c = ((k & 1 ? -1 : 1) * (D[k] - D[N])) / Math.sqrt(k + 1);
+    const c = ((k & 1 ? -1 : 1) * (D[k] - D[N])) * Math.pow(k + 1, -sigma);
     const a = -t * Math.log(k + 1);
     re += c * Math.cos(a);
     im += c * Math.sin(a);
   }
   // divide by -d_N (1 - 2^(1-s))
-  const a = -t * Math.LN2;
-  const qr = -D[N] * (1 - Math.SQRT2 * Math.cos(a));
-  const qi = D[N] * Math.SQRT2 * Math.sin(a);
+  const a = -t * Math.LN2, r = Math.pow(2, 1 - sigma);
+  const qr = -D[N] * (1 - r * Math.cos(a));
+  const qi = D[N] * r * Math.sin(a);
   const q = qr * qr + qi * qi;
   return [(re * qr + im * qi) / q, (im * qr - re * qi) / q];
 }
+export const zetaHalf = (t) => zeta(0.5, t);
 
 export function drawZeta(canvas, tMax, onFrame) {
   const step = 0.01;
