@@ -22,6 +22,21 @@ python3 -I tools/build_data.py data/cache data/labels site/data /path/to/extract
 ```
 
 - `tools/scan.py` reads every `.lean` file once and writes one row per file to `data/cache/` (not committed).
-- `data/labels/` holds the topic labels for 746 directories. A language model wrote them from
-  digests of each directory's identifiers; `data/labels/PROMPT.md` is the instruction it was given.
+  The search terms and the keyword patterns for fields are in `tools/patterns.json`.
+- `data/labels/` holds topic labels for 746 directories, written by a language model from
+  digests of each directory's identifiers (`data/labels/PROMPT.md` is its instruction).
+- `data/train/` and `data/truth/` hold the field a language model gave to about 1,300 sampled
+  modules. The builder trains a naive Bayes classifier on `train` and measures it on `truth`.
+- `data/external/` holds per-module build times from an independent rebuild (see its README).
 - `tools/build_data.py` computes the import graph and writes the compact files the page loads.
+
+## Page code
+
+`site/app.js` is the entry point. `data.js` loads the data and holds shared state, `map.js`
+draws the treemap and sidebar map, `drawer.js` shows a module's details and code,
+`charts.js` and `graph.js` draw the sections below the map, `speech.js` reads Lean notation
+aloud, `zeta.js` and `bent.js` evaluate the zeta function. Content that is not code lives in
+`site/data/steps.json` (proof steps) and `site/data/checks.json` (independent checks).
+
+The Lean archive declares no licence, so this repository stores no Lean source. The page
+loads code from a public mirror when a module is opened.

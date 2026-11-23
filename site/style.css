@@ -154,7 +154,9 @@ figure { margin: 12px 0; }
   table.data button.link { overflow-wrap: normal; white-space: nowrap; }
   /* charts keep a readable size and scroll sideways inside their box */
   .chart svg { max-width: none !important; }
-  #graph { height: 130vw; max-height: 85vh; }
+  /* the graph keeps a width at which its labels do not collide, and scrolls sideways */
+  #graph-wrap { overflow-x: auto; }
+  #graph { min-width: 760px; height: 620px; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 

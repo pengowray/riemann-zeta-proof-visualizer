@@ -69,7 +69,7 @@ Promise.all([fetch("data/steps.json").then((r) => r.json()), namesReady]).then((
 // table of independent checks; the cells hold trusted HTML written for this page
 fetch("data/checks.json").then((r) => r.json()).then((data) => {
   $("checks-table").innerHTML = `<tr><th>Who</th><th>What was run</th><th>Reported result</th></tr>`
-    + data.checks.map((c) => `<tr><td><a href="${c.url}">${c.who}</a>${c.detail ? ", " + c.detail : ""}</td><td>${c.ran}</td><td>${c.result}</td></tr>`).join("");
+    + data.checks.map((c) => `<tr><td><a href="${c.url}">${c.who}</a>${c.detail ? (c.detail.startsWith("(") ? " " : ", ") + c.detail : ""}</td><td>${c.ran}</td><td>${c.result}</td></tr>`).join("");
 });
 
 // Numbers section: switch the map to the digit colouring

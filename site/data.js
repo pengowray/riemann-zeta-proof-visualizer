@@ -73,7 +73,7 @@ export const COLOUR_MODES = [
   { id: "dependents", label: "Dependents", kind: "seq", values: col.dependents, scale: "log", low: "no module depends on it", high: `${fmt(d3.max(col.dependents))} modules depend on it`, noun: "dependents" },
   { id: "repeat", label: "Repeats its neighbour", kind: "seq", values: col.repeat, scale: "linear", max: 100, missing: 255, low: "0% repeated", high: "100% repeated", noun: "repeated" },
   { id: "build", label: "Build time", kind: "seq", values: col.build, scale: "log", low: "under a second", high: `${fmt(Math.round(d3.max(col.build) / 10))} seconds`, noun: "build time" },
-  { id: "digits", label: "Digits", kind: "seq", values: col.digits, scale: "sqrt", low: "0% digits", high: `${d3.max(col.digits)}% digits`, noun: "digits" },
+  { id: "digits", label: "Digits", kind: "seq", values: col.digits, scale: "sqrt", max: 12, low: "0% digits", high: "12% digits or more", noun: "digits" }, // almost every module is under 12%, so the scale stops there
 ];
 export const state = { size: SIZE_MODES[0], colour: COLOUR_MODES[0], mask: null, maskLabel: "", maskKey: "", preview: null, previewLabel: "", chain: false, previewChain: false, marker: -1, bend: 0, hover: -1, pinned: -1 };
 
