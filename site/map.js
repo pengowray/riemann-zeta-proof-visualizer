@@ -470,6 +470,11 @@ export function moduleFacts(i) {
   const d = col.decls[i];
   return `${bytesFmt(col.bytes[i])} · ${plural(col.lines[i], "line")} · ${plural(d, "declaration")}`;
 }
+/** The module's field with the colour square of its family, and the family's name when it differs from the field's. */
+function fieldLine(i) {
+  const g = fieldFamily[col.field[i]], field = meta.fields[col.field[i]].name, family = FAMILIES[g].name;
+  return `<span class="sw" style="background:${isDark() ? FAMILIES[g].dark : FAMILIES[g].light}"></span>${esc(field)}${family === field ? "" : `<span class="family"> · ${esc(family)}</span>`}`;
+}
 export function tipHtml(hit) {
   if (hit.leaf < 0) {
     const d = hit.dir;
@@ -483,7 +488,7 @@ export function tipHtml(hit) {
   else if (mode.id === "build" || state.size.id === "build") extra = `<br>Built in ${secondsFmt(col.build[i] / 10)} in one independent rebuild`;
   else if (mode.id === "literals") extra = `<br>${plural(col.literals[i], "numeric literal")} (${col.literalRate[i]} per 100 lines)`;
   else if (mode.id === "digits") extra = `<br>${col.digits[i]}% of its characters are the digits 0–9`;
-  return `<b>${esc(labelOf(i))}</b><span class="path">${esc(pathOf(i))}</span>${moduleFacts(i)}<br>${esc(meta.fields[col.field[i]].name)}`
+  return `<b>${esc(labelOf(i))}</b><span class="path">${esc(pathOf(i))}</span>${moduleFacts(i)}<br>${fieldLine(i)}`
     + (col.kind[i] ? `<br>${kindNote[col.kind[i]]}` : "") + extra;
 }
 export const tip = $("tip");
