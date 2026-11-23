@@ -76,7 +76,7 @@ export const COLOUR_MODES = [
   { id: "literals", label: "Numeric literals", kind: "seq", values: col.literalRate, scale: "sqrt", max: 125, low: "no numeric literals", high: "125 or more per 100 lines", noun: "numeric literals" },
   { id: "digits", label: "Digit characters 0–9", kind: "seq", values: col.digits, scale: "sqrt", max: 12, low: "0% of characters are digits", high: "12% or more", noun: "digits" }, // almost every module is under 12%, so the scale stops there
 ];
-export const state = { size: SIZE_MODES[0], colour: COLOUR_MODES[0], mask: null, maskLabel: "", maskKey: "", preview: null, previewLabel: "", chain: false, previewChain: false, marker: -1, bend: 0, hover: -1, pinned: -1 };
+export const state = { size: SIZE_MODES[0], colour: COLOUR_MODES[0], mask: null, maskLabel: "", maskKey: "", preview: null, previewLabel: "", previewTint: null, chain: false, previewChain: false, marker: -1, bend: 0, hover: -1, pinned: -1 };
 
 export let names = null; // loaded after first paint
 export const namesReady = fetch("data/names.txt").then((r) => r.text()).then((t) => { names = t.split("\n"); return names; });

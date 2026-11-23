@@ -77,6 +77,8 @@ export let transform = d3.zoomIdentity;
 export let drawQueued = false;
 export function requestDraw() { if (!drawQueued) { drawQueued = true; requestAnimationFrame(() => { drawQueued = false; draw(); }); } }
 export const activeMask = () => state.preview || state.mask;
+/** Colours and per-module colour index for a drawing pass. Pass 1 draws the highlighted modules, and a preview may give them its own colours. */
+const coloursFor = (pass) => (pass === 1 && state.preview && state.previewTint ? [state.previewTint.colours, state.previewTint.index] : [palette, cidx]);
 
 export function draw() {
   const dpr = Math.min(devicePixelRatio || 1, 2);
@@ -98,8 +100,9 @@ export function draw() {
   const mask = activeMask();
   const bg = d3.rgb(paper2);
   for (let pass = 0; pass < (mask ? 2 : 1); pass++) {
-    for (let c = 0; c < palette.length; c++) {
-      let fill = palette[c];
+    const [colours, cidx] = coloursFor(pass);
+    for (let c = 0; c < colours.length; c++) {
+      let fill = colours[c];
       if (mask && pass === 0) { const f = d3.rgb(fill); fill = d3.rgb(bg.r + (f.r - bg.r) * 0.16, bg.g + (f.g - bg.g) * 0.16, bg.b + (f.b - bg.b) * 0.16).formatHex(); }
       ctx.fillStyle = fill;
       if (quads) {
@@ -253,8 +256,9 @@ export function drawMinimapBase() {
   c.fillStyle = bg.formatHex(); c.fillRect(0, 0, mw, mh);
   const sx = mw / W, sy = mh / H, mask = activeMask();
   for (let pass = 0; pass < (mask ? 2 : 1); pass++) {
-    for (let p = 0; p < palette.length; p++) {
-      let fill = palette[p];
+    const [colours, cidx] = coloursFor(pass);
+    for (let p = 0; p < colours.length; p++) {
+      let fill = colours[p];
       if (mask && pass === 0) { const f = d3.rgb(fill); fill = d3.rgb(bg.r + (f.r - bg.r) * 0.14, bg.g + (f.g - bg.g) * 0.14, bg.b + (f.b - bg.b) * 0.14).formatHex(); }
       c.fillStyle = fill;
       for (let i = 0; i < N; i++) {
@@ -369,9 +373,9 @@ export function setMask(key, mask, label, chain = false) {
   document.querySelectorAll("[data-mask-key]").forEach((el) => el.setAttribute("aria-pressed", String(el.dataset.maskKey === state.maskKey)));
   requestDraw(); refreshMini();
 }
-export function setPreview(mask, label, { chain = false, marker = -1 } = {}) {
+export function setPreview(mask, label, { chain = false, marker = -1, tint = null } = {}) {
   const maskChanged = mask !== state.preview;
-  state.preview = mask; state.previewLabel = mask ? label : ""; state.previewChain = chain; state.marker = marker;
+  state.preview = mask; state.previewTint = mask ? tint : null; state.previewLabel = mask ? label : ""; state.previewChain = chain; state.marker = marker;
   requestDraw();
   if (maskChanged) refreshMini(); else { drawMinimapOverlay(); $("rail-note").textContent = state.previewLabel || state.maskLabel || $("rail-note").textContent; }
 }

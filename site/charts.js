@@ -13,10 +13,10 @@ function previewOnHover(plot, describe) {
   plot.addEventListener("input", () => {
     const d = plot.value;
     if (!d) { if (state.preview) setPreview(null); return; }
-    const { key, test, label } = describe(d);
+    const { key, test, label, tint } = describe(d);
     if (plot.dataset.key === key && state.preview) return;
     plot.dataset.key = key;
-    setPreview(maskWhere(test), label);
+    setPreview(maskWhere(test), label, { tint });
   });
   plot.addEventListener("pointerleave", () => { plot.dataset.key = ""; if (state.preview) setPreview(null); });
 }
@@ -61,22 +61,27 @@ export function renderCharts() {
   $("modules-text").textContent = `The median module is ${sortedLines[N >> 1]} lines long, and ${fmt(one[0] + one[1])} modules (${pct((one[0] + one[1]) / N)}) contain exactly one declaration: the source is split to roughly one result per file. ${fmt(kindCount[1])} modules (${pct(kindCount[1] / N)}) do no mathematics of their own. Each of them restates one theorem and proves it by citing the same theorem from another module. They account for ${pct(d3.sum(col.bytes, (b, i) => (col.kind[i] === 1 ? b : 0)) / meta.totals.bytes)} of the bytes. Each module imports ${(meta.totals.importEdges / N).toFixed(1)} other modules of the project on average, and ${fmt(meta.totals.wholeMathlibImports)} modules import all of Mathlib.`;
   const edges = [1, 4, 10, 32, 100, 316, 1000, 1e9];
   const binLabel = (b) => (b === edges.length - 2 ? `${fmt(edges[b])}+` : `${fmt(edges[b])}–${fmt(edges[b + 1] - 1)}`);
-  const lengthRows = d3.rollups(d3.range(N), (v) => v.length, (i) => d3.bisectRight(edges, Math.max(col.lines[i], 1)) - 1, (i) => (col.kind[i] === 1 ? 1 : 0))
+  const lineBin = (i) => d3.bisectRight(edges, Math.max(col.lines[i], 1)) - 1;
+  const lengthRows = d3.rollups(d3.range(N), (v) => v.length, lineBin, (i) => (col.kind[i] === 1 ? 1 : 0))
     .flatMap(([b, ks]) => ks.map(([kind, n]) => ({ bin: binLabel(b), b, kind: kind ? "Restates a theorem" : "Other modules", n })));
   const kindScale = { domain: ["Other modules", "Restates a theorem"], range: [KIND_COLOURS[0][isDark() ? 1 : 0], KIND_COLOURS[1][isDark() ? 1 : 0]], legend: true };
   const tipOpts = { fill: cssVar("--paper"), stroke: cssVar("--ink-3") };
-  mount("length-chart", Plot.plot({
+  // hovering a bar shows that bar's modules on the maps, in the bar's two colours
+  const kindTint = { colours: kindScale.range, index: Uint8Array.from(col.kind, (k) => (k === 1 ? 1 : 0)) };
+  const repBin = (i) => (col.repeat[i] === 255 ? -1 : Math.min(9, Math.floor(col.repeat[i] / 10)));
+  const binTotal = (rows, b) => d3.sum(rows, (r) => (r.b === b ? r.n : 0));
+  previewOnHover(mount("length-chart", Plot.plot({
     style: plotStyle(), width: 520, height: 300, marginLeft: 60, marginBottom: 46,
     x: { label: "Lines in the module", labelAnchor: "center", labelArrow: "none", domain: d3.range(edges.length - 1).map(binLabel) }, y: { label: "Modules", grid: true, tickFormat: "~s" }, color: kindScale,
     marks: [Plot.barY(lengthRows, { x: "bin", y: "n", fill: "kind", order: kindScale.domain, insetLeft: 1, insetRight: 1, tip: tipOpts, title: (d) => `${fmt(d.n)} modules with ${d.bin} lines\n${d.kind}` }), Plot.ruleY([0])],
-  }));
+  })), (d) => ({ key: `lines${d.b}`, label: `${fmt(binTotal(lengthRows, d.b))} modules with ${d.bin} lines`, test: (i) => lineBin(i) === d.b, tint: kindTint }));
   const repRows = d3.rollups(d3.range(N).filter((i) => col.repeat[i] !== 255), (v) => v.length, (i) => Math.min(9, Math.floor(col.repeat[i] / 10)), (i) => (col.kind[i] === 1 ? 1 : 0))
     .flatMap(([b, ks]) => ks.map(([kind, n]) => ({ bin: `${b * 10}–${b * 10 + 10}`, b, kind: kind ? "Restates a theorem" : "Other modules", n })));
-  mount("repeat-chart", Plot.plot({
+  previewOnHover(mount("repeat-chart", Plot.plot({
     style: plotStyle(), width: 520, height: 300, marginLeft: 60, marginBottom: 46,
     x: { label: "Share of the module that repeats its neighbour (%)", labelAnchor: "center", labelArrow: "none", domain: d3.range(10).map((b) => `${b * 10}–${b * 10 + 10}`) }, y: { label: "Modules", grid: true, tickFormat: "~s" }, color: kindScale,
     marks: [Plot.barY(repRows, { x: "bin", y: "n", fill: "kind", order: kindScale.domain, insetLeft: 1, insetRight: 1, tip: tipOpts, title: (d) => `${fmt(d.n)} modules\n${d.bin}% repeated\n${d.kind}` }), Plot.ruleY([0])],
-  }));
+  })), (d) => ({ key: `repeat${d.b}`, label: `${fmt(binTotal(repRows, d.b))} modules that repeat ${d.bin}% of their neighbour`, test: (i) => repBin(i) === d.b, tint: kindTint }));
   const medianRep = (kind) => d3.median(d3.range(N).filter((i) => col.repeat[i] !== 255 && (col.kind[i] === 1) === kind), (i) => col.repeat[i]);
   $("repeat-text").textContent = `Repetition is measured by compressing each module after the compressor has read the module before it in the same directory. For a typical module that states and proves mathematics, ${medianRep(false)}% of the text is repeated from its neighbour. For a typical restating module it is ${medianRep(true)}%. Apart from the restating modules, exact copies are rare: ${fmt(shapeDup)} modules belong to a group of ten or more that are identical once names and numbers are ignored.`;
 
