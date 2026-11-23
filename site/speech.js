@@ -46,7 +46,7 @@ const GREEK = {
 };
 const SUBSCRIPT = { "₀": "0", "₁": "1", "₂": "2", "₃": "3", "₄": "4", "₅": "5", "₆": "6", "₇": "7", "₈": "8", "₉": "9", "₊": "plus", "ₑ": "e", "ₛ": "s", "ᵢ": "i", "ᵣ": "r", "ᵐ": "m", "ᵁ": "U", "ˢ": "s" };
 
-const KEYWORDS = {
+export const KEYWORDS = {
   theorem: "a statement together with its proof", lemma: "a theorem used as a step towards others",
   def: "a definition", abbrev: "a definition that Lean always unfolds", instance: "registers a structure on a type so Lean finds it automatically",
   structure: "a record type: a bundle of named fields", class: "a structure that Lean fills in automatically", inductive: "a type defined by listing its constructors",
@@ -67,6 +67,12 @@ const KEYWORDS = {
   ext: "tactic: two objects are equal if their components agree", by_cases: "tactic: split into the case where a statement holds and the case where it fails",
   by_contra: "tactic: proof by contradiction", constructor: "tactic: split a goal such as A ∧ B into its parts", simpa: "tactic: simplify, then close the goal with the given term",
   push_cast: "tactic: moves casts such as ℕ → ℝ towards the leaves", exact_mod_cast: "tactic: exact, after normalising casts", congr: "tactic: reduce an equality f a = f b to a = b",
+  cases: "tactic: split into one case per way the value could have been built", trivial: "tactic: closes goals that are true by definition or already assumed",
+  convert: "tactic: use a term whose statement nearly matches the goal, leaving the differences as new goals", infer_instance: "tactic: let Lean find the required structure automatically",
+  fun_prop: "tactic: proves that a function is continuous, differentiable or measurable from its parts", ring_nf: "tactic: rewrites both sides into a normal form for commutative rings",
+  norm_cast: "tactic: simplifies casts between number types", tauto: "tactic: proves statements that hold by propositional logic alone", use: "tactic: supplies the witness for a there-exists goal",
+  aesop: "tactic: general proof search using registered rules", grind: "tactic: automated reasoning that combines rewriting, case splits and arithmetic",
+  continuity: "tactic: proves that a function is continuous", measurability: "tactic: proves that a function or set is measurable",
 };
 
 const TYPE_GLOSSES = [

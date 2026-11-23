@@ -2,7 +2,7 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import { renderLean } from "./speech.js";
 import { drawZeta } from "./zeta.js";
-import { $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, darkQuery, state, names, namesReady, termsReady } from "./data.js";
+import { rawUrl, $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, darkQuery, state, names, namesReady, termsReady } from "./data.js";
 import { recolour, requestDraw, refreshMini, countMask, maskWhere, setMask, setPreview, renderLegend, chainMask, chainLabel } from "./map.js";
 import "./graph.js";
 
@@ -24,7 +24,9 @@ const zerosSeen = drawZeta($("zeta"), 60, (t) => { $("zeta-t").textContent = t.t
 $("zeta-zeros").textContent = `The ${zerosSeen.length} zeros up to t = 60 are at t ≈ ${zerosSeen.map((z) => z.toFixed(2)).join(", ")}.`;
 
 for (const [id, path] of [["code-statements", "Statements.lean"], ["code-main", "Main.lean"]]) {
-  fetch(`data/${path}`).then((r) => r.text()).then((t) => { $(id).innerHTML = renderLean(t.trimEnd()); });
+  fetch(rawUrl(path)).then((r) => { if (!r.ok) throw new Error(`${r.status} ${r.statusText}`); return r.text(); })
+    .then((t) => { $(id).innerHTML = renderLean(t.trimEnd()); })
+    .catch((err) => { $(id).textContent = `Couldn't load ${path} from GitHub: ${err.message}`; });
 }
 
 // ---------------------------------------------------------------- terms and search
@@ -39,6 +41,31 @@ meta.terms.forEach((term, t) => {
   b.onclick = async () => setMask(key, await load(), `${fmt(term.files)} modules that mention “${term.label}”`);
   termsEl.append(b);
 });
+// steps of the announcement's timeline, mapped to module paths by the blueprint
+$("build-note").innerHTML = `Build times are wall-clock times from one rebuild by <a href="https://github.com/patunz/rh-build-live">Lucio Patone</a> (snapshot of 22 November 2026), ${fmt(Math.round(meta.totals.buildSeconds / 3600))} hours in total over ${fmt(meta.totals.buildMeasured)} modules. Many modules compiled at once on one machine, so a module's time depends on what else was running.`;
+const DOTS = { clear: "●", partial: "◐", weak: "○" };
+const CONFIDENCE = { clear: "the blueprint found the object clearly", partial: "names and position fit, proofs not read", weak: "weak evidence" };
+Promise.all([fetch("data/steps.json").then((r) => r.json()), namesReady]).then(([data]) => {
+  const paths = dirs.map((d) => d.path + "/");
+  for (const step of data.steps) {
+    // a pattern matches a directory path, a module name, or (when it ends in .lean) one exact file
+    const files = step.match.filter((m) => m.endsWith(".lean")).map((m) => m.slice(0, -5));
+    const plain = step.match.filter((m) => !m.endsWith(".lean"));
+    const inName = plain.filter((m) => !m.includes("/"));
+    const dirHit = paths.map((p) => plain.some((m) => p.includes(m)));
+    const fileDir = paths.map((p) => files.filter((f) => p.endsWith(f.slice(0, f.lastIndexOf("/") + 1))).map((f) => f.slice(f.lastIndexOf("/") + 1)));
+    const mask = maskWhere((i) => dirHit[leafDir[i]] || inName.some((m) => names[i].includes(m)) || fileDir[leafDir[i]].includes(names[i]));
+    const count = countMask(mask);
+    const b = document.createElement("button");
+    const key = `step:${step.n}`;
+    b.type = "button"; b.dataset.maskKey = key; b.setAttribute("aria-pressed", "false"); b.disabled = !count;
+    b.title = count ? `Step ${step.n}: ${CONFIDENCE[step.confidence]}` : `Step ${step.n}: no module or directory name matches`;
+    b.innerHTML = `${DOTS[step.confidence]} ${step.n}. ${esc(step.title)}<span class="n">${count ? fmt(count) : "not located"}</span>`;
+    b.onclick = () => setMask(key, mask, `${plural(count, "module")} for step ${step.n}, “${step.title}”`);
+    $("steps").append(b);
+  }
+});
+
 let findTimer = 0;
 $("find").addEventListener("input", (e) => {
   clearTimeout(findTimer);

@@ -1,6 +1,6 @@
-// The treemap: layout, colours, drawing, the sidebar map, the bent map, highlights, zoom and hover.
+// The treemap: layout, colours, drawing, the sidebar map, the ζ bend, highlights, zoom and hover.
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
-import { drawBent } from "./bent.js";
+import { makeBend } from "./bent.js";
 import { $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, FAMILIES, fieldFamily, moduleFamily, dirFamily, KIND_NAMES, KIND_COLOURS, isDark, cssVar, SIZE_MODES, COLOUR_MODES, state, names, pathOf, dirSum } from "./data.js";
 import { openModule, openDirectory } from "./drawer.js";
 
@@ -34,6 +34,8 @@ export function layout() {
     if (i === undefined) continue;
     LX0[i] = n.x0; LY0[i] = n.y0; LX1[i] = n.x1; LY1[i] = n.y1;
   }
+  bentCorners = null;
+  computeQuads();
 }
 
 // ---------------------------------------------------------------- colours
@@ -86,7 +88,7 @@ export function draw() {
 
   // directory backgrounds (they show through as the name strips and the gaps)
   for (const d of dirs) {
-    if (d.depth === 0 || d.depth > 2) continue;
+    if (quads || d.depth === 0 || d.depth > 2) continue;
     const n = d.node;
     if (n.x1 < vx0 || n.x0 > vx1 || n.y1 < vy0 || n.y0 > vy1) continue;
     ctx.fillStyle = d.depth % 2 ? paper : paper3;
@@ -100,6 +102,22 @@ export function draw() {
       let fill = palette[c];
       if (mask && pass === 0) { const f = d3.rgb(fill); fill = d3.rgb(bg.r + (f.r - bg.r) * 0.16, bg.g + (f.g - bg.g) * 0.16, bg.b + (f.b - bg.b) * 0.16).formatHex(); }
       ctx.fillStyle = fill;
+      if (quads) {
+        // Filled in batches: one path holding every shape of a colour takes the browser minutes to fill.
+        let inPath = 0;
+        ctx.beginPath();
+        for (let i = 0; i < N; i++) {
+          if (cidx[i] !== c) continue;
+          if (mask && (mask[i] ? pass === 0 : pass === 1)) continue;
+          const q = i * 8, ax = quads[q] * k + tx, ay = quads[q + 1] * k + ty, bx = quads[q + 4] * k + tx, by = quads[q + 5] * k + ty;
+          if ((ax < 0 && bx < 0) || (ax > W && bx > W) || (ay < 0 && by < 0) || (ay > H && by > H)) continue;
+          if (Math.abs(bx - ax) + Math.abs(by - ay) < 1.2) { ctx.fillRect(ax, ay, 0.7, 0.7); continue; }
+          ctx.moveTo(ax, ay); ctx.lineTo(quads[q + 2] * k + tx, quads[q + 3] * k + ty); ctx.lineTo(bx, by); ctx.lineTo(quads[q + 6] * k + tx, quads[q + 7] * k + ty); ctx.closePath();
+          if (++inPath === 64) { ctx.fill(); ctx.beginPath(); inPath = 0; }
+        }
+        ctx.fill();
+        continue;
+      }
       for (let i = 0; i < N; i++) {
         if (cidx[i] !== c) continue;
         if (mask && (mask[i] ? pass === 0 : pass === 1)) continue;
@@ -118,7 +136,7 @@ export function draw() {
   ctx.textBaseline = "middle";
   const plates = [];
   for (const d of dirs) {
-    if (d.depth === 0 || d.depth > 8) continue;
+    if (quads || d.depth === 0 || d.depth > 8) continue;
     const n = d.node;
     if (n.x1 < vx0 || n.x0 > vx1 || n.y1 < vy0 || n.y0 > vy1) continue;
     const w = (n.x1 - n.x0) * k, h = (n.y1 - n.y0) * k;
@@ -150,7 +168,7 @@ export function draw() {
   }
 
   // module names, once the rectangles are large enough to hold them
-  if (names && k > 6) {
+  if (names && k > 6 && !quads) {
     ctx.font = '10.5px "JuliaMono", monospace';
     ctx.textBaseline = "top";
     for (let i = 0; i < N; i++) {
@@ -171,16 +189,24 @@ export function draw() {
     // faint lines hint at the order; the dots carry the positions
     ctx.strokeStyle = ink; ctx.globalAlpha = 0.3; ctx.lineWidth = 0.7; ctx.lineJoin = "round"; ctx.beginPath();
     meta.chain.forEach((i, j) => {
-      const x = ((LX0[i] + LX1[i]) / 2) * k + tx, y = ((LY0[i] + LY1[i]) / 2) * k + ty;
+      const x = centreX(i) * k + tx, y = centreY(i) * k + ty;
       j ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
     });
     ctx.stroke(); ctx.globalAlpha = 1;
     ctx.fillStyle = ink;
-    for (const i of meta.chain) { ctx.beginPath(); ctx.arc(((LX0[i] + LX1[i]) / 2) * k + tx, ((LY0[i] + LY1[i]) / 2) * k + ty, 3, 0, 7); ctx.fill(); }
+    for (const i of meta.chain) { ctx.beginPath(); ctx.arc(centreX(i) * k + tx, centreY(i) * k + ty, 3, 0, 7); ctx.fill(); }
   }
 
   for (const [i, width] of [[state.pinned, 2.5], [state.hover, 1.5]]) {
     if (i < 0) continue;
+    if (quads) {
+      const q = i * 8;
+      ctx.strokeStyle = ink; ctx.lineWidth = width; ctx.beginPath();
+      ctx.moveTo(quads[q] * k + tx, quads[q + 1] * k + ty);
+      for (let c = 2; c < 8; c += 2) ctx.lineTo(quads[q + c] * k + tx, quads[q + c + 1] * k + ty);
+      ctx.closePath(); ctx.stroke();
+      continue;
+    }
     const g = dirs[leafDir[i]].node;
     ctx.strokeStyle = ink; ctx.lineWidth = 1; ctx.setLineDash([3, 3]);
     ctx.strokeRect(g.x0 * k + tx, g.y0 * k + ty, (g.x1 - g.x0) * k, (g.y1 - g.y0) * k);
@@ -191,7 +217,7 @@ export function draw() {
   if (state.marker >= 0) {
     const i = state.marker;
     ctx.strokeStyle = ink; ctx.lineWidth = 2.5; ctx.beginPath();
-    ctx.arc(((LX0[i] + LX1[i]) / 2) * k + tx, ((LY0[i] + LY1[i]) / 2) * k + ty, 9, 0, 7); ctx.stroke();
+    ctx.arc(centreX(i) * k + tx, centreY(i) * k + ty, 9, 0, 7); ctx.stroke();
   }
   $("reset-zoom").hidden = k < 1.02;
   drawMinimapOverlay();
@@ -253,30 +279,68 @@ export function drawMinimapOverlay() {
   }
 }
 export let miniTimer = 0;
-export const refreshMini = () => { clearTimeout(miniTimer); miniTimer = setTimeout(() => { drawMinimapBase(); refreshBent(); }, 30); };
+export const refreshMini = () => { clearTimeout(miniTimer); miniTimer = setTimeout(drawMinimapBase, 30); };
 
-// ---------------------------------------------------------------- the map bent by ζ
-export const bent = $("bent"), bentTip = $("bent-tip");
-export let bentVisible = false, bentStale = true, bentPick = null;
-export function refreshBent() {
-  bentStale = true;
-  if (!bentVisible || !W) return;
-  bentStale = false;
-  bentPick = drawBent(bent, { W, H, LX0, LY0, LX1, LY1, cidx, palette, mask: activeMask(), background: d3.rgb(cssVar("--paper")).formatHex(), n: N });
+// ---------------------------------------------------------------- bending the map by ζ
+// state.bend runs from 0 (flat) to 1 (every module drawn where ζ sends it). While it is
+// above 0 each module is a four-cornered shape, kept in `quads` in flat-map coordinates.
+export let quads = null, quadBuckets = null, bentCorners = null;
+const BUCKET = 12;
+export function computeQuads() {
+  quadBuckets = null;
+  if (!state.bend || !W) { quads = null; return; }
+  quads ||= new Float32Array(N * 8);
+  if (!bentCorners) {
+    // where each corner ends up when fully bent; computed once per layout, so moving the slider only blends
+    bentCorners = new Float32Array(N * 8);
+    const bendPoint = makeBend(W, H), out = [0, 0];
+    const put = (q, x, y) => { bendPoint(x, y, out); bentCorners[q] = out[0]; bentCorners[q + 1] = out[1]; };
+    for (let i = 0; i < N; i++) {
+      const q = i * 8;
+      put(q, LX0[i], LY0[i]); put(q + 2, LX1[i], LY0[i]); put(q + 4, LX1[i], LY1[i]); put(q + 6, LX0[i], LY1[i]);
+    }
+  }
+  const t = state.bend * state.bend * (3 - 2 * state.bend); // ease in and out
+  for (let i = 0; i < N; i++) {
+    const q = i * 8, x0 = LX0[i], y0 = LY0[i], x1 = LX1[i], y1 = LY1[i];
+    quads[q] = x0 + (bentCorners[q] - x0) * t; quads[q + 1] = y0 + (bentCorners[q + 1] - y0) * t;
+    quads[q + 2] = x1 + (bentCorners[q + 2] - x1) * t; quads[q + 3] = y0 + (bentCorners[q + 3] - y0) * t;
+    quads[q + 4] = x1 + (bentCorners[q + 4] - x1) * t; quads[q + 5] = y1 + (bentCorners[q + 5] - y1) * t;
+    quads[q + 6] = x0 + (bentCorners[q + 6] - x0) * t; quads[q + 7] = y1 + (bentCorners[q + 7] - y1) * t;
+  }
 }
-new IntersectionObserver((entries) => { bentVisible = entries[0].isIntersecting; if (bentVisible && bentStale) refreshBent(); }, { rootMargin: "300px" }).observe(bent);
-export const bentLeaf = (e) => { const r = bent.getBoundingClientRect(); return bentPick ? bentPick(e.clientX - r.left, e.clientY - r.top) : -1; };
-bent.addEventListener("pointermove", (e) => {
-  const i = bentLeaf(e);
-  if (i < 0) { bentTip.style.display = "none"; return; }
-  const r = bent.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top;
-  bentTip.innerHTML = tipHtml({ leaf: i, dir: dirs[leafDir[i]] });
-  bentTip.style.display = "block";
-  bentTip.style.left = Math.max(0, Math.min(px + 14, r.width - bentTip.offsetWidth)) + "px";
-  bentTip.style.top = (py + 18 + bentTip.offsetHeight > r.height ? Math.max(0, py - bentTip.offsetHeight - 10) : py + 18) + "px";
-});
-bent.addEventListener("pointerleave", () => { bentTip.style.display = "none"; });
-bent.addEventListener("click", (e) => { const i = bentLeaf(e); if (i >= 0) openModule(i); });
+/** Centre of a module's shape in flat-map coordinates, bent or not. */
+export const centreX = (i) => (quads ? (quads[i * 8] + quads[i * 8 + 4]) / 2 : (LX0[i] + LX1[i]) / 2);
+export const centreY = (i) => (quads ? (quads[i * 8 + 1] + quads[i * 8 + 5]) / 2 : (LY0[i] + LY1[i]) / 2);
+/** The module whose bent shape contains the point (wx, wy), or the nearest one within a few pixels. */
+function quadAt(wx, wy) {
+  const cols = Math.ceil(W / BUCKET), rowsN = Math.ceil(H / BUCKET);
+  if (!quadBuckets) {
+    quadBuckets = Array.from({ length: cols * rowsN }, () => []);
+    for (let i = 0; i < N; i++) {
+      const q = i * 8;
+      const bx0 = Math.max(0, Math.floor(Math.min(quads[q], quads[q + 2], quads[q + 4], quads[q + 6]) / BUCKET)), bx1 = Math.min(cols - 1, Math.floor(Math.max(quads[q], quads[q + 2], quads[q + 4], quads[q + 6]) / BUCKET));
+      const by0 = Math.max(0, Math.floor(Math.min(quads[q + 1], quads[q + 3], quads[q + 5], quads[q + 7]) / BUCKET)), by1 = Math.min(rowsN - 1, Math.floor(Math.max(quads[q + 1], quads[q + 3], quads[q + 5], quads[q + 7]) / BUCKET));
+      for (let by = by0; by <= by1; by++) for (let bx = bx0; bx <= bx1; bx++) quadBuckets[by * cols + bx].push(i);
+    }
+  }
+  const bx = Math.floor(wx / BUCKET), by = Math.floor(wy / BUCKET);
+  if (bx < 0 || by < 0 || bx >= cols || by >= rowsN) return -1;
+  let best = -1, bestDist = 4;
+  for (const i of quadBuckets[by * cols + bx]) {
+    const q = i * 8;
+    let inside = false;
+    for (let a = 0, b = 3; a < 4; b = a++) {
+      const xa = quads[q + a * 2], ya = quads[q + a * 2 + 1], xb = quads[q + b * 2], yb = quads[q + b * 2 + 1];
+      if (ya > wy !== yb > wy && wx < ((xb - xa) * (wy - ya)) / (yb - ya) + xa) inside = !inside;
+    }
+    if (inside) return i;
+    const d = Math.hypot(centreX(i) - wx, centreY(i) - wy);
+    if (d < bestDist) { bestDist = d; best = i; }
+  }
+  return best;
+}
+$("bend").addEventListener("input", (e) => { state.bend = +e.target.value; computeQuads(); hideTip(); requestDraw(); });
 
 // ---------------------------------------------------------------- highlight masks
 export function countMask(mask) { let n = 0; for (let i = 0; i < N; i++) n += mask[i]; return n; }
@@ -361,6 +425,7 @@ $("reset-zoom").onclick = () => sel.transition().duration(350).call(zoom.transfo
 
 export function leafAt(px, py) {
   const wx = (px - transform.x) / transform.k, wy = (py - transform.y) / transform.k;
+  if (quads) { const i = quadAt(wx, wy); return i < 0 ? { dir: null, leaf: -1 } : { dir: dirs[leafDir[i]], leaf: i }; }
   let node = root;
   while (node.children) {
     let next = null;
@@ -379,6 +444,7 @@ export const spaced = (name) => name.replace(/([a-z0-9])([A-Z])/g, "$1 $2");
 export const labelOf = (i) => (hasLabel(i) ? group(i).label : spaced(dirs[leafDir[i]].name));
 export const kindNote = ["", "Restates one theorem that is proved in another module", "Only imports other modules", "Only sets options or notation"];
 
+export const secondsFmt = (s) => (s >= 3600 ? `${(s / 3600).toFixed(1)} hours` : s >= 120 ? `${Math.round(s / 60)} minutes` : `${s >= 10 ? Math.round(s) : s.toFixed(1)} seconds`);
 export function moduleFacts(i) {
   const d = col.decls[i];
   return `${bytesFmt(col.bytes[i])} · ${plural(col.lines[i], "line")} · ${plural(d, "declaration")}`;
@@ -393,6 +459,7 @@ export function tipHtml(hit) {
   if (mode.id === "height") extra = `<br>Import depth ${col.height[i]} of ${meta.totals.longestChain}`;
   else if (mode.id === "dependents") extra = `<br>${plural(col.dependents[i], "module depends", "modules depend")} on it (${fmt(col.indeg[i])} import it directly)`;
   else if (mode.id === "repeat") extra = col.repeat[i] === 255 ? "<br>First module in its directory" : `<br>${col.repeat[i]}% repeats the module before it`;
+  else if (mode.id === "build" || state.size.id === "build") extra = `<br>Built in ${secondsFmt(col.build[i] / 10)} in one independent rebuild`;
   else if (mode.id === "digits") extra = `<br>${col.digits[i]}% of its characters are digits`;
   return `<b>${esc(labelOf(i))}</b><span class="path">${esc(pathOf(i))}</span>${moduleFacts(i)}<br>${esc(meta.fields[col.field[i]].name)}`
     + (col.kind[i] ? `<br>${kindNote[col.kind[i]]}` : "") + extra;
@@ -448,4 +515,3 @@ recolour();
 resize();
 renderLegend();
 new ResizeObserver(() => resize()).observe(canvas);
-new ResizeObserver(() => refreshBent()).observe(bent);

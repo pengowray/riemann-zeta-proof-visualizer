@@ -63,6 +63,7 @@ export const SIZE_MODES = [
   { id: "zbytes", label: "Compressed bytes", values: col.zbytes, unit: "of the compressed bytes" },
   { id: "modules", label: "Modules", values: ones, unit: "of the modules" },
   { id: "decls", label: "Declarations", values: col.decls, unit: "of the declarations" },
+  { id: "build", label: "Build time", values: col.build, unit: "of the build time" },
 ];
 export const COLOUR_MODES = [
   { id: "field", label: "Field of each module", kind: "cat" },
@@ -71,9 +72,10 @@ export const COLOUR_MODES = [
   { id: "height", label: "Import depth", kind: "seq", values: col.height, scale: "linear", low: "imports no other module", high: `${meta.totals.longestChain} modules deep`, noun: "import depth" },
   { id: "dependents", label: "Dependents", kind: "seq", values: col.dependents, scale: "log", low: "no module depends on it", high: `${fmt(d3.max(col.dependents))} modules depend on it`, noun: "dependents" },
   { id: "repeat", label: "Repeats its neighbour", kind: "seq", values: col.repeat, scale: "linear", max: 100, missing: 255, low: "0% repeated", high: "100% repeated", noun: "repeated" },
+  { id: "build", label: "Build time", kind: "seq", values: col.build, scale: "log", low: "under a second", high: `${fmt(Math.round(d3.max(col.build) / 10))} seconds`, noun: "build time" },
   { id: "digits", label: "Digits", kind: "seq", values: col.digits, scale: "sqrt", low: "0% digits", high: `${d3.max(col.digits)}% digits`, noun: "digits" },
 ];
-export const state = { size: SIZE_MODES[0], colour: COLOUR_MODES[0], mask: null, maskLabel: "", maskKey: "", preview: null, previewLabel: "", chain: false, previewChain: false, marker: -1, hover: -1, pinned: -1 };
+export const state = { size: SIZE_MODES[0], colour: COLOUR_MODES[0], mask: null, maskLabel: "", maskKey: "", preview: null, previewLabel: "", chain: false, previewChain: false, marker: -1, bend: 0, hover: -1, pinned: -1 };
 
 export let names = null; // loaded after first paint
 export const namesReady = fetch("data/names.txt").then((r) => r.text()).then((t) => { names = t.split("\n"); return names; });

@@ -1,0 +1,25 @@
+{
+  "source": "https://github.com/jae-63/rh-alpoge-blueprint/blob/main/BLUEPRINT.md",
+  "steps": [
+    {"n": 1, "title": "Stepanov determinant", "confidence": "partial", "match": ["WeilBound/ThetaLifts/LeviDeterminants", "ThetaParseval/BlockDeterminants", "GaloisGeometry/DivisionOfDeterminantCharacter"]},
+    {"n": 2, "title": "Divisibility on a CM curve", "confidence": "weak", "match": ["CmCurveGood", "CMCurveGood"]},
+    {"n": 3, "title": "qN = Mᵏ + R, iterated Parseval", "confidence": "partial", "match": ["GaloisRepresentations/ThetaParseval/"]},
+    {"n": 4, "title": "W(1_S) ≥ 0 via a determinant", "confidence": "weak", "match": ["WeilCriterionInvariantMeasure", "PerronPsi"]},
+    {"n": 5, "title": "Smoothed von Mangoldt sum, Guinand–Weil", "confidence": "clear", "match": ["Formalism/Statement.lean", "Formalism/StatementOC.lean", "ExplicitFormula"]},
+    {"n": 6, "title": "Positivity gives a zero-free region", "confidence": "partial", "match": ["ChebyshevGrowthImpliesZeroFree", "LandauZeroFree", "ZeroFreeOfChebyshev"]},
+    {"n": 7, "title": "Determinants with GGP periods, interlacing weights", "confidence": "partial", "match": ["StrictInterlaceIffDescEnum", "SharpRestriction/Divisibility", "BesselPeriodNonvanishing"]},
+    {"n": 8, "title": "Iterated theta lifts U(X₀) → … → U(X_m)", "confidence": "partial", "match": ["LeastSplitAuxiliaryPrimeThetaChainSpec", "ThetaChainStep"]},
+    {"n": 9, "title": "Norms of lifts: Chowla–Selberg, Weyl, Siegel mass", "confidence": "clear", "match": ["UnitaryGroupMassFormula", "SharpRestriction/GlobalSchurBounds", "ChowlaSelberg"]},
+    {"n": 10, "title": "Divisibility of the m-fold lift", "confidence": "partial", "match": ["IntegralStructures/ZetaCharacterDivisibility", "SharpRestriction/Divisibility", "LocalToGlobal/Divisibility"]},
+    {"n": 11, "title": "Iwasawa tower", "confidence": "clear", "match": ["IsChiField", "PageN"]},
+    {"n": 12, "title": "Seesaw: Bessel period, Rallis", "confidence": "clear", "match": ["TPGRallis", "RallisInnerProduct", "Seesaw"]},
+    {"n": 13, "title": "Bost slope inequality", "confidence": "partial", "match": ["LocalToGlobal/GlobalTheory/GL4", "SlopeIneq", "Formalism/HarderNarasimhan/"]},
+    {"n": 14, "title": "Cost of each lift, need for division", "confidence": "partial", "match": ["CostWindows", "ErrWindows", "DivisionOneGeometricRepresentation"]},
+    {"n": 15, "title": "Integral structure across Hecke characters", "confidence": "partial", "match": ["GaloisRepresentations/IntegralStructures/"]},
+    {"n": 16, "title": "Relative trace formula, Poincaré series", "confidence": "partial", "match": ["PoincareSeries"]},
+    {"n": 17, "title": "H¹ classes not killed by twisting", "confidence": "clear", "match": ["GaloisCohomologyLength", "ShaLen", "Formalism/GaloisCohomology/"]},
+    {"n": 18, "title": "Covolumes and congruences", "confidence": "clear", "match": ["CovolumeBound", "FiniteCovolume", "SelfIntersectionVolumeEstimates"]},
+    {"n": 19, "title": "The precise tower, using Behrend sets", "confidence": "partial", "match": ["Formalism/BehrendSets/"]},
+    {"n": 20, "title": "GRH", "confidence": "clear", "match": ["Supplements/Kernels/", "FinalTheorems"]}
+  ]
+}

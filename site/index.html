@@ -22,6 +22,7 @@
     <a href="#fields">Areas of mathematics</a>
     <a href="#imports">How modules depend on each other</a>
     <a href="#numbers">Numbers and tactics</a>
+    <a href="#checks">Who has checked the proof</a>
     <a href="#sources">Sources and method</a>
   </nav>
 </aside>
@@ -55,6 +56,7 @@
   <div class="controls">
     <div class="control"><span class="control-label">Size by</span><div class="seg" id="size-by" role="radiogroup" aria-label="Size by"></div></div>
     <div class="control"><span class="control-label">Colour by</span><div class="seg" id="colour-by" role="radiogroup" aria-label="Colour by"></div></div>
+    <label class="control bend" title="Bend the map by the Riemann zeta function"><span class="control-label">ζ</span><input type="range" id="bend" min="0" max="1" step="0.01" value="0" aria-label="Bend the map by the Riemann zeta function"></label>
   </div>
   <div id="legend"></div>
   <div id="map-wrap">
@@ -67,11 +69,11 @@
   <h3>Highlight modules that mention</h3>
   <div id="terms" class="chips"></div>
   <p class="note">Terms come from Alpöge's announcement and from standard number theory. A module is counted if the term's identifier appears in its text, not counting import lines.</p>
+  <h3>Highlight a step of Alpöge's timeline</h3>
+  <div id="steps" class="chips"></div>
+  <p class="note">Where each step appears to live in the Lean code, according to <a href="https://github.com/jae-63/rh-alpoge-blueprint/blob/main/BLUEPRINT.md">jae-63's blueprint</a>. A filled dot means the blueprint found the object clearly, a half dot that names and position fit, and an empty dot that the evidence is weak.</p>
   <label class="find">Find in module names <input id="find" type="search" placeholder="e.g. Eisenstein" autocomplete="off" spellcheck="false"></label>
   <span id="find-count" class="note"></span>
-  <h3>The same map, bent by ζ</h3>
-  <p>Here the flat map is placed on the rectangle 1.35 ≤ Re <i>s</i> ≤ 3.2, −1.7 ≤ Im <i>s</i> ≤ 1.7 of the complex plane, and each module is drawn at the point ζ(<i>s</i>). The left edge of the flat map lies nearest the pole of ζ at <i>s</i> = 1, so the modules there are stretched the most. Sizes, colours and highlights follow the map above.</p>
-  <div id="bent-wrap"><canvas id="bent" aria-label="The treemap drawn through the Riemann zeta function"></canvas><div id="bent-tip" class="maptip"></div></div>
 </section>
 
 <section id="space">
@@ -102,7 +104,8 @@
 <section id="imports">
   <h2>How modules depend on each other</h2>
   <p id="imports-text"></p>
-  <figure><figcaption>Imports between fields. Each row shows where that field's imports go.</figcaption><div id="matrix-chart" class="chart"></div></figure>
+  <p>A <a href="https://news.ycombinator.com/item?id=50574968">comment on Hacker News</a> reported 204 modules "not referenced anywhere", without a list or a method. In the import graph no module is unreferenced: every module except Main.lean is imported by at least one other module. The comment may be counting something that imports do not show, such as declarations that nothing uses.</p>
+  <figure><figcaption>Imports between fields. Each row shows where that field's imports go. Point at a square to see those modules on the map.</figcaption><div id="matrix-chart" class="chart"></div></figure>
   <h3>Import graph of the main directories</h3>
   <p id="graph-text"></p>
   <div id="graph-wrap"><div id="graph"></div><div id="graph-tip" class="maptip"></div></div>
@@ -119,18 +122,34 @@
   <h3>Modules with the largest share of digits</h3>
   <table id="digit-table" class="data"></table>
   <h3>Tactics used</h3>
+  <p class="note">Point at a bar for what the tactic does and to see the modules that use it on the map.</p>
   <div id="tactic-chart" class="chart"></div>
+</section>
+
+<section id="checks">
+  <h2>Who has checked the proof</h2>
+  <p>This page did not compile or check the proof. The table lists what each of these public pages reported when read on 23 November 2026. Follow the links for the current state.</p>
+  <table class="data">
+    <tr><th>Who</th><th>What was run</th><th>Reported result</th></tr>
+    <tr><td><a href="https://leanprover-community.github.io/blog/posts/riemann-hypothesis/">Lean and Mathlib communities</a>, joint statement of 21 November 2026</td><td>Review of Mathlib's statement of the Riemann Hypothesis; many independent compilations; <code>comparator</code> and <code>con-leche</code> against Mathlib's statement</td><td>States full confidence that the proof is correct</td></tr>
+    <tr><td><a href="https://math.mit.edu/~drew/grh/">Andrew Sutherland</a> (MIT), page updated 22 November</td><td>Full build; axiom audit; <code>leanchecker</code> replay; <code>nanoda</code>; <code>con-leche</code> and <code>con-ron</code>; <code>lean4lean</code></td><td>175,187 modules build with 0 errors and all are accepted on replay. The five theorems use only the axioms <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>. Five modules needed a raised step limit in <code>lean4lean</code>. One compiled file is not reproducible byte for byte. Some kernel runs were still in progress</td></tr>
+    <tr><td><a href="https://mrubinst.github.io/grh-lean-verification/">mrubinst.github.io</a>, run by Claude Code on a university allocation, finished 21 November</td><td>Source hashes; text scan; full compile; axiom audit; kernel replay; <code>nanoda</code></td><td>175,187 modules compile with 0 errors and are accepted on replay. <code>nanoda</code> checked 1,484,729 declarations with no errors. 63 replay batches ran out of memory and were re-run</td></tr>
+    <tr><td><a href="https://github.com/Infatoshi/rh-verification-receipts">Infatoshi/rh-verification-receipts</a></td><td>Source hashes; text scan; compile; axiom audit; <code>nanoda</code></td><td>175,187 modules compile; 1,484,729 declarations checked with no errors</td></tr>
+    <tr><td><a href="https://github.com/shosonoda/lean-rh-alpoge">shosonoda/lean-rh-alpoge</a></td><td><code>lake build</code>; own traversal of the import graph; Comparator</td><td>Build succeeds with 0 errors and 460,321 warning lines. Every module is reachable from Main. Comparator was still running</td></tr>
+    <tr><td><a href="https://github.com/patunz/rh-build-live">Lucio Patone</a>, with Claude as an assistant</td><td>Rebuild from scratch, with per-module timing; Sutherland's axiom audit</td><td>Audit output identical to Sutherland's. Source of the build times on this page</td></tr>
+  </table>
+  <p class="note">The Lean statements cover the Riemann zeta function and Dirichlet <i>L</i>-functions. They do not cover Dedekind zeta functions or automorphic <i>L</i>-functions.</p>
 </section>
 
 <section id="sources">
   <h2>Sources and method</h2>
   <ul>
-    <li>The Lean source is from <a href="https://alpo.ge/remark.pdf">Alpöge's announcement</a>, read from the mirror <a id="repo-link" href="https://github.com/1337isnot1337/riemann-hypothesis-solved">1337isnot1337/riemann-hypothesis-solved</a> at commit <code>6193bb5</code>.</li>
-    <li>This page did not compile or check the proof. The statements that all 175,187 modules compile, that the kernel accepts every declaration, and that the theorems depend only on the axioms <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code> are from <a href="https://mrubinst.github.io/grh-lean-verification/">Michael Rubinstein's independent check</a>.</li>
-    <li>All counts on this page come from a script that reads every file once. Its totals match Rubinstein's: 175,187 files, 17,374,215 lines, longest import chain 203.</li>
-    <li>Declarations are counted by matching keywords such as <code>theorem</code> and <code>def</code> at the start of a line. Lean's kernel sees more declarations (1,484,729 in Rubinstein's check) because Lean generates auxiliary ones.</li>
+    <li>The Lean source is from <a href="https://alpo.ge/remark.pdf">Alpöge's announcement</a>. The page reads it from the mirror <a id="repo-link" href="https://github.com/1337isnot1337/riemann-hypothesis-solved">1337isnot1337/riemann-hypothesis-solved</a> at commit <code>6193bb5</code>. The archive declares no licence, so this site does not store the Lean files; it stores module names and counts, and loads code from the mirror when you open a module.</li>
+    <li>All counts on this page come from a script that reads every file once. Its totals match the independent checks above: 175,187 files, 17,374,215 lines, longest import chain 203.</li>
+    <li>Declarations are counted by matching keywords such as <code>theorem</code> and <code>def</code> at the start of a line. Lean's kernel sees more declarations (1,484,729 in the <code>nanoda</code> runs) because Lean generates auxiliary ones.</li>
     <li id="agree-note"></li>
-    <li>No per-module compile times have been published, so the page has no compile-time measure.</li>
+    <li id="build-note"></li>
+    <li>The proof steps on the map follow <a href="https://github.com/jae-63/rh-alpoge-blueprint/blob/main/BLUEPRINT.md">jae-63's blueprint</a>, which matched Alpöge's timeline to Lean names by search and partial reading. It is one reader's interpretation.</li>
   </ul>
 </section>
 </main>

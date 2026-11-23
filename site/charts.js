@@ -2,11 +2,24 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.16/+esm";
 import { $, fmt, pct, bytesFmt, esc, meta, N, col, ones, dirs, FAMILIES, fieldFamily, KIND_COLOURS, isDark, cssVar, state, names, pathOf, dirSum } from "./data.js";
-import { luminance, setMask, group, labelOf, tip, famOf, famColour } from "./map.js";
+import { KEYWORDS } from "./speech.js";
+import { maskWhere, setPreview, luminance, setMask, group, labelOf, tip, famOf, famColour } from "./map.js";
 
 // ---------------------------------------------------------------- sections below the map
 export const plotStyle = () => ({ background: "transparent", color: cssVar("--ink"), fontFamily: cssVar("--serif"), fontSize: "13px", overflow: "visible" });
-export function mount(id, plot) { const el = $(id); el.innerHTML = ""; el.append(plot); }
+export function mount(id, plot) { const el = $(id); el.innerHTML = ""; el.append(plot); return plot; }
+/** While the pointer is over a mark of the chart, highlight on the map the modules that mark stands for. */
+function previewOnHover(plot, describe) {
+  plot.addEventListener("input", () => {
+    const d = plot.value;
+    if (!d) { if (state.preview) setPreview(null); return; }
+    const { key, test, label } = describe(d);
+    if (plot.dataset.key === key && state.preview) return;
+    plot.dataset.key = key;
+    setPreview(maskWhere(test), label);
+  });
+  plot.addEventListener("pointerleave", () => { plot.dataset.key = ""; if (state.preview) setPreview(null); });
+}
 
 export function renderCharts() {
   // --- what takes up the space: share of each family under five measures
@@ -87,12 +100,17 @@ export function renderCharts() {
   }
   $("imports-text").textContent = `The project has ${fmt(meta.totals.importEdges)} imports between its own modules. ${pct(same / total)} of them stay inside one field and ${pct(1 - same / total)} cross from one field to another. Every module is imported: all ${fmt(N)} are reachable from Main.lean by following imports.`;
   const fieldOrder = used.slice().sort((a, b) => fieldFamily[a] - fieldFamily[b]).map((fi) => meta.fields[fi].name);
-  mount("matrix-chart", Plot.plot({
+  const fieldIndex = new Map(meta.fields.map((f, fi) => [f.name, fi]));
+  previewOnHover(mount("matrix-chart", Plot.plot({
     style: plotStyle(), width: 900, height: 520, marginLeft: 240, marginBottom: 150, padding: 0.06,
     x: { label: "Imported field", domain: fieldOrder, tickRotate: -40 }, y: { label: "Importing field", domain: fieldOrder },
     color: { type: "sqrt", range: isDark() ? ["#1f1d18", "#9ec5f4"] : ["#efe9db", "#104281"], label: "Share of the row's imports", legend: true, percent: true },
     marks: [Plot.cell(cells, { x: "to", y: "from", fill: "share", tip: tipOpts, title: (d) => `${pct(d.share)} of imports made by ${d.from}\ngo to ${d.to}\n(${fmt(d.n)} imports)` })],
-  }));
+  })), (d) => {
+    const a = fieldIndex.get(d.from), b = fieldIndex.get(d.to);
+    return { key: `${a}>${b}`, label: `${d.from} modules that import ${d.to}, and the modules they import`,
+      test: (i) => (col.field[i] === a && (col.importsFields[i] >>> b) & 1) || (col.field[i] === b && (col.importedByFields[i] >>> a) & 1) };
+  });
 
   // --- longest chain
   const chainRows = meta.chain.map((i, j) => ({ j: j + 1, i, family: FAMILIES[famOf(i)].name }));
@@ -106,11 +124,16 @@ export function renderCharts() {
   const tc = Object.fromEntries(meta.tactics);
   const longDigits = d3.sum(col.digits, (d) => (d >= 20 ? 1 : 0));
   $("numbers-text").textContent = `The source is proof text, not data. Only ${fmt(longDigits)} of the ${fmt(N)} modules are 20% digits or more. The proof never uses native_decide, and it uses decide ${fmt(tc.decide || 0)} times. The module with the most digits, Primes.lean, holds primality certificates checked with decide. The most common steps are have (state an intermediate fact, ${fmt(tc.have)} times), rw (rewrite with an equation, ${fmt(tc.rw)}) and exact (give the proof term, ${fmt(tc.exact)}).`;
-  mount("tactic-chart", Plot.plot({
-    style: plotStyle(), width: 760, height: 520, marginLeft: 130,
-    x: { label: "Uses in the whole source", grid: true, tickFormat: "~s" }, y: { label: null, domain: tactics.map((t) => t.name) },
-    marks: [Plot.barX(tactics, { x: "n", y: "name", fill: KIND_COLOURS[0][isDark() ? 1 : 0], tip: tipOpts, title: (d) => `${d.name}: ${fmt(d.n)} uses` }), Plot.ruleX([0])],
-  }));
+  const tacticModules = meta.tacticBits.map((_, b) => { let n = 0; for (let i = 0; i < N; i++) n += (col.tactics[i] >>> b) & 1; return n; });
+  const tacticInfo = (name) => (KEYWORDS[name] || "").replace(/^tactic: /, "");
+  previewOnHover(mount("tactic-chart", Plot.plot({
+    style: plotStyle(), width: 760, height: 540, marginLeft: 130, marginBottom: 46,
+    x: { label: "Uses in the whole source", labelAnchor: "center", labelArrow: "none", grid: true, tickFormat: "~s" }, y: { label: null, domain: tactics.map((t) => t.name) },
+    marks: [Plot.barX(tactics, { x: "n", y: "name", fill: KIND_COLOURS[0][isDark() ? 1 : 0], tip: tipOpts, title: (d) => `${d.name}: ${fmt(d.n)} uses in ${fmt(tacticModules[meta.tacticBits.indexOf(d.name)])} modules${tacticInfo(d.name) ? "\n" + tacticInfo(d.name) : ""}` }), Plot.ruleX([0])],
+  })), (d) => {
+    const b = meta.tacticBits.indexOf(d.name);
+    return { key: d.name, label: `${fmt(tacticModules[b])} modules that use ${d.name}`, test: (i) => (col.tactics[i] >>> b) & 1 };
+  });
   document.querySelectorAll("#tactic-chart [aria-label='y-axis tick label'] text").forEach((t) => { t.style.fontFamily = cssVar("--mono"); });
 }
 

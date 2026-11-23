@@ -71,6 +71,16 @@ def main():
     os.makedirs(out, exist_ok=True)
     rows = [json.loads(line) for line in open(os.path.join(cache, "files.jsonl"))]
 
+    # ---- build times from an independent rebuild (see data/external/README.md)
+    build_path = os.path.join(os.path.dirname(labels_dir.rstrip("/")), "external", "build_seconds.f32")
+    build_seconds = {}
+    if os.path.exists(build_path):
+        values = array("f")
+        values.frombytes(open(build_path, "rb").read())
+        for path, sec in zip(sorted(r["p"] for r in rows), values):
+            if sec == sec:  # skip NaN
+                build_seconds[path] = sec
+
     # ---- directory tree, files ordered so each directory's subtree is one contiguous range
     tree = {"name": "", "dirs": {}, "files": []}
     for r in rows:
@@ -314,13 +324,25 @@ def main():
     region_matrix = [[0] * len(regions) for _ in regions]
     nf = len(FIELDS)
     field_matrix = [[0] * nf for _ in range(nf)]
+    # per module: which fields it imports from, and which fields import it (one bit per field)
+    imports_fields = [0] * n
+    imported_by_fields = [0] * n
     for i, a in enumerate(adj):
         for j in a:
             region_matrix[reg_of[i]][reg_of[j]] += 1
             field_matrix[field_col[i]][field_col[j]] += 1
+            imports_fields[i] |= 1 << field_col[j]
+            imported_by_fields[j] |= 1 << field_col[i]
 
     # ---- exact-shape clusters
     shape_count = Counter(r["sh"] for r in rows)
+
+    # ---- which of the 24 most used tactics each module uses (one bit per tactic, in meta.tacticBits order)
+    tactic_total = Counter()
+    for r in rows:
+        tactic_total.update(r["t"])
+    tactic_bits = [name for name, _count in tactic_total.most_common() if name != "sorry"][:24]
+    tactic_mask = [sum(1 << b for b, name in enumerate(tactic_bits) if r["t"].get(name)) for r in rows]
 
     # ---- columns
     def col(code, values):
@@ -331,6 +353,9 @@ def main():
         ("lines", "I", [r["l"] for r in rows]),
         ("zbytes", "I", [r["z"] for r in rows]),
         ("dependents", "I", dependents),
+        ("tactics", "I", tactic_mask),
+        ("importsFields", "I", imports_fields),
+        ("importedByFields", "I", imported_by_fields),
         ("decls", "H", [min(sum(r["d"].values()), 65535) for r in rows]),
         ("theorems", "H", [min(r["d"].get("theorem", 0) + r["d"].get("lemma", 0), 65535) for r in rows]),
         ("indeg", "H", [min(x, 65535) for x in indeg]),
@@ -342,6 +367,8 @@ def main():
         ("field", "B", list(field_col)),
         # share of the file that repeats the previous file in its directory, in percent (255 = first file)
         ("repeat", "B", [255 if r["zd"] < 0 else max(0, min(100, round(100 - 100 * r["zd"] / max(r["z"], 1)))) for r in rows]),
+        # build time in tenths of a second (0 = not measured)
+        ("build", "H", [min(65535, max(1, round(build_seconds[r["p"]] * 10))) if r["p"] in build_seconds else 0 for r in rows]),
         ("digits", "B", [min(100, round(100 * r["dg"] / max(r["b"], 1))) for r in rows]),
     ]
     layout, offset = [], 0
@@ -402,6 +429,7 @@ def main():
         "chain": chain,
         "terms": terms,
         "tactics": tactics.most_common(),
+        "tacticBits": tactic_bits,
         "declKinds": decl_kinds.most_common(),
         "totals": {
             "bytes": sum(r["b"] for r in rows),
@@ -411,6 +439,8 @@ def main():
             "importEdges": sum(len(a) for a in adj),
             "wholeMathlibImports": sum("Mathlib" in r["i"] for r in rows),
             "longestChain": len(chain),
+            "buildSeconds": round(sum(build_seconds.values())),
+            "buildMeasured": len(build_seconds),
             "fieldByKeywords": by_keywords,
             "fieldAgree": agree,
             "fieldJudged": judged,

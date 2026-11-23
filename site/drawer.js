@@ -2,14 +2,14 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import { renderLean } from "./speech.js";
 import { blobUrl, treeUrl, rawUrl, $, fmt, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, state, names, namesReady, pathOf, prefix, dirSum } from "./data.js";
-import { canvas, requestDraw, bent, group, hasLabel, kindNote, moduleFacts, tip, chainTip } from "./map.js";
+import { secondsFmt, canvas, requestDraw, group, hasLabel, kindNote, moduleFacts, tip, chainTip } from "./map.js";
 
 // ---------------------------------------------------------------- details drawer
 export const drawer = $("drawer"), drawerBody = $("drawer-body");
 export function closeDrawer() { drawer.hidden = true; state.pinned = -1; requestDraw(); }
 $("drawer-close").onclick = closeDrawer;
 addEventListener("keydown", (e) => { if (e.key === "Escape" && !drawer.hidden) closeDrawer(); });
-addEventListener("pointerdown", (e) => { if (!drawer.hidden && !drawer.contains(e.target) && e.target !== canvas && e.target !== bent && !e.target.closest("#graph") && !e.target.closest("button.link")) closeDrawer(); });
+addEventListener("pointerdown", (e) => { if (!drawer.hidden && !drawer.contains(e.target) && e.target !== canvas && !e.target.closest("#graph") && !e.target.closest("button.link")) closeDrawer(); });
 
 export function groupBlock(g) {
   return `<p><b>${esc(g.label)}.</b> ${esc(g.gloss)}</p>` + (g.objects.length ? `<p class="note">Named in this directory's label: ${g.objects.map(esc).join(", ")}.</p>` : "");
@@ -26,6 +26,7 @@ export async function openModule(i) {
       <dt>Field</dt><dd>${esc(meta.fields[col.field[i]].name)} (estimate)</dd>
       ${col.kind[i] ? `<dt>Kind</dt><dd>${kindNote[col.kind[i]]}</dd>` : ""}
       <dt>Imported by</dt><dd>${plural(col.indeg[i], "module")} directly, ${fmt(col.dependents[i])} in total</dd>
+      ${col.build[i] ? `<dt>Build time</dt><dd>${secondsFmt(col.build[i] / 10)} in one independent rebuild</dd>` : ""}
       <dt>Import depth</dt><dd>${col.height[i]} of ${meta.totals.longestChain}</dd>
       ${col.repeat[i] !== 255 ? `<dt>Repetition</dt><dd>${col.repeat[i]}% repeats the module before it in this directory</dd>` : ""}
     </dl>

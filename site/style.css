@@ -169,3 +169,9 @@ figure { margin: 12px 0; }
 .chain-cell:hover, .chain-cell:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; position: relative; }
 .chain-axis { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 16px; max-width: 100%; font-size: 0.84rem; color: var(--ink-2); margin-top: 4px; }
 .chain-axis span { white-space: normal; }
+
+.control.bend { margin-left: auto; opacity: 0.55; }
+.control.bend:hover, .control.bend:focus-within { opacity: 1; }
+.control.bend input { width: 90px; accent-color: var(--ink); }
+
+.chips button:disabled { opacity: 0.5; cursor: default; }
