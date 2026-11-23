@@ -86,11 +86,11 @@ export function renderCharts() {
   const objects = meta.fields.map(() => new Map());
   meta.groups.forEach((g, gi) => { for (const o of g.objects) objects[g.field].set(o, (objects[g.field].get(o) || 0) + 1); });
   const maxLines = d3.max(fieldTotals, (t) => t.lines);
-  $("field-table").innerHTML = `<tr><th>Field</th><th class="num">Share of modules</th><th class="num" title="Share of ${fmt(meta.totals.truth.n)} randomly chosen modules that a language model assigned to this field after reading them">Share in ${fmt(meta.totals.truth.n)} modules read by a model</th><th>Lines</th><th>Objects and theorems named in directory labels</th></tr>`
+  $("field-table").innerHTML = `<tr><th>Field</th><th class="num">Share of modules</th><th class="num" title="Share of ${fmt(meta.totals.truth.n)} randomly chosen modules that a language model assigned to this field after reading them">Share in ${fmt(meta.totals.truth.n)} modules read by a model</th><th>Lines</th></tr>`
     + meta.fields.map((f, fi) => ({ f, fi, t: fieldTotals[fi] })).filter((r) => r.t.modules).sort((a, b) => b.t.lines - a.t.lines).map(({ f, fi, t }) =>
-      `<tr class="hoverable" data-preview-field="${fi}"><td style="white-space:nowrap"><span class="sw" style="background:${famColour(fieldFamily[fi])}"></span>${esc(f.name)}</td><td class="num">${pct(t.modules / N)}</td><td class="num">${pct(meta.totals.truthCounts[fi] / meta.totals.truth.n)}</td>
-       <td style="white-space:nowrap"><span class="bar" style="width:${(150 * t.lines) / maxLines}px;background:${famColour(fieldFamily[fi])}"></span>${fmt(t.lines)}</td>
-       <td class="objects">${[...objects[fi]].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([o]) => esc(o)).join(" · ")}</td></tr>`).join("");
+      `<tr class="hoverable field-row" data-preview-field="${fi}"><td style="white-space:nowrap"><span class="sw" style="background:${famColour(fieldFamily[fi])}"></span>${esc(f.name)}</td><td class="num">${pct(t.modules / N)}</td><td class="num">${pct(meta.totals.truthCounts[fi] / meta.totals.truth.n)}</td>
+       <td style="white-space:nowrap"><span class="bar" style="width:${(150 * t.lines) / maxLines}px;background:${famColour(fieldFamily[fi])}"></span>${fmt(t.lines)}</td></tr>
+       <tr class="hoverable objects-row" data-preview-field="${fi}"><td colspan="4" class="objects">${[...objects[fi]].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([o]) => esc(o)).join(" · ") || "No objects named"}</td></tr>`).join("");
 
   // --- imports between fields
   const used = meta.fields.map((f, fi) => fi).filter((fi) => fieldTotals[fi].modules > 100);

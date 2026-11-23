@@ -216,3 +216,8 @@ button.link:hover { text-decoration: underline; }
 .key li[data-preview-family]:hover { background: var(--paper-2); }
 .key .num { text-align: right; }
 .key .key-head { order: -1; grid-column: 1 / -1; border: 0; padding: 0 4px; color: var(--ink-2); font-size: 0.84rem; }
+
+/* fields table: the named objects sit on their own row under each field */
+#field-table { max-width: 900px; }
+#field-table .field-row td { border-bottom: 0; padding-bottom: 0; }
+#field-table .objects-row td { padding: 2px 12px 9px 18px; }
