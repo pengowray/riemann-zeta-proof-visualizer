@@ -43,6 +43,7 @@ meta.terms.forEach((term, t) => {
 });
 // steps of the announcement's timeline, mapped to module paths by the blueprint
 $("build-note").innerHTML = `Build times are wall-clock times from one rebuild by <a href="https://github.com/patunz/rh-build-live">Lucio Patone</a> (snapshot of 22 November 2026), ${fmt(Math.round(meta.totals.buildSeconds / 3600))} hours in total over ${fmt(meta.totals.buildMeasured)} modules. Many modules compiled at once on one machine, so a module's time depends on what else was running.`;
+const stepMasks = new Map(); // step number -> { mask, label }, for previews while the pointer is over a step
 const DOTS = { clear: "●", partial: "◐", weak: "○" };
 const CONFIDENCE = { clear: "the blueprint found the object clearly", partial: "names and position fit, proofs not read", weak: "weak evidence" };
 Promise.all([fetch("data/steps.json").then((r) => r.json()), namesReady]).then(([data]) => {
@@ -56,13 +57,16 @@ Promise.all([fetch("data/steps.json").then((r) => r.json()), namesReady]).then((
     const fileDir = paths.map((p) => files.filter((f) => p.endsWith(f.slice(0, f.lastIndexOf("/") + 1))).map((f) => f.slice(f.lastIndexOf("/") + 1)));
     const mask = maskWhere((i) => dirHit[leafDir[i]] || inName.some((m) => names[i].includes(m)) || fileDir[leafDir[i]].includes(names[i]));
     const count = countMask(mask);
+    const key = `step:${step.n}`, label = `${plural(count, "module")} for step ${step.n}, “${step.title}”`;
+    stepMasks.set(step.n, { mask, label });
+    const li = document.createElement("li");
     const b = document.createElement("button");
-    const key = `step:${step.n}`;
-    b.type = "button"; b.dataset.maskKey = key; b.setAttribute("aria-pressed", "false"); b.disabled = !count;
-    b.title = count ? `Step ${step.n}: ${CONFIDENCE[step.confidence]}` : `Step ${step.n}: no module or directory name matches`;
-    b.innerHTML = `${DOTS[step.confidence]} ${step.n}. ${esc(step.title)}<span class="n">${count ? fmt(count) : "not located"}</span>`;
-    b.onclick = () => setMask(key, mask, `${plural(count, "module")} for step ${step.n}, “${step.title}”`);
-    $("steps").append(b);
+    b.type = "button"; b.dataset.maskKey = key; b.dataset.step = step.n; b.setAttribute("aria-pressed", "false"); b.disabled = !count;
+    b.title = count ? `Evidence: ${CONFIDENCE[step.confidence]}. Click to keep the highlight.` : "No module or directory name matches";
+    b.innerHTML = `<span class="dot">${DOTS[step.confidence]}</span><span class="num">${step.n}.</span><span>${esc(step.title)}</span><span class="n">${count ? fmt(count) : "none"}</span>`;
+    b.onclick = () => setMask(key, mask, label);
+    li.append(b);
+    $("steps").append(li);
   }
 });
 
@@ -102,6 +106,12 @@ document.addEventListener("pointerover", (e) => {
   if (cell || e.target.closest?.("#chain-show, #chain-strip")) {
     const j = cell ? +cell.dataset.chain : 0;
     setPreview(chainMask, cell ? `Module ${j} of ${meta.chain.length} in the longest import chain` : chainLabel, { chain: true, marker: cell ? meta.chain[j - 1] : -1 });
+    return;
+  }
+  const stepEl = e.target.closest?.("[data-step]");
+  if (stepEl && stepMasks.has(+stepEl.dataset.step)) {
+    const { mask, label } = stepMasks.get(+stepEl.dataset.step);
+    if (state.previewLabel !== label) setPreview(mask, label);
     return;
   }
   const opener = e.target.closest?.("table.data [data-open]");

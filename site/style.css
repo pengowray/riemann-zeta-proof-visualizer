@@ -197,3 +197,15 @@ button.link:hover { text-decoration: underline; }
   #checks-table td { border: 0; padding: 2px 0; }
   #checks-table td[data-label]:not(:first-child)::before { content: attr(data-label) ": "; color: var(--ink-2); font-size: 0.84rem; }
 }
+
+/* timeline steps: a plain list in columns; each row lines up dot, number, title and module count */
+.step-list { list-style: none; margin: 0 0 8px; padding: 0; columns: 3 300px; column-gap: 28px; max-width: 1200px; }
+.step-list li { break-inside: avoid; }
+.step-list button { display: grid; grid-template-columns: 1.1em 2em 1fr auto; gap: 6px; width: 100%; align-items: baseline; text-align: left;
+  font: 0.92rem var(--serif); color: var(--ink); background: none; border: 0; border-bottom: 1px solid var(--rule); padding: 5px 4px; cursor: pointer; }
+.step-list button:hover, .step-list button:focus-visible { background: var(--paper-2); }
+.step-list button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.step-list button:disabled { opacity: 0.5; cursor: default; }
+.step-list .num { text-align: right; color: var(--ink-2); }
+.step-list .n { color: var(--ink-2); font-size: 0.84rem; }
+.step-list button[aria-pressed="true"] .num, .step-list button[aria-pressed="true"] .n { color: inherit; }
