@@ -46,9 +46,9 @@ export async function renderGraph() {
     userZoomingEnabled: false, userPanningEnabled: false, boxSelectionEnabled: false, // the page keeps the scroll wheel
     style: [
       { selector: "node", style: { width: "data(size)", height: "data(size)", "background-color": "data(colour)", label: "data(label)", color: ink, "font-family": "STIX Two Text, serif", "font-size": 15, "text-valign": "bottom", "text-margin-y": 4, "text-wrap": "wrap", "text-max-width": 150, "text-background-color": cssVar("--paper-2"), "text-background-opacity": 0.8, "text-background-padding": 1 } },
-      { selector: "edge", style: { width: "data(w)", "line-color": ink3, "target-arrow-color": ink3, "target-arrow-shape": "triangle", "arrow-scale": 0.8, "curve-style": "bezier", opacity: 0.45 } },
+      { selector: "edge", style: { width: "data(w)", "line-color": ink3, "target-arrow-color": ink3, "target-arrow-shape": "triangle", "arrow-scale": 1.5, "curve-style": "bezier", opacity: 0.45 } },
       { selector: "node[?main]", style: { "border-width": 4, "border-color": ink, "border-style": "double", "font-weight": 600, "font-size": 17, width: 34, height: 34 } },
-      { selector: "node.caption", style: { "background-opacity": 0, width: 1, height: 1, "text-valign": "center", "font-style": "italic", color: cssVar("--ink-2"), "text-max-width": 400, events: "no" } },
+      { selector: "node.caption", style: { "background-opacity": 0, width: 1, height: 1, "text-valign": "center", color: ink, "text-max-width": 400, events: "no" } },
       { selector: ".dim", style: { opacity: 0.08 } },
       { selector: "edge.lit", style: { opacity: 1, "line-color": ink, "target-arrow-color": ink } },
     ],

@@ -20,7 +20,7 @@
     <a href="#space">What takes up the space</a>
     <a href="#modules">Why so many modules</a>
     <a href="#fields">Areas of mathematics</a>
-    <a href="#imports">How modules depend on each other</a>
+    <a href="#imports">Dependencies</a>
     <a href="#numbers">Numbers and tactics</a>
     <a href="#checks">Who has checked the proof</a>
     <a href="#sources">Sources and method</a>
@@ -65,15 +65,15 @@
     <button id="reset-zoom" type="button" hidden>Show whole map</button>
   </div>
   <p class="hint">Scroll over the map to zoom, drag to move, click a module to read its code.</p>
+  <label class="find">Find in module names <input id="find" type="search" placeholder="e.g. Eisenstein" autocomplete="off" spellcheck="false"></label>
+  <span id="find-count" class="note"></span>
   <div id="highlight-bar" hidden><span id="highlight-text"></span> <button type="button" id="highlight-clear">Clear highlight</button></div>
   <h3>Highlight modules that mention</h3>
   <div id="terms" class="chips"></div>
   <p class="note">Terms come from Alpöge's announcement and from standard number theory. A module is counted if the term's identifier appears in its text, not counting import lines.</p>
   <h3>Highlight a step of Alpöge's timeline</h3>
+  <p class="note">Where each step appears to live in the Lean code, according to <a href="https://github.com/jae-63/rh-alpoge-blueprint/blob/main/BLUEPRINT.md">a blueprint of the proof by GitHub user jae-63</a>. ● found clearly &nbsp; ◐ names and position fit &nbsp; ○ weak evidence</p>
   <div id="steps" class="chips"></div>
-  <p class="note">Where each step appears to live in the Lean code, according to <a href="https://github.com/jae-63/rh-alpoge-blueprint/blob/main/BLUEPRINT.md">jae-63's blueprint</a>. A filled dot means the blueprint found the object clearly, a half dot that names and position fit, and an empty dot that the evidence is weak.</p>
-  <label class="find">Find in module names <input id="find" type="search" placeholder="e.g. Eisenstein" autocomplete="off" spellcheck="false"></label>
-  <span id="find-count" class="note"></span>
 </section>
 
 <section id="space">
@@ -96,7 +96,7 @@
 
 <section id="fields">
   <h2>Areas of mathematics</h2>
-  <p>Each module is assigned a field by a classifier that looks at the Mathlib and project identifiers it uses. This is an estimate that is right a little over half the time (see Sources and method). Point at a row to see where that field sits on the map.</p>
+  <p>Each module's field is predicted by a classifier from the Mathlib and project identifiers it uses. The prediction agrees with a language model's reading of the module about half the time (details under Sources and method). Point at a row to see where that field sits on the map.</p>
   <table id="field-table" class="data"></table>
   <p class="note">Named objects come from labels that a language model gave to each of 746 directories after reading a digest of its identifiers. Treat them as a guide, not a census.</p>
 </section>
@@ -108,6 +108,7 @@
   <figure><figcaption>Imports between fields. Each row shows where that field's imports go. Point at a square to see those modules on the map.</figcaption><div id="matrix-chart" class="chart"></div></figure>
   <h3>Import graph of the main directories</h3>
   <p id="graph-text"></p>
+  <p class="note phone-only">Scroll the graph sideways to see all of it.</p>
   <div id="graph-wrap"><div id="graph"></div><div id="graph-tip" class="maptip"></div></div>
   <h3>Longest import chain</h3>
   <p id="chain-text"></p>
@@ -123,13 +124,13 @@
   <h3>Modules with the largest share of digits</h3>
   <table id="digit-table" class="data"></table>
   <h3>Tactics used</h3>
-  <p class="note">Point at a bar for what the tactic does and to see the modules that use it on the map.</p>
+  <p class="note">Point at a bar to see what the tactic does and which modules use it.</p>
   <div id="tactic-chart" class="chart"></div>
 </section>
 
 <section id="checks">
   <h2>Who has checked the proof</h2>
-  <p>This page did not compile or check the proof. The table lists what each of these public pages reported when read on 23 November 2026. Follow the links for the current state.</p>
+  <p>What each of these public pages reported when read on 23 November 2026. This page ran none of the checks itself.</p>
   <table class="data" id="checks-table"></table>
   <p class="note">The Lean statements cover the Riemann zeta function and Dirichlet <i>L</i>-functions. They do not cover Dedekind zeta functions or automorphic <i>L</i>-functions.</p>
 </section>

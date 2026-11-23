@@ -15,8 +15,8 @@ $("facts").innerHTML = [
   ["Lines of Lean", `<b>${fmt(meta.totals.lines)}</b>`],
   ["Source size", `<b>${bytesFmt(meta.totals.bytes)}</b>, or ${bytesFmt(meta.totals.zbytes)} with each file compressed by zlib`],
   ["Declarations", `<b>${fmt(declTotal)}</b>: ${fmt((declCount.theorem || 0) + (declCount.lemma || 0))} theorems and lemmas, ${fmt((declCount.def || 0) + (declCount.abbrev || 0))} definitions`],
-  ["Comments", `<b>${fmt(meta.totals.commentBytes)}</b> bytes. The source has no comments or docstrings`],
-  ["Uses of <code>sorry</code>", `<b>${fmt(sorryCount)}</b>`],
+  ["Comments and docstrings", `<b>${meta.totals.commentBytes ? fmt(meta.totals.commentBytes) + " bytes" : "None"}</b>`],
+  ["Uses of <code>sorry</code>", `<b>${fmt(sorryCount)}</b> (<code>sorry</code> is Lean's placeholder for a step left unproved)`],
   ["Longest import chain", `<b>${fmt(meta.totals.longestChain)}</b> modules`],
 ].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
 
@@ -69,12 +69,12 @@ Promise.all([fetch("data/steps.json").then((r) => r.json()), namesReady]).then((
 // table of independent checks; the cells hold trusted HTML written for this page
 fetch("data/checks.json").then((r) => r.json()).then((data) => {
   $("checks-table").innerHTML = `<tr><th>Who</th><th>What was run</th><th>Reported result</th></tr>`
-    + data.checks.map((c) => `<tr><td><a href="${c.url}">${c.who}</a>${c.detail ? (c.detail.startsWith("(") ? " " : ", ") + c.detail : ""}</td><td>${c.ran}</td><td>${c.result}</td></tr>`).join("");
+    + data.checks.map((c) => `<tr><td data-label="Who"><a href="${c.url}">${c.who}</a>${c.detail ? (c.detail.startsWith("(") ? " " : ", ") + c.detail : ""}</td><td data-label="What was run">${c.ran}</td><td data-label="Reported result">${c.result}</td></tr>`).join("");
 });
 
 // Numbers section: switch the map to the digit colouring
 $("digits-on-map").onclick = () => {
-  [...$("colour-by").children].find((b) => b.textContent === "Digits")?.click();
+  [...$("colour-by").children].find((b) => b.textContent === "Share of digits")?.click();
   $("map").scrollIntoView();
 };
 

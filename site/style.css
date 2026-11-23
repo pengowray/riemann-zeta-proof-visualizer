@@ -144,6 +144,7 @@ figure { margin: 12px 0; }
 #drawer .spoken { position: sticky; bottom: -40px; background: var(--paper-3); padding: 8px 10px; font-size: 0.9rem; min-height: 2.6em; }
 
 @media (max-width: 1000px) {
+  .phone-only { display: block !important; }
   #rail { display: none; }
   main { margin-left: 0; padding: 0 16px 80px; }
   #top { grid-template-columns: 1fr; }
@@ -180,3 +181,19 @@ figure { margin: 12px 0; }
 
 button.link { font: inherit; color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; }
 button.link:hover { text-decoration: underline; }
+
+.phone-only { display: none; }
+.find input::placeholder { color: var(--ink-3); opacity: 1; }
+@media (max-width: 700px) {
+  /* controls and legend each stay on one line and scroll sideways, so the map is reached sooner */
+  .seg, #legend { flex-wrap: nowrap; overflow-x: auto; }
+  .seg button, #legend button, #legend span { white-space: nowrap; flex: none; }
+  .control { flex-wrap: nowrap; min-width: 0; max-width: 100%; }
+  .control.bend { margin-left: 0; }
+  /* the checks table becomes one block per source */
+  #checks-table, #checks-table tbody, #checks-table tr, #checks-table td { display: block; }
+  #checks-table tr:first-child { display: none; }
+  #checks-table tr { border-bottom: 1px solid var(--rule); padding: 8px 0; }
+  #checks-table td { border: 0; padding: 2px 0; }
+  #checks-table td[data-label]:not(:first-child)::before { content: attr(data-label) ": "; color: var(--ink-2); font-size: 0.84rem; }
+}

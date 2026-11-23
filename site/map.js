@@ -401,7 +401,8 @@ export function renderLegend() {
     const ramp = palette.slice(0, 9);
     el.innerHTML = `<span>${esc(mode.low)}</span><span class="ramp" style="background:linear-gradient(to right, ${ramp.join(",")})"></span><span>${esc(mode.high)}</span>`
       + (mode.missing !== undefined ? `<span><span class="sw" style="background:${palette[9]}"></span>first module in its directory</span>` : "")
-      + (mode.scale !== "linear" ? `<span class="share">(${mode.scale === "log" ? "logarithmic" : "square-root"} scale)</span>` : "");
+      ;
+    if (mode.scale !== "linear") el.querySelector(".ramp").title = `${mode.scale === "log" ? "Logarithmic" : "Square-root"} scale`;
   }
 }
 
