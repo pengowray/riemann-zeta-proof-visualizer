@@ -49,6 +49,8 @@ const FAMILIES = [
   { name: "Not classified", fields: ["glue", "unknown"], light: "#a8a294", dark: "#6b665b" },
 ];
 const fieldFamily = meta.fields.map((f) => FAMILIES.findIndex((fam) => fam.fields.includes(f.id)));
+const moduleFamily = (i) => fieldFamily[col.field[i]]; // from the identifiers the module uses
+const dirFamily = (i) => fieldFamily[meta.groups[col.group[i]].field]; // from its directory's label
 const KIND_NAMES = ["States and proves mathematics", "Restates one theorem proved in another module", "Only imports other modules", "Only sets options or notation"];
 const KIND_COLOURS = [["#2a78d6", "#3987e5"], ["#eb6834", "#d95926"], ["#1baf7a", "#199e70"], ["#a8a294", "#6b665b"]];
 const SEQ = ["#cde2fb", "#b7d3f6", "#9ec5f4", "#86b6ef", "#6da7ec", "#5598e7", "#3987e5", "#2a78d6", "#256abf", "#1c5cab", "#184f95", "#104281", "#0d366b"];
@@ -65,7 +67,8 @@ const SIZE_MODES = [
   { id: "decls", label: "Declarations", values: col.decls, unit: "of the declarations" },
 ];
 const COLOUR_MODES = [
-  { id: "field", label: "Area of mathematics", kind: "cat" },
+  { id: "field", label: "Field of each module", kind: "cat" },
+  { id: "dirfield", label: "Field of its directory", kind: "cat" },
   { id: "kind", label: "Kind of module", kind: "cat" },
   { id: "height", label: "Import depth", kind: "seq", values: col.height, scale: "linear", low: "imports no other module", high: `${meta.totals.longestChain} modules deep`, noun: "import depth" },
   { id: "dependents", label: "Dependents", kind: "seq", values: col.dependents, scale: "log", low: "no module depends on it", high: `${fmt(d3.max(col.dependents))} modules depend on it`, noun: "dependents" },
@@ -140,9 +143,10 @@ function seqStep(mode) {
 }
 function recolour() {
   const mode = state.colour, dark = isDark();
-  if (mode.id === "field") {
+  if (mode.id === "field" || mode.id === "dirfield") {
     palette = FAMILIES.map((f) => (dark ? f.dark : f.light));
-    for (let i = 0; i < N; i++) cidx[i] = fieldFamily[col.field[i]];
+    const of = mode.id === "field" ? moduleFamily : dirFamily;
+    for (let i = 0; i < N; i++) cidx[i] = of(i);
   } else if (mode.id === "kind") {
     palette = KIND_COLOURS.map((c) => c[dark ? 1 : 0]);
     cidx.set(col.kind);
@@ -358,9 +362,9 @@ function renderLegend() {
   const el = $("legend"), mode = state.colour;
   el.innerHTML = "";
   if (mode.kind === "cat") {
-    const isField = mode.id === "field";
+    const isField = mode.id !== "kind";
     const labels = isField ? FAMILIES.map((f) => f.name) : KIND_NAMES;
-    const groupOf = isField ? (i) => fieldFamily[col.field[i]] : (i) => col.kind[i];
+    const groupOf = mode.id === "field" ? moduleFamily : mode.id === "dirfield" ? dirFamily : (i) => col.kind[i];
     const shares = sharesBy(groupOf, labels.length);
     labels.map((name, g) => ({ name, g, share: shares[g] })).filter((d) => d.share > 0).sort((a, b) => b.share - a.share).forEach(({ name, g, share }) => {
       const b = document.createElement("button");
@@ -368,7 +372,7 @@ function renderLegend() {
       b.type = "button"; b.dataset.maskKey = key; b.setAttribute("aria-pressed", String(state.maskKey === key));
       b.innerHTML = `<span class="sw" style="background:${palette[g]}"></span>${esc(name)} <span class="share">${pct(share)}</span>`;
       b.title = `${pct(share)} ${state.size.unit}. Click to highlight.`;
-      b.onclick = () => setMask(key, maskWhere((i) => groupOf(i) === g), name);
+      b.onclick = () => setMask(key, maskWhere((i) => groupOf(i) === g), mode.id === "dirfield" ? `directories labelled “${name}”` : name);
       el.append(b);
     });
   } else {
@@ -409,6 +413,12 @@ function leafAt(px, py) {
   return { dir: node.parent.data.dir, leaf: node.data.leaf };
 }
 const group = (i) => meta.groups[col.group[i]];
+const groupSize = new Uint32Array(meta.groups.length);
+for (let i = 0; i < N; i++) groupSize[col.group[i]]++;
+// One label cannot describe thousands of modules, so large groups show their directory name instead.
+const hasLabel = (i) => groupSize[col.group[i]] <= 3000;
+const spaced = (name) => name.replace(/([a-z0-9])([A-Z])/g, "$1 $2");
+const labelOf = (i) => (hasLabel(i) ? group(i).label : spaced(dirs[leafDir[i]].name));
 const kindNote = ["", "Restates one theorem that is proved in another module", "Only imports other modules", "Only sets options or notation"];
 
 function moduleFacts(i) {
@@ -426,7 +436,7 @@ function tipHtml(hit) {
   else if (mode.id === "dependents") extra = `<br>${plural(col.dependents[i], "module depends", "modules depend")} on it (${fmt(col.indeg[i])} import it directly)`;
   else if (mode.id === "repeat") extra = col.repeat[i] === 255 ? "<br>First module in its directory" : `<br>${col.repeat[i]}% repeats the module before it`;
   else if (mode.id === "digits") extra = `<br>${col.digits[i]}% of its characters are digits`;
-  return `<b>${esc(g.label)}</b><span class="path">${esc(pathOf(i))}</span>${moduleFacts(i)}<br>${esc(meta.fields[col.field[i]].name)}`
+  return `<b>${esc(labelOf(i))}</b><span class="path">${esc(pathOf(i))}</span>${moduleFacts(i)}<br>${esc(meta.fields[col.field[i]].name)}`
     + (col.kind[i] ? `<br>${kindNote[col.kind[i]]}` : "") + extra;
 }
 const tip = $("tip");
@@ -478,7 +488,7 @@ async function openModule(i) {
       <dt>Import depth</dt><dd>${col.height[i]} of ${meta.totals.longestChain}</dd>
       ${col.repeat[i] !== 255 ? `<dt>Repetition</dt><dd>${col.repeat[i]}% repeats the module before it in this directory</dd>` : ""}
     </dl>
-    ${groupBlock(g)}
+    ${hasLabel(i) ? groupBlock(g) : ""}
     <pre class="lean" id="drawer-code">Loading the module from GitHub…</pre>
     <p class="spoken" id="drawer-spoken">Point at a line to read it aloud in words.</p>`;
   try {
@@ -506,7 +516,7 @@ async function openDirectory(d) {
     <a class="path" href="${treeUrl(d.path)}" target="_blank" rel="noopener">${esc(d.path)}/</a>
     <dl><dt>Modules</dt><dd>${fmt(d.end - d.start)}</dd><dt>Lines</dt><dd>${fmt(dirSum(d, "lines"))}</dd>
     <dt>Size</dt><dd>${bytesFmt(dirSum(d, "bytes"))}</dd><dt>Declarations</dt><dd>${fmt(dirSum(d, "decls"))}</dd></dl>
-    ${sameGroup ? groupBlock(g) : ""}
+    ${sameGroup && hasLabel(d.start) ? groupBlock(g) : ""}
     <h3>Largest modules</h3>
     <table class="data">${idx.map((i) => `<tr><td><button class="link" data-open="${i}">${esc(pathOf(i).slice(d.path.length + 1))}</button></td><td class="num">${bytesFmt(col.bytes[i])}</td></tr>`).join("")}</table>`;
 }
@@ -611,7 +621,7 @@ function renderCharts() {
     FAMILIES.forEach((f, g) => { if (t[g]) rows.push({ measure: label, family: f.name, g, share: t[g] / all, total: t[g] }); });
   }
   const byBytes = rows.filter((r) => r.measure === "Bytes").sort((a, b) => b.share - a.share);
-  $("space-text").textContent = `No single area dominates. By bytes, the largest is ${byBytes[0].family.toLowerCase()} with ${pct(byBytes[0].share)}, followed by ${byBytes[1].family.toLowerCase()} (${pct(byBytes[1].share)}) and ${byBytes[2].family.toLowerCase()} (${pct(byBytes[2].share)}). Analytic number theory, where the theorem is stated, is ${pct(rows.find((r) => r.measure === "Bytes" && r.g === 0)?.share || 0)}. The shares are similar under every measure.`;
+  $("space-text").textContent = `Fields are estimated from the identifiers each module uses. By that estimate no single area dominates. By bytes, the largest is ${byBytes[0].family.toLowerCase()} with ${pct(byBytes[0].share)}, followed by ${byBytes[1].family.toLowerCase()} (${pct(byBytes[1].share)}) and ${byBytes[2].family.toLowerCase()} (${pct(byBytes[2].share)}). Analytic number theory, where the theorem is stated, is ${pct(rows.find((r) => r.measure === "Bytes" && r.g === 0)?.share || 0)}. The shares are similar under every measure.`;
   const order = byBytes.map((r) => r.family);
   mount("space-chart", Plot.plot({
     style: plotStyle(), width: 1000, height: 270, marginLeft: 130, marginRight: 20, marginBottom: 44,
@@ -654,7 +664,7 @@ function renderCharts() {
     marks: [Plot.barY(repRows, { x: "bin", y: "n", fill: "kind", order: kindScale.domain, insetLeft: 1, insetRight: 1, tip: tipOpts, title: (d) => `${fmt(d.n)} modules\n${d.bin}% repeated\n${d.kind}` }), Plot.ruleY([0])],
   }));
   const medianRep = (kind) => d3.median(d3.range(N).filter((i) => col.repeat[i] !== 255 && (col.kind[i] === 1) === kind), (i) => col.repeat[i]);
-  $("repeat-text").textContent = `Repetition is measured by compressing each module after the compressor has read the module before it in the same directory. For a typical module that states and proves mathematics, ${medianRep(false)}% of the text is repeated from its neighbour. For a typical restating module it is ${medianRep(true)}%. Only ${fmt(shapeDup)} modules belong to a group of ten or more that are identical apart from names and numbers, so the proof is not made of copied templates.`;
+  $("repeat-text").textContent = `Repetition is measured by compressing each module after the compressor has read the module before it in the same directory. For a typical module that states and proves mathematics, ${medianRep(false)}% of the text is repeated from its neighbour. For a typical restating module it is ${medianRep(true)}%. Apart from the restating modules, exact copies are rare: ${fmt(shapeDup)} modules belong to a group of ten or more that are identical once names and numbers are ignored.`;
 
   // --- areas of mathematics
   const fieldTotals = meta.fields.map(() => ({ modules: 0, lines: 0, bytes: 0 }));
@@ -677,7 +687,7 @@ function renderCharts() {
     const rowTotal = d3.sum(used, (b) => meta.fieldMatrix[a][b]);
     for (const b of used) cells.push({ from: meta.fields[a].name, to: meta.fields[b].name, n: meta.fieldMatrix[a][b], share: meta.fieldMatrix[a][b] / rowTotal });
   }
-  $("imports-text").textContent = `The project has ${fmt(meta.totals.importEdges)} imports between its own modules. ${pct(same / total)} of them stay inside one field and ${pct(1 - same / total)} cross from one field to another. Every module is needed: all ${fmt(N)} are reachable from Main.lean by following imports.`;
+  $("imports-text").textContent = `The project has ${fmt(meta.totals.importEdges)} imports between its own modules. ${pct(same / total)} of them stay inside one field and ${pct(1 - same / total)} cross from one field to another. Every module is imported: all ${fmt(N)} are reachable from Main.lean by following imports.`;
   const fieldOrder = used.slice().sort((a, b) => fieldFamily[a] - fieldFamily[b]).map((fi) => meta.fields[fi].name);
   mount("matrix-chart", Plot.plot({
     style: plotStyle(), width: 900, height: 520, marginLeft: 240, marginBottom: 150, padding: 0.06,
@@ -701,7 +711,7 @@ function renderCharts() {
   const tactics = meta.tactics.filter((t) => t[0] !== "sorry").slice(0, 24).map(([name, n]) => ({ name, n }));
   const tc = Object.fromEntries(meta.tactics);
   const longDigits = d3.sum(col.digits, (d) => (d >= 20 ? 1 : 0));
-  $("numbers-text").textContent = `The source is proof text, not data. Only ${fmt(longDigits)} of the ${fmt(N)} modules are 20% digits or more. The proof never uses native_decide, and it uses decide ${fmt(tc.decide || 0)} times, mostly for arithmetic on explicit numbers such as primality certificates. The most common steps are have (state an intermediate fact, ${fmt(tc.have)} times), rw (rewrite with an equation, ${fmt(tc.rw)}) and exact (give the proof term, ${fmt(tc.exact)}).`;
+  $("numbers-text").textContent = `The source is proof text, not data. Only ${fmt(longDigits)} of the ${fmt(N)} modules are 20% digits or more. The proof never uses native_decide, and it uses decide ${fmt(tc.decide || 0)} times. The module with the most digits, Primes.lean, holds primality certificates checked with decide. The most common steps are have (state an intermediate fact, ${fmt(tc.have)} times), rw (rewrite with an equation, ${fmt(tc.rw)}) and exact (give the proof term, ${fmt(tc.exact)}).`;
   mount("tactic-chart", Plot.plot({
     style: plotStyle(), width: 760, height: 520, marginLeft: 130,
     x: { label: "Uses in the whole source", grid: true, tickFormat: "~s" }, y: { label: null, domain: tactics.map((t) => t.name) },
@@ -713,12 +723,13 @@ function renderCharts() {
 function renderNameTables() {
   const hubs = d3.range(N).sort((a, b) => col.dependents[b] - col.dependents[a]).slice(0, 12);
   $("hub-table").innerHTML = `<tr><th>Module</th><th>Directory label</th><th class="num">Modules that depend on it</th><th class="num">Import it directly</th></tr>`
-    + hubs.map((i) => `<tr><td><button class="link" data-open="${i}">${esc(pathOf(i))}</button></td><td>${esc(group(i).label)}</td><td class="num">${fmt(col.dependents[i])} (${pct(col.dependents[i] / N)})</td><td class="num">${fmt(col.indeg[i])}</td></tr>`).join("");
+    + hubs.map((i) => `<tr><td><button class="link" data-open="${i}">${esc(pathOf(i))}</button></td><td>${esc(labelOf(i))}</td><td class="num">${fmt(col.dependents[i])} (${pct(col.dependents[i] / N)})</td><td class="num">${fmt(col.indeg[i])}</td></tr>`).join("");
   const digitTop = d3.range(N).filter((i) => col.bytes[i] > 2000).sort((a, b) => col.digits[b] - col.digits[a]).slice(0, 10);
   $("digit-table").innerHTML = `<tr><th>Module</th><th>Directory label</th><th class="num">Digits</th><th class="num">Size</th></tr>`
-    + digitTop.map((i) => `<tr><td><button class="link" data-open="${i}">${esc(pathOf(i))}</button></td><td>${esc(group(i).label)}</td><td class="num">${col.digits[i]}%</td><td class="num">${bytesFmt(col.bytes[i])}</td></tr>`).join("");
+    + digitTop.map((i) => `<tr><td><button class="link" data-open="${i}">${esc(pathOf(i))}</button></td><td>${esc(labelOf(i))}</td><td class="num">${col.digits[i]}%</td><td class="num">${bytesFmt(col.bytes[i])}</td></tr>`).join("");
 }
 renderCharts();
+$("agree-note").textContent = `The field of a module is a keyword estimate. In directories of at most 400 modules that were labelled with high confidence, it falls in the same colour family as the directory's label for ${pct(meta.totals.fieldAgree / meta.totals.fieldJudged)} of modules (${fmt(meta.totals.fieldAgree)} of ${fmt(meta.totals.fieldJudged)}). The map can be coloured by either.`;
 
 // rows that preview a highlight on the map while the pointer is over them
 document.addEventListener("pointerover", (e) => {

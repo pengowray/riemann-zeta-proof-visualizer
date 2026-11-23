@@ -45,24 +45,60 @@ TACTICS = [
     "by_contra", "by_cases", "classical", "infer_instance", "rfl", "trivial", "tauto",
     "fun_prop", "measurability", "continuity", "grind", "exact_mod_cast", "convert", "sorry",
 ]
+# Terms from Alpöge's announcement (and a few standard ones), with the regular
+# expression used to find them in a module's text (import lines are not searched).
+TERMS = [
+    ("Stepanov's method", r"Stepanov"),
+    ("Theta lift", r"[Tt]hetaLift|theta_lift|thetaLift"),
+    ("Seesaw identity", r"[Ss]eesaw"),
+    ("Siegel–Weil formula", r"SiegelWeil|siegelWeil|siegel_weil"),
+    ("Mass formula", r"MassFormula|massFormula"),
+    ("Chowla–Selberg formula", r"ChowlaSelberg|chowlaSelberg|chowla_selberg"),
+    ("Bost slope inequality", r"[Ss]lopeInequality|slope_inequality|BostSlope"),
+    ("Harder–Narasimhan filtration", r"HarderNarasimhan|harderNarasimhan"),
+    ("Behrend sets", r"Behrend"),
+    ("Iwasawa theory and decomposition", r"Iwasawa"),
+    ("Vandiver's conjecture", r"Vandiver"),
+    ("Bessel period", r"Bessel"),
+    ("Gan–Gross–Prasad period", r"GGP|GanGrossPrasad"),
+    ("Rallis inner product", r"Rallis"),
+    ("Poincaré series", r"Poincar[eé]Series|poincar[eé]Series|PoincareSeries"),
+    ("Trace formula", r"TraceFormula|traceFormula"),
+    ("Hecke character", r"HeckeCharacter|heckeCharacter|Gr[oö]ssencharacter"),
+    ("Weil representation", r"WeilRepresentation|weilRepresentation|WeilRep\b"),
+    ("Complex multiplication", r"\bCM[A-Z]|ComplexMultiplication|IsCM\b|CMType"),
+    ("von Mangoldt function", r"vonMangoldt"),
+    ("Riemann zeta function", r"riemannZeta"),
+    ("Dirichlet L-function", r"DirichletCharacter\.LFunction|LFunction χ|LSeries"),
+    ("Gauss sum", r"[Gg]aussSum|gauss_sum"),
+    ("Witt vectors", r"WittVector|𝕎"),
+    ("Frobenius", r"[Ff]robenius"),
+    ("Weil bound", r"WeilBound|weilBound|weil_bound"),
+    ("Capelli identity", r"Capelli"),
+    ("Chebotarev density theorem", r"Chebotarev"),
+    ("Haar measure", r"[Hh]aarMeasure|\.haar\b|IsHaarMeasure"),
+    ("Fourier transform", r"[Ff]ourierTransform|𝓕|fourierIntegral"),
+]
+TERM_RES = [re.compile(pattern) for _label, pattern in TERMS]
+
 # Identifier patterns that indicate a field of mathematics. Counted per file; the
 # builder picks the field whose count is highest relative to its average over all files.
 FIELD_PATTERNS = {
-    "analytic-nt": r"riemannZeta|LSeries|LFunction|DirichletCharacter|vonMangoldt|ArithmeticFunction|primeCounting|EulerProduct|ZeroFree|Nat\.Prime|Chebyshev|PrimeNumberTheorem",
+    "analytic-nt": r"riemannZeta|LSeries|LFunction|DirichletCharacter|vonMangoldt|ArithmeticFunction|primeCounting|EulerProduct|ZeroFree|Nat\.Prime|PrimeNumberTheorem",
     "algebraic-nt": r"NumberField|RingOfIntegers|𝓞|InfinitePlace|ClassGroup|IsDedekindDomain|absNorm|FractionalIdeal|Adele|Idele|𝔸|IsCyclotomicExtension|Padic|ℚ_\[|ℤ_\[|HeightOneSpectrum|IsDiscreteValuationRing|Valued|ClassField|Artin|IsGalois|Gal\(",
     "cohomology": r"groupCohomology|[Cc]ocycle|[Cc]oboundary|[Cc]ohomology|Etale|Brauer|Cochain|Inflation|Corestriction|Shapiro|Profinite",
     "automorphic": r"Automorphic|ModularForm|CuspForm|Hecke|Eisenstein|SlashAction|UpperHalfPlane|ℍ|[Cc]uspidal|TraceFormula|Petersson|Whittaker|Satake|PoincareSeries|Maass|Langlands|Jacquet|Rankin",
     "theta": r"[Tt]heta|WeilRep|Heisenberg|SiegelWeil|Metaplectic|Seesaw|Howe|Rallis|Oscillator",
-    "rep-theory": r"Representation|FDRep|LieAlgebra|LieGroup|unitaryGroup|GeneralLinearGroup|SpecialLinearGroup|HarishChandra|DiscreteSeries|WeylGroup|RootSystem|RootPairing|HighestWeight|Casimir|Capelli|Unipotent|Borel|Parabolic|Iwasawa|Bessel|IsIrreducible|Schur",
+    "rep-theory": r"Representation|FDRep|LieAlgebra|LieGroup|unitaryGroup|GeneralLinearGroup|SpecialLinearGroup|HarishChandra|DiscreteSeries|WeylGroup|RootSystem|RootPairing|HighestWeight|Casimir|Capelli|Unipotent|BorelSubgroup|Parabolic|Iwasawa|Bessel|IsIrreducible|Schur",
     "arith-geom": r"AbelianVariety|AbelianScheme|EllipticCurve|WeierstrassCurve|Isogeny|Jacobian|ComplexMultiplication|CMType|GoodReduction|Neron|Shimura|Moduli|GaloisField|FiniteField|Polarization|Tate[A-Z]|PointCount|WeilBound|RiemannForm|PeriodMatrix",
     "padic-hodge": r"WittVector|𝕎|Crystalline|FormalGroup|PerfectRing|Perfection|Fontaine|Tilt|PhiGamma|deRham|HodgeTate|PDiv|Dieudonn|ArtinHasse|Wach|Verschiebung|Lubin|Teichm",
     "alg-geom": r"AlgebraicGeometry|Scheme|Sheaf|Divisor|LineBundle|BlowUp|Blowup|IsAffine|LocallyRingedSpace|Presheaf|Spec\b|Proj\b|Variety|ResolutionOfSing|Birational|Toroidal|Bertini",
     "algebra": r"MvPolynomial|TensorProduct|CategoryTheory|Localization|IsNoetherian|Coalgebra|Bialgebra|HopfAlgebra|ExteriorAlgebra|Homological|IsLocalRing|Polynomial\.|Ideal\.|Algebra\.|Module\.|LinearMap\.|Matrix\.det|Resultant|Derivation|GradedAlgebra|AdicCompletion",
-    "lattices": r"Lattice|ZLattice|[Cc]ovolume|Minkowski|[Ss]uccessiveMinim|[Ss]lope|Height|[Gg]ram|ZSpan|fundamentalDomain|Hermitian|HarderNarasimhan|Arakelov|ConvexBody|Unimodular|QuadraticForm",
+    "lattices": r"Lattice|ZLattice|[Cc]ovolume|Minkowski|[Ss]uccessiveMinim|[Ss]lope|Height(?!One)|[Gg]ram|ZSpan|fundamentalDomain|Hermitian|HarderNarasimhan|Arakelov|ConvexBody|Unimodular|QuadraticForm",
     "harmonic": r"Fourier|𝓕|SchwartzMap|Lp\b|InnerProductSpace|ContinuousLinearMap|[Ss]pectr|IsSelfAdjoint|Hilbert|Laplac|Plancherel|Parseval|Convolution|OrthonormalBasis|IsCompactOperator|Sobolev",
     "analysis": r"Real\.log|Real\.exp|Complex\.exp|HasDerivAt|deriv\b|Asymptotics|IsBigO|IsLittleO|Tendsto|Summable|tsum|Differentiable|AnalyticAt|Complex\.Gamma|Real\.Gamma|Real\.sqrt|Real\.rpow|ContinuousOn|Real\.pi|Convex",
     "measure": r"MeasureTheory|Measure\b|∫|Integrable|volume|[Hh]aar|ae_|Measurable|IntervalIntegral",
-    "combinatorics": r"Finset\.card|Fintype\.card|Nat\.choose|SimpleGraph|powerset|Partition|Equiv\.Perm|Multiset|YoungDiagram|Nat\.factorial|Finset\.sum|Finset\.prod|Behrend|Pigeonhole",
+    "combinatorics": r"Finset\.card|Fintype\.card|Nat\.choose|SimpleGraph|powerset|Partition|Equiv\.Perm|Multiset|YoungDiagram|Nat\.factorial|Behrend|Pigeonhole",
 }
 FIELD_RES = [(name, re.compile(pat)) for name, pat in FIELD_PATTERNS.items()]
 TACTIC_RE = re.compile(r"(?<![A-Za-z0-9_.'])(" + "|".join(TACTICS) + r")(?![A-Za-z0-9_.'])")
@@ -126,6 +162,7 @@ def scan_file(root, rel, prev_raw=b""):
         "t": dict(tactics),
         "sh": shape_hash,
         "fc": [len(rx.findall(nocomment)) for _name, rx in FIELD_RES],
+        "tm": sum(1 << t for t, rx in enumerate(TERM_RES) if rx.search(nocomment)),
         "k": kind,
     }
     opens = Counter()

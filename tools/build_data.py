@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
 """Turn the scan cache into the compact data files the page loads.
 
-Usage: python3 -I tools/build_data.py <cache-dir> <labels-dir> <site-data-dir> [<lean-src-dir>]
+Usage: python3 tools/build_data.py <cache-dir> <labels-dir> <site-data-dir>
 
 Outputs in <site-data-dir>:
   meta.json   directories, column layout, labels, import matrices, longest chain, totals
   cols.bin    one typed array per column, one value per file, in the file order of meta.json
   names.txt   file names without ".lean", one per line, same order
-  terms.bin   one bitset per search term (only when <lean-src-dir> is given)
+  terms.bin   one bitset per search term
 """
 import glob
 import json
 import os
 import re
-import subprocess
 import sys
 from array import array
 from collections import Counter, defaultdict
@@ -54,40 +53,7 @@ FAMILIES = [
 KINDS = ["math", "restate", "imports", "setup"]
 SPLIT_REGIONS = {"Development", "GroundTheory", "CompanionTheory"}
 
-# Terms from Alpöge's announcement (and a few standard ones), with the regular
-# expression used to find them in file contents.
-TERMS = [
-    ("Stepanov's method", r"Stepanov"),
-    ("Theta lift", r"[Tt]hetaLift|theta_lift|thetaLift"),
-    ("Seesaw identity", r"[Ss]eesaw"),
-    ("Siegel–Weil formula", r"SiegelWeil|siegelWeil|siegel_weil"),
-    ("Siegel mass formula", r"MassFormula|massFormula|SiegelMass"),
-    ("Chowla–Selberg formula", r"ChowlaSelberg|chowlaSelberg|chowla_selberg"),
-    ("Bost slope inequality", r"[Ss]lopeInequality|slope_inequality|BostSlope"),
-    ("Harder–Narasimhan filtration", r"HarderNarasimhan|harderNarasimhan"),
-    ("Behrend sets", r"Behrend"),
-    ("Iwasawa theory and decomposition", r"Iwasawa"),
-    ("Vandiver's conjecture", r"Vandiver"),
-    ("Bessel period", r"Bessel"),
-    ("Gan–Gross–Prasad period", r"GGP|GanGrossPrasad"),
-    ("Rallis inner product", r"Rallis"),
-    ("Poincaré series", r"Poincar[eé]Series|poincar[eé]Series|PoincareSeries"),
-    ("Relative trace formula", r"RelativeTrace|relativeTrace|TraceFormula|traceFormula"),
-    ("Hecke character", r"HeckeCharacter|heckeCharacter|Gr[oö]ssencharacter"),
-    ("Weil representation", r"WeilRepresentation|weilRepresentation|WeilRep\b"),
-    ("Complex multiplication", r"\bCM[A-Z]|ComplexMultiplication|IsCM\b|CMType"),
-    ("von Mangoldt function", r"vonMangoldt"),
-    ("Riemann zeta function", r"riemannZeta"),
-    ("Dirichlet L-function", r"DirichletCharacter\.LFunction|LFunction χ|LSeries"),
-    ("Gauss sum", r"[Gg]aussSum|gauss_sum"),
-    ("Witt vectors", r"WittVector|𝕎"),
-    ("Frobenius", r"[Ff]robenius"),
-    ("Weil bound", r"WeilBound|weilBound|weil_bound"),
-    ("Capelli identity", r"Capelli"),
-    ("Chebotarev density theorem", r"Chebotarev"),
-    ("Haar measure", r"[Hh]aarMeasure|\.haar\b|IsHaarMeasure"),
-    ("Fourier transform", r"[Ff]ourierTransform|𝓕|fourierIntegral"),
-]
+from scan import TERMS  # noqa: E402  (same directory)
 
 
 def region_of(path):
@@ -101,7 +67,6 @@ def region_of(path):
 
 def main():
     cache, labels_dir, out = sys.argv[1:4]
-    src = sys.argv[4] if len(sys.argv) > 4 else None
     os.makedirs(out, exist_ok=True)
     rows = [json.loads(line) for line in open(os.path.join(cache, "files.jsonl"))]
 
@@ -178,6 +143,7 @@ def main():
     total_bytes = sum(r["b"] for r in rows)
     density = [sum(r["fc"][j] for r in rows) / total_bytes for j in range(len(scan_fields))]
     by_keywords = 0
+    keyword_field = [-1] * n
     for i, r in enumerate(rows):
         best, best_score = -1, 0.0
         for j, count in enumerate(r["fc"]):
@@ -187,6 +153,7 @@ def main():
                     best, best_score = j, score
         if best >= 0:
             field_col[i] = field_ids.index(scan_fields[best])
+            keyword_field[i] = field_col[i]
             by_keywords += 1
 
     # ---- import graph
@@ -301,26 +268,33 @@ def main():
     with open(os.path.join(out, "names.txt"), "w") as fh:
         fh.write("\n".join(r["p"].split("/")[-1][:-5] for r in rows))
 
-    # ---- term bitsets
+    # ---- term bitsets (the scanner matched each term against the text without import lines)
     terms = []
-    if src:
-        with open(os.path.join(out, "terms.bin"), "wb") as fh:
-            for label, pattern in TERMS:
-                res = subprocess.run(
-                    ["grep", "-rlE", "--include=*.lean", "-e", pattern, "."],
-                    cwd=src, capture_output=True, text=True, check=False,
-                )
-                bitset = bytearray((n + 7) // 8)
-                hits = 0
-                for line in res.stdout.splitlines():
-                    i = index.get(line[2:])
-                    if i is not None:
-                        bitset[i >> 3] |= 1 << (i & 7)
-                        hits += 1
-                if hits:
-                    terms.append({"label": label, "files": hits})
-                    fh.write(bitset)
-                print(f"{hits:7d}  {label}")
+    with open(os.path.join(out, "terms.bin"), "wb") as fh:
+        for t, (label, _pattern) in enumerate(TERMS):
+            bitset = bytearray((n + 7) // 8)
+            hits = 0
+            for i, r in enumerate(rows):
+                if (r["tm"] >> t) & 1:
+                    bitset[i >> 3] |= 1 << (i & 7)
+                    hits += 1
+            if hits:
+                terms.append({"label": label, "files": hits})
+                fh.write(bitset)
+            print(f"{hits:7d}  {label}")
+
+    # ---- how often the keyword field agrees with the directory label, measured on
+    # directories of at most 400 modules that the labelling model marked high confidence
+    family = {f[0]: f[2] for f in FIELDS}
+    family.update({"combinatorics": "algebra", "computation": "algebra", "theta": "theta"})
+    group_size = Counter(group_col)
+    agree = judged = 0
+    for i in range(n):
+        g = group_list[group_col[i]]
+        if g["confidence"] == "high" and group_size[group_col[i]] <= 400 and keyword_field[i] >= 0:
+            judged += 1
+            agree += family[field_ids[keyword_field[i]]] == family[field_ids[g["field"]]]
+    print(f"keyword field agrees with directory label for {agree} of {judged} modules")
 
     tactics = Counter()
     decl_kinds = Counter()
@@ -351,6 +325,8 @@ def main():
             "wholeMathlibImports": sum("Mathlib" in r["i"] for r in rows),
             "longestChain": len(chain),
             "fieldByKeywords": by_keywords,
+            "fieldAgree": agree,
+            "fieldJudged": judged,
             "labelledGroups": sum(1 for g in group_list if g["confidence"]),
         },
     }

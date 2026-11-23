@@ -66,7 +66,7 @@
   <div id="highlight-bar" hidden><span id="highlight-text"></span> <button type="button" id="highlight-clear">Clear highlight</button></div>
   <h3>Highlight modules that mention</h3>
   <div id="terms" class="chips"></div>
-  <p class="note">Terms come from Alpöge's announcement and from standard number theory. A module is counted if the term's identifier appears anywhere in its text.</p>
+  <p class="note">Terms come from Alpöge's announcement and from standard number theory. A module is counted if the term's identifier appears in its text, not counting import lines.</p>
   <label class="find">Find in module names <input id="find" type="search" placeholder="e.g. Eisenstein" autocomplete="off" spellcheck="false"></label>
   <span id="find-count" class="note"></span>
 </section>
@@ -91,7 +91,7 @@
 
 <section id="fields">
   <h2>Areas of mathematics</h2>
-  <p>Each module is assigned a field from the Mathlib and project identifiers it uses. Point at a row to see where that field sits on the map.</p>
+  <p>Each module is assigned a field from the Mathlib and project identifiers it uses. This is an estimate (see Sources and method). Point at a row to see where that field sits on the map.</p>
   <table id="field-table" class="data"></table>
   <p class="note">Named objects come from labels that a language model gave to each of 746 directories after reading a digest of its identifiers. Treat them as a guide, not a census.</p>
 </section>
@@ -123,7 +123,7 @@
     <li>This page did not compile or check the proof. The statements that all 175,187 modules compile, that the kernel accepts every declaration, and that the theorems depend only on the axioms <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code> are from <a href="https://mrubinst.github.io/grh-lean-verification/">Michael Rubinstein's independent check</a>.</li>
     <li>All counts on this page come from a script that reads every file once. Its totals match Rubinstein's: 175,187 files, 17,374,215 lines, longest import chain 203.</li>
     <li>Declarations are counted by matching keywords such as <code>theorem</code> and <code>def</code> at the start of a line. Lean's kernel sees more declarations (1,484,729 in Rubinstein's check) because Lean generates auxiliary ones.</li>
-    <li>The field of a module is a keyword estimate. It is wrong for some modules.</li>
+    <li id="agree-note"></li>
     <li>No per-module compile times have been published, so the page has no compile-time measure.</li>
   </ul>
 </section>
