@@ -1,0 +1,141 @@
+{
+ "terms": [
+  [
+   "Stepanov's method",
+   "Stepanov"
+  ],
+  [
+   "Theta lift",
+   "[Tt]hetaLift|theta_lift|thetaLift"
+  ],
+  [
+   "Seesaw identity",
+   "[Ss]eesaw"
+  ],
+  [
+   "Siegel–Weil formula",
+   "SiegelWeil|siegelWeil|siegel_weil"
+  ],
+  [
+   "Mass formula",
+   "MassFormula|massFormula"
+  ],
+  [
+   "Chowla–Selberg formula",
+   "ChowlaSelberg|chowlaSelberg|chowla_selberg"
+  ],
+  [
+   "Bost slope inequality",
+   "[Ss]lopeInequality|slope_inequality|BostSlope"
+  ],
+  [
+   "Harder–Narasimhan filtration",
+   "HarderNarasimhan|harderNarasimhan"
+  ],
+  [
+   "Behrend sets",
+   "Behrend"
+  ],
+  [
+   "Iwasawa theory and decomposition",
+   "Iwasawa"
+  ],
+  [
+   "Vandiver's conjecture",
+   "Vandiver"
+  ],
+  [
+   "Bessel period",
+   "Bessel"
+  ],
+  [
+   "Gan–Gross–Prasad period",
+   "GGP|GanGrossPrasad"
+  ],
+  [
+   "Rallis inner product",
+   "Rallis"
+  ],
+  [
+   "Poincaré series",
+   "Poincar[eé]Series|poincar[eé]Series|PoincareSeries"
+  ],
+  [
+   "Trace formula",
+   "TraceFormula|traceFormula"
+  ],
+  [
+   "Hecke character",
+   "HeckeCharacter|heckeCharacter|Gr[oö]ssencharacter"
+  ],
+  [
+   "Weil representation",
+   "WeilRepresentation|weilRepresentation|WeilRep\\b"
+  ],
+  [
+   "Complex multiplication",
+   "\\bCM[A-Z]|ComplexMultiplication|IsCM\\b|CMType"
+  ],
+  [
+   "von Mangoldt function",
+   "vonMangoldt"
+  ],
+  [
+   "Riemann zeta function",
+   "riemannZeta"
+  ],
+  [
+   "Dirichlet L-function",
+   "DirichletCharacter\\.LFunction|LFunction χ|LSeries"
+  ],
+  [
+   "Gauss sum",
+   "[Gg]aussSum|gauss_sum"
+  ],
+  [
+   "Witt vectors",
+   "WittVector|𝕎"
+  ],
+  [
+   "Frobenius",
+   "[Ff]robenius"
+  ],
+  [
+   "Weil bound",
+   "WeilBound|weilBound|weil_bound"
+  ],
+  [
+   "Capelli identity",
+   "Capelli"
+  ],
+  [
+   "Chebotarev density theorem",
+   "Chebotarev"
+  ],
+  [
+   "Haar measure",
+   "[Hh]aarMeasure|\\.haar\\b|IsHaarMeasure"
+  ],
+  [
+   "Fourier transform",
+   "[Ff]ourierTransform|𝓕|fourierIntegral"
+  ]
+ ],
+ "fields": {
+  "analytic-nt": "riemannZeta|LSeries|LFunction|DirichletCharacter|vonMangoldt|ArithmeticFunction|primeCounting|EulerProduct|ZeroFree|Nat\\.Prime|PrimeNumberTheorem",
+  "algebraic-nt": "NumberField|RingOfIntegers|𝓞|InfinitePlace|ClassGroup|IsDedekindDomain|absNorm|FractionalIdeal|Adele|Idele|𝔸|IsCyclotomicExtension|Padic|ℚ_\\[|ℤ_\\[|HeightOneSpectrum|IsDiscreteValuationRing|Valued|ClassField|Artin|IsGalois|Gal\\(",
+  "cohomology": "groupCohomology|[Cc]ocycle|[Cc]oboundary|[Cc]ohomology|Etale|Brauer|Cochain|Inflation|Corestriction|Shapiro|Profinite",
+  "automorphic": "Automorphic|ModularForm|CuspForm|Hecke|Eisenstein|SlashAction|UpperHalfPlane|ℍ|[Cc]uspidal|TraceFormula|Petersson|Whittaker|Satake|PoincareSeries|Maass|Langlands|Jacquet|Rankin",
+  "theta": "[Tt]heta|WeilRep|Heisenberg|SiegelWeil|Metaplectic|Seesaw|Howe|Rallis|Oscillator",
+  "rep-theory": "Representation|FDRep|LieAlgebra|LieGroup|unitaryGroup|GeneralLinearGroup|SpecialLinearGroup|HarishChandra|DiscreteSeries|WeylGroup|RootSystem|RootPairing|HighestWeight|Casimir|Capelli|Unipotent|BorelSubgroup|Parabolic|Iwasawa|Bessel|IsIrreducible|Schur",
+  "arith-geom": "AbelianVariety|AbelianScheme|EllipticCurve|WeierstrassCurve|Isogeny|Jacobian|ComplexMultiplication|CMType|GoodReduction|Neron|Shimura|Moduli|GaloisField|FiniteField|Polarization|Tate[A-Z]|PointCount|WeilBound|RiemannForm|PeriodMatrix",
+  "padic-hodge": "WittVector|𝕎|Crystalline|FormalGroup|PerfectRing|Perfection|Fontaine|Tilt|PhiGamma|deRham|HodgeTate|PDiv|Dieudonn|ArtinHasse|Wach|Verschiebung|Lubin|Teichm",
+  "alg-geom": "AlgebraicGeometry|Scheme|Sheaf|Divisor|LineBundle|BlowUp|Blowup|IsAffine|LocallyRingedSpace|Presheaf|Spec\\b|Proj\\b|Variety|ResolutionOfSing|Birational|Toroidal|Bertini",
+  "algebra": "MvPolynomial|TensorProduct|CategoryTheory|Localization|IsNoetherian|Coalgebra|Bialgebra|HopfAlgebra|ExteriorAlgebra|Homological|IsLocalRing|Polynomial\\.|Ideal\\.|Algebra\\.|Module\\.|LinearMap\\.|Matrix\\.det|Resultant|Derivation|GradedAlgebra|AdicCompletion",
+  "lattices": "Lattice|ZLattice|[Cc]ovolume|Minkowski|[Ss]uccessiveMinim|[Ss]lope|Height(?!One)|[Gg]ram|ZSpan|fundamentalDomain|Hermitian|HarderNarasimhan|Arakelov|ConvexBody|Unimodular|QuadraticForm",
+  "harmonic": "Fourier|𝓕|SchwartzMap|Lp\\b|InnerProductSpace|ContinuousLinearMap|[Ss]pectr|IsSelfAdjoint|Hilbert|Laplac|Plancherel|Parseval|Convolution|OrthonormalBasis|IsCompactOperator|Sobolev",
+  "analysis": "Real\\.log|Real\\.exp|Complex\\.exp|HasDerivAt|deriv\\b|Asymptotics|IsBigO|IsLittleO|Tendsto|Summable|tsum|Differentiable|AnalyticAt|Complex\\.Gamma|Real\\.Gamma|Real\\.sqrt|Real\\.rpow|ContinuousOn|Real\\.pi|Convex",
+  "measure": "MeasureTheory|Measure\\b|∫|Integrable|volume|[Hh]aar|ae_|Measurable|IntervalIntegral",
+  "combinatorics": "Finset\\.card|Fintype\\.card|Nat\\.choose|SimpleGraph|powerset|Partition|Equiv\\.Perm|Multiset|YoungDiagram|Nat\\.factorial|Behrend|Pigeonhole"
+ }
+}

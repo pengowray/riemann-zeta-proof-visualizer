@@ -3,7 +3,7 @@ import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.16/+esm";
 import { $, fmt, pct, bytesFmt, esc, meta, N, col, ones, dirs, FAMILIES, fieldFamily, KIND_COLOURS, isDark, cssVar, state, names, pathOf, dirSum } from "./data.js";
 import { KEYWORDS } from "./speech.js";
-import { maskWhere, setPreview, luminance, setMask, group, labelOf, tip, famOf, famColour } from "./map.js";
+import { maskWhere, setPreview, luminance, setMask, labelOf, famOf, famColour } from "./map.js";
 
 // ---------------------------------------------------------------- sections below the map
 export const plotStyle = () => ({ background: "transparent", color: cssVar("--ink"), fontFamily: cssVar("--serif"), fontSize: "13px", overflow: "visible" });

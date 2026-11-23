@@ -175,3 +175,6 @@ figure { margin: 12px 0; }
 .control.bend input { width: 90px; accent-color: var(--ink); }
 
 .chips button:disabled { opacity: 0.5; cursor: default; }
+
+button.link { font: inherit; color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; }
+button.link:hover { text-decoration: underline; }

@@ -1,8 +1,8 @@
 // The details drawer for a module or directory, and the hover text for Lean code.
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import { renderLean } from "./speech.js";
-import { blobUrl, treeUrl, rawUrl, $, fmt, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, state, names, namesReady, pathOf, prefix, dirSum } from "./data.js";
-import { secondsFmt, canvas, requestDraw, group, hasLabel, kindNote, moduleFacts, tip, chainTip } from "./map.js";
+import { blobUrl, treeUrl, rawUrl, $, fmt, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, state, names, namesReady, pathOf, dirSum } from "./data.js";
+import { secondsFmt, canvas, requestDraw, group, hasLabel, kindNote, moduleFacts, chainTip } from "./map.js";
 
 // ---------------------------------------------------------------- details drawer
 export const drawer = $("drawer"), drawerBody = $("drawer-body");

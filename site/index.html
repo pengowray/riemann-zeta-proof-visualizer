@@ -119,6 +119,7 @@
 <section id="numbers">
   <h2>Numbers and tactics</h2>
   <p id="numbers-text"></p>
+  <p><button type="button" class="link" id="digits-on-map">Colour the map by share of digits</button></p>
   <h3>Modules with the largest share of digits</h3>
   <table id="digit-table" class="data"></table>
   <h3>Tactics used</h3>
@@ -129,15 +130,7 @@
 <section id="checks">
   <h2>Who has checked the proof</h2>
   <p>This page did not compile or check the proof. The table lists what each of these public pages reported when read on 23 November 2026. Follow the links for the current state.</p>
-  <table class="data">
-    <tr><th>Who</th><th>What was run</th><th>Reported result</th></tr>
-    <tr><td><a href="https://leanprover-community.github.io/blog/posts/riemann-hypothesis/">Lean and Mathlib communities</a>, joint statement of 21 November 2026</td><td>Review of Mathlib's statement of the Riemann Hypothesis; many independent compilations; <code>comparator</code> and <code>con-leche</code> against Mathlib's statement</td><td>States full confidence that the proof is correct</td></tr>
-    <tr><td><a href="https://math.mit.edu/~drew/grh/">Andrew Sutherland</a> (MIT), page updated 22 November</td><td>Full build; axiom audit; <code>leanchecker</code> replay; <code>nanoda</code>; <code>con-leche</code> and <code>con-ron</code>; <code>lean4lean</code></td><td>175,187 modules build with 0 errors and all are accepted on replay. The five theorems use only the axioms <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>. Five modules needed a raised step limit in <code>lean4lean</code>. One compiled file is not reproducible byte for byte. Some kernel runs were still in progress</td></tr>
-    <tr><td><a href="https://mrubinst.github.io/grh-lean-verification/">mrubinst.github.io</a>, run by Claude Code on a university allocation, finished 21 November</td><td>Source hashes; text scan; full compile; axiom audit; kernel replay; <code>nanoda</code></td><td>175,187 modules compile with 0 errors and are accepted on replay. <code>nanoda</code> checked 1,484,729 declarations with no errors. 63 replay batches ran out of memory and were re-run</td></tr>
-    <tr><td><a href="https://github.com/Infatoshi/rh-verification-receipts">Infatoshi/rh-verification-receipts</a></td><td>Source hashes; text scan; compile; axiom audit; <code>nanoda</code></td><td>175,187 modules compile; 1,484,729 declarations checked with no errors</td></tr>
-    <tr><td><a href="https://github.com/shosonoda/lean-rh-alpoge">shosonoda/lean-rh-alpoge</a></td><td><code>lake build</code>; own traversal of the import graph; Comparator</td><td>Build succeeds with 0 errors and 460,321 warning lines. Every module is reachable from Main. Comparator was still running</td></tr>
-    <tr><td><a href="https://github.com/patunz/rh-build-live">Lucio Patone</a>, with Claude as an assistant</td><td>Rebuild from scratch, with per-module timing; Sutherland's axiom audit</td><td>Audit output identical to Sutherland's. Source of the build times on this page</td></tr>
-  </table>
+  <table class="data" id="checks-table"></table>
   <p class="note">The Lean statements cover the Riemann zeta function and Dirichlet <i>L</i>-functions. They do not cover Dedekind zeta functions or automorphic <i>L</i>-functions.</p>
 </section>
 

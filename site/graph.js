@@ -1,7 +1,7 @@
 // The import graph of the main directories.
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import { $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, FAMILIES, moduleFamily, cssVar, state } from "./data.js";
-import { layout, draw, maskWhere, setPreview, tip, famColour } from "./map.js";
+import { maskWhere, setPreview, famColour } from "./map.js";
 
 // ---------------------------------------------------------------- import graph of regions
 export async function renderGraph() {

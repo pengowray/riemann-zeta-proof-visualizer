@@ -1,0 +1,47 @@
+{
+ "readOn": "23 November 2026",
+ "checks": [
+  {
+   "url": "https://leanprover-community.github.io/blog/posts/riemann-hypothesis/",
+   "who": "Lean and Mathlib communities",
+   "detail": "joint statement of 21 November 2026",
+   "ran": "Review of Mathlib's statement of the Riemann Hypothesis; many independent compilations; <code>comparator</code> and <code>con-leche</code> against Mathlib's statement",
+   "result": "States full confidence that the proof is correct"
+  },
+  {
+   "url": "https://math.mit.edu/~drew/grh/",
+   "who": "Andrew Sutherland",
+   "detail": "(MIT), page updated 22 November",
+   "ran": "Full build; axiom audit; <code>leanchecker</code> replay; <code>nanoda</code>; <code>con-leche</code> and <code>con-ron</code>; <code>lean4lean</code>",
+   "result": "175,187 modules build with 0 errors and all are accepted on replay. The five theorems use only the axioms <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>. Five modules needed a raised step limit in <code>lean4lean</code>. One compiled file is not reproducible byte for byte. Some kernel runs were still in progress"
+  },
+  {
+   "url": "https://mrubinst.github.io/grh-lean-verification/",
+   "who": "mrubinst.github.io",
+   "detail": "run by Claude Code on a university allocation, finished 21 November",
+   "ran": "Source hashes; text scan; full compile; axiom audit; kernel replay; <code>nanoda</code>",
+   "result": "175,187 modules compile with 0 errors and are accepted on replay. <code>nanoda</code> checked 1,484,729 declarations with no errors. 63 replay batches ran out of memory and were re-run"
+  },
+  {
+   "url": "https://github.com/Infatoshi/rh-verification-receipts",
+   "who": "Infatoshi/rh-verification-receipts",
+   "detail": "",
+   "ran": "Source hashes; text scan; compile; axiom audit; <code>nanoda</code>",
+   "result": "175,187 modules compile; 1,484,729 declarations checked with no errors"
+  },
+  {
+   "url": "https://github.com/shosonoda/lean-rh-alpoge",
+   "who": "shosonoda/lean-rh-alpoge",
+   "detail": "",
+   "ran": "<code>lake build</code>; own traversal of the import graph; Comparator",
+   "result": "Build succeeds with 0 errors and 460,321 warning lines. Comparator was still running"
+  },
+  {
+   "url": "https://github.com/patunz/rh-build-live",
+   "who": "Lucio Patone",
+   "detail": "with Claude as an assistant",
+   "ran": "Rebuild from scratch, with per-module timing; Sutherland's axiom audit",
+   "result": "Audit output identical to Sutherland's. Source of the build times on this page"
+  }
+ ]
+}

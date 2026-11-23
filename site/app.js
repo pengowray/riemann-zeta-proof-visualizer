@@ -66,6 +66,18 @@ Promise.all([fetch("data/steps.json").then((r) => r.json()), namesReady]).then((
   }
 });
 
+// table of independent checks; the cells hold trusted HTML written for this page
+fetch("data/checks.json").then((r) => r.json()).then((data) => {
+  $("checks-table").innerHTML = `<tr><th>Who</th><th>What was run</th><th>Reported result</th></tr>`
+    + data.checks.map((c) => `<tr><td><a href="${c.url}">${c.who}</a>${c.detail ? ", " + c.detail : ""}</td><td>${c.ran}</td><td>${c.result}</td></tr>`).join("");
+});
+
+// Numbers section: switch the map to the digit colouring
+$("digits-on-map").onclick = () => {
+  [...$("colour-by").children].find((b) => b.textContent === "Digits")?.click();
+  $("map").scrollIntoView();
+};
+
 let findTimer = 0;
 $("find").addEventListener("input", (e) => {
   clearTimeout(findTimer);
@@ -92,6 +104,13 @@ document.addEventListener("pointerover", (e) => {
     setPreview(chainMask, cell ? `Module ${j} of ${meta.chain.length} in the longest import chain` : chainLabel, { chain: true, marker: cell ? meta.chain[j - 1] : -1 });
     return;
   }
+  const opener = e.target.closest?.("table.data [data-open]");
+  if (opener) {
+    const i = +opener.dataset.open;
+    if (state.marker !== i) { state.marker = i; requestDraw(); refreshMini(); }
+    return;
+  }
+  if (state.marker >= 0 && !state.preview) { state.marker = -1; requestDraw(); refreshMini(); }
   const row = e.target.closest?.("[data-preview-field],[data-preview-dir]");
   if (!row) { if (state.preview) setPreview(null); return; }
   if (row.dataset.previewField !== undefined) {
