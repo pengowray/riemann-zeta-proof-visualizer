@@ -25,8 +25,10 @@ export async function renderGraph() {
     if (i < st.first) st.first = i; if (i > st.last) st.last = i;
   }
   const M = meta.regionMatrix;
-  const shown = d3.range(R).filter((r) => stats[r].modules >= 5);
-  const elements = shown.map((r) => ({ data: { id: "r" + r, r, label: meta.regions[r].split("/").pop().replace(/([a-z])([A-Z])/g, "$1 $2"), size: 18 + Math.sqrt(stats[r].bytes / 1e6) * 7, colour: famColour(d3.maxIndex(stats[r].fam)) } }));
+  // The top level holds Main.lean and Statements.lean; it and Supplements are tiny but are where the proof ends, so they are always shown.
+  const mainRegion = regionIdx.get("(top level)"), finalRegion = regionIdx.get("Supplements");
+  const shown = d3.range(R).filter((r) => stats[r].modules >= 5 || r === mainRegion || r === finalRegion);
+  const elements = shown.map((r) => ({ data: { id: "r" + r, r, main: r === mainRegion ? 1 : 0, label: r === mainRegion ? "Main.lean" : meta.regions[r].split("/").pop().replace(/([a-z])([A-Z])/g, "$1 $2"), size: 18 + Math.sqrt(stats[r].bytes / 1e6) * 7, colour: famColour(d3.maxIndex(stats[r].fam)) } }));
   let drawn = 0, crossTotal = 0;
   for (const a of shown) {
     const out = d3.sum(shown, (b) => (b === a ? 0 : M[a][b]));
@@ -34,22 +36,48 @@ export async function renderGraph() {
       if (a === b) continue;
       crossTotal += M[a][b];
       // keep an edge when it carries at least 4% of the importing directory's outside imports
-      if (M[a][b] >= 20 && M[a][b] >= 0.04 * out) { elements.push({ data: { id: `e${a}_${b}`, source: "r" + a, target: "r" + b, n: M[a][b], w: 0.6 + Math.log10(M[a][b]) * 1.1 } }); drawn += M[a][b]; }
+      if ((M[a][b] >= 20 && M[a][b] >= 0.04 * out) || (M[a][b] > 0 && (a === mainRegion || a === finalRegion))) { elements.push({ data: { id: `e${a}_${b}`, source: "r" + a, target: "r" + b, n: M[a][b], w: 0.6 + Math.log10(M[a][b]) * 1.1 } }); drawn += M[a][b]; }
     }
   }
-  $("graph-text").textContent = `Each circle is a directory, sized by its bytes and coloured by its most common field. An arrow from A to B means modules in A import modules in B. The ${fmt(elements.length - shown.length)} arrows drawn carry ${pct(drawn / crossTotal)} of the imports between these directories; weaker links are left out. Point at a circle to see that directory on the map. Circles can be dragged.`;
+  $("graph-text").textContent = `Each circle is a directory, sized by its bytes and coloured by its most common field. An arrow from A to B means modules in A import modules in B. The ${fmt(elements.length - shown.length)} arrows drawn carry ${pct(drawn / crossTotal)} of the imports between these directories; weaker links are left out. The ringed circle is Main.lean, where the final theorems are stated. Point at a circle to see that directory on the map. Circles can be dragged.`;
   const ink = cssVar("--ink"), ink3 = cssVar("--ink-3");
   const cy = cytoscape({
     container: $("graph"), elements,
     userZoomingEnabled: false, userPanningEnabled: false, boxSelectionEnabled: false, // the page keeps the scroll wheel
     style: [
-      { selector: "node", style: { width: "data(size)", height: "data(size)", "background-color": "data(colour)", label: "data(label)", color: ink, "font-family": "STIX Two Text, serif", "font-size": 12, "text-valign": "bottom", "text-margin-y": 3, "text-wrap": "wrap", "text-max-width": 110, "text-background-color": cssVar("--paper-2"), "text-background-opacity": 0.8, "text-background-padding": 1 } },
+      { selector: "node", style: { width: "data(size)", height: "data(size)", "background-color": "data(colour)", label: "data(label)", color: ink, "font-family": "STIX Two Text, serif", "font-size": 15, "text-valign": "bottom", "text-margin-y": 4, "text-wrap": "wrap", "text-max-width": 150, "text-background-color": cssVar("--paper-2"), "text-background-opacity": 0.8, "text-background-padding": 1 } },
       { selector: "edge", style: { width: "data(w)", "line-color": ink3, "target-arrow-color": ink3, "target-arrow-shape": "triangle", "arrow-scale": 0.8, "curve-style": "bezier", opacity: 0.45 } },
+      { selector: "node[?main]", style: { "border-width": 4, "border-color": ink, "border-style": "double", "font-weight": 600, "font-size": 17, width: 34, height: 34 } },
+      { selector: "node.caption", style: { "background-opacity": 0, width: 1, height: 1, "text-valign": "center", "font-style": "italic", color: cssVar("--ink-2"), "text-max-width": 400, events: "no" } },
       { selector: ".dim", style: { opacity: 0.08 } },
       { selector: "edge.lit", style: { opacity: 1, "line-color": ink, "target-arrow-color": ink } },
     ],
-    layout: { name: "fcose", animate: false, randomize: true, quality: "proof", nodeSeparation: 110, idealEdgeLength: 130, nodeRepulsion: 30000, padding: 24, nodeDimensionsIncludeLabels: true },
   });
+  // Directories with no arrow are set out in a grid under the graph, so the layout only has to place the linked ones.
+  const strays = cy.nodes().filter((n) => n.degree() === 0);
+  const linked = cy.elements().not(strays);
+  linked.layout({ name: "fcose", animate: false, randomize: true, quality: "proof", nodeSeparation: 140, idealEdgeLength: 170, nodeRepulsion: 60000, padding: 24, nodeDimensionsIncludeLabels: true }).run();
+  if (strays.length) {
+    // at most five to a row, so each name has room at the size it is drawn on screen
+    const box = linked.boundingBox(), perRow = Math.min(5, strays.length), stepX = box.w / perRow, stepY = 150;
+    const top = box.y2 + 120;
+    cy.add({ group: "nodes", data: { id: "caption", colour: "#000", size: 1, label: `${strays.length} directories with no link strong enough to draw` }, classes: "caption", position: { x: box.x1 + box.w / 2, y: top - 70 } });
+    strays.sort((a, b) => b.data("size") - a.data("size")).forEach((n, i) => n.position({ x: box.x1 + ((i % perRow) + 0.5) * stepX, y: top + Math.floor(i / perRow) * stepY }));
+  }
+  // Fitting the graph to its box scales everything, so label sizes are set afterwards to stay readable on screen.
+  const fit = () => {
+    cy.resize();
+    if (!cy.width() || !cy.height()) return; // not laid out yet; the observers below call again
+    cy.fit(undefined, 24);
+    const z = cy.zoom();
+    if (!(z > 0)) return;
+    cy.style().selector("node").style({ "font-size": 14 / z, "text-max-width": 150 / z, "text-margin-y": 4 / z })
+      .selector("node[?main]").style({ "font-size": 16 / z }).update();
+  };
+  fit();
+  $("graph").cy = cy; // lets the graph be inspected from the browser console
+  new ResizeObserver(fit).observe($("graph"));
+  new IntersectionObserver(fit).observe($("graph"));
   const tipEl = $("graph-tip");
   const showTip = (html, pos) => {
     tipEl.innerHTML = html; tipEl.style.display = "block";
@@ -57,7 +85,7 @@ export async function renderGraph() {
     tipEl.style.left = Math.max(0, Math.min(pos.x + 14, box.width - tipEl.offsetWidth)) + "px";
     tipEl.style.top = Math.max(0, Math.min(pos.y + 16, box.height - tipEl.offsetHeight)) + "px";
   };
-  cy.on("mouseover", "node", (e) => {
+  cy.on("mouseover", "node[r >= 0]", (e) => {
     const r = e.target.data("r"), st = stats[r];
     cy.elements().addClass("dim"); e.target.closedNeighborhood().removeClass("dim"); e.target.connectedEdges().addClass("lit");
     const top = shown.filter((b) => b !== r && M[r][b]).sort((a, b) => M[r][b] - M[r][a]).slice(0, 3);

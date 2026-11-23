@@ -151,6 +151,10 @@ figure { margin: 12px 0; }
   #treemap { height: 110vw; max-height: 80vh; }
   /* wide tables scroll sideways inside themselves instead of widening the page */
   table.data { display: block; overflow-x: auto; }
+  table.data button.link { overflow-wrap: normal; white-space: nowrap; }
+  /* charts keep a readable size and scroll sideways inside their box */
+  .chart svg { max-width: none !important; }
+  #graph { height: 130vw; max-height: 85vh; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
 
