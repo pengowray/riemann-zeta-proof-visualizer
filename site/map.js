@@ -1,0 +1,451 @@
+// The treemap: layout, colours, drawing, the sidebar map, the bent map, highlights, zoom and hover.
+import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
+import { drawBent } from "./bent.js";
+import { $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, FAMILIES, fieldFamily, moduleFamily, dirFamily, KIND_NAMES, KIND_COLOURS, isDark, cssVar, SIZE_MODES, COLOUR_MODES, state, names, pathOf, dirSum } from "./data.js";
+import { openModule, openDirectory } from "./drawer.js";
+
+// ---------------------------------------------------------------- treemap layout
+export const canvas = $("treemap");
+export const ctx = canvas.getContext("2d");
+export const HEADER = [0, 18, 13]; // height in px at zoom 1 of a directory's name strip, by depth
+export const GAP = [4, 2, 1];
+export let W = 0, H = 0, root = null;
+export const LX0 = new Float32Array(N), LY0 = new Float32Array(N), LX1 = new Float32Array(N), LY1 = new Float32Array(N);
+
+export function buildHierarchy() {
+  const nodes = dirs.map((d) => ({ dir: d, children: [] }));
+  for (const d of dirs) {
+    const node = nodes[d.i];
+    for (let i = d.start; i < d.start + d.count; i++) node.children.push({ leaf: i });
+    if (d.parent >= 0) nodes[d.parent].children.push(node);
+  }
+  root = d3.hierarchy(nodes[0]);
+  root.each((n) => { if (n.data.dir) n.data.dir.node = n; });
+}
+
+export function layout() {
+  const values = state.size.values;
+  root.sum((d) => (d.leaf === undefined ? 0 : values[d.leaf]));
+  d3.treemap().size([W, H]).round(false)
+    .paddingTop((n) => HEADER[n.depth] || 0)
+    .paddingInner((n) => GAP[n.depth] || 0)(root);
+  for (const n of root.leaves()) {
+    const i = n.data.leaf;
+    if (i === undefined) continue;
+    LX0[i] = n.x0; LY0[i] = n.y0; LX1[i] = n.x1; LY1[i] = n.y1;
+  }
+}
+
+// ---------------------------------------------------------------- colours
+export const cidx = new Uint8Array(N);
+export let palette = [], paletteInk = [];
+export function luminance(hex) {
+  const c = d3.rgb(hex);
+  return (0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b) / 255;
+}
+export function seqColours() {
+  // 9 steps from "near the surface" to "far from it": light to dark on paper, dark to light on a dark page
+  const ramp = d3.quantize(d3.interpolateRgbBasis(isDark() ? ["#0d366b", "#1c5cab", "#3987e5", "#86b6ef", "#cde2fb"] : ["#cde2fb", "#86b6ef", "#3987e5", "#1c5cab", "#0d366b"]), 9);
+  return ramp.map((c) => d3.rgb(c).formatHex());
+}
+export function seqStep(mode) {
+  const max = mode.max ?? d3.max(mode.values);
+  const f = mode.scale === "log" ? (v) => Math.log1p(v) / Math.log1p(max) : mode.scale === "sqrt" ? (v) => Math.sqrt(v / max) : (v) => v / max;
+  return (v) => (v === mode.missing ? 9 : Math.min(8, Math.floor(f(v) * 9)));
+}
+export function recolour() {
+  const mode = state.colour, dark = isDark();
+  if (mode.id === "field" || mode.id === "dirfield") {
+    palette = FAMILIES.map((f) => (dark ? f.dark : f.light));
+    const of = mode.id === "field" ? moduleFamily : dirFamily;
+    for (let i = 0; i < N; i++) cidx[i] = of(i);
+  } else if (mode.id === "kind") {
+    palette = KIND_COLOURS.map((c) => c[dark ? 1 : 0]);
+    cidx.set(col.kind);
+  } else {
+    palette = [...seqColours(), dark ? "#6b665b" : "#a8a294"];
+    const step = seqStep(mode), v = mode.values;
+    for (let i = 0; i < N; i++) cidx[i] = step(v[i]);
+  }
+  paletteInk = palette.map((c) => (luminance(c) > 0.45 ? "#14130f" : "#ffffff"));
+}
+
+// ---------------------------------------------------------------- drawing
+export let transform = d3.zoomIdentity;
+export let drawQueued = false;
+export function requestDraw() { if (!drawQueued) { drawQueued = true; requestAnimationFrame(() => { drawQueued = false; draw(); }); } }
+export const activeMask = () => state.preview || state.mask;
+
+export function draw() {
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  const { k, x: tx, y: ty } = transform;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const paper2 = cssVar("--paper-2"), paper = cssVar("--paper"), paper3 = cssVar("--paper-3"), ink = cssVar("--ink"), ink2 = cssVar("--ink-2");
+  ctx.fillStyle = paper2; ctx.fillRect(0, 0, W, H);
+  const vx0 = -tx / k, vy0 = -ty / k, vx1 = (W - tx) / k, vy1 = (H - ty) / k;
+
+  // directory backgrounds (they show through as the name strips and the gaps)
+  for (const d of dirs) {
+    if (d.depth === 0 || d.depth > 2) continue;
+    const n = d.node;
+    if (n.x1 < vx0 || n.x0 > vx1 || n.y1 < vy0 || n.y0 > vy1) continue;
+    ctx.fillStyle = d.depth % 2 ? paper : paper3;
+    ctx.fillRect(n.x0 * k + tx, n.y0 * k + ty, (n.x1 - n.x0) * k, (n.y1 - n.y0) * k);
+  }
+
+  const mask = activeMask();
+  const bg = d3.rgb(paper2);
+  for (let pass = 0; pass < (mask ? 2 : 1); pass++) {
+    for (let c = 0; c < palette.length; c++) {
+      let fill = palette[c];
+      if (mask && pass === 0) { const f = d3.rgb(fill); fill = d3.rgb(bg.r + (f.r - bg.r) * 0.16, bg.g + (f.g - bg.g) * 0.16, bg.b + (f.b - bg.b) * 0.16).formatHex(); }
+      ctx.fillStyle = fill;
+      for (let i = 0; i < N; i++) {
+        if (cidx[i] !== c) continue;
+        if (mask && (mask[i] ? pass === 0 : pass === 1)) continue;
+        const x0 = LX0[i], x1 = LX1[i], y0 = LY0[i], y1 = LY1[i];
+        if (x1 < vx0 || x0 > vx1 || y1 < vy0 || y0 > vy1) continue;
+        const w = (x1 - x0) * k, h = (y1 - y0) * k;
+        const gx = w > 4 ? 0.5 : 0, gy = h > 4 ? 0.5 : 0;
+        ctx.fillRect(x0 * k + tx, y0 * k + ty, Math.max(w - gx, 0.35), Math.max(h - gy, 0.35));
+      }
+    }
+  }
+
+  // directory names: the two outer levels have a name strip; deeper directories get a
+  // name plate in their top-left corner once they are large on screen and the plate
+  // would not cover a plate already drawn
+  ctx.textBaseline = "middle";
+  const plates = [];
+  for (const d of dirs) {
+    if (d.depth === 0 || d.depth > 8) continue;
+    const n = d.node;
+    if (n.x1 < vx0 || n.x0 > vx1 || n.y1 < vy0 || n.y0 > vy1) continue;
+    const w = (n.x1 - n.x0) * k, h = (n.y1 - n.y0) * k;
+    const strip = (HEADER[d.depth] || 0) * k;
+    const plate = !strip;
+    if (plate ? w < 150 || h < 60 : strip < 11 || w < 34 || h < strip) continue;
+    const size = plate ? 11 : Math.min(14, Math.max(10.5, strip * 0.7));
+    ctx.font = `${d.depth === 1 ? 600 : 400} ${size}px "STIX Two Text", serif`;
+    const x = Math.max(n.x0 * k + tx, 0) + 4;
+    const room = Math.min(n.x1 * k + tx - x - 4, plate ? 260 : 1e9);
+    let text = d.name.replace(/([a-z0-9])([A-Z])/g, "$1 $2");
+    if (ctx.measureText(text).width > room) {
+      while (text.length > 3 && ctx.measureText(text + "…").width > room) text = text.slice(0, -1);
+      if (text.length <= 3) continue;
+      text += "…";
+    }
+    const y = Math.max(n.y0 * k + ty, plate ? 0 : -1e9);
+    if (plate) {
+      const pw = ctx.measureText(text).width + 8, ph = 15;
+      if (plates.some((p) => x - 4 < p[0] + p[2] && p[0] < x - 4 + pw && y < p[1] + p[3] && p[1] < y + ph)) continue;
+      plates.push([x - 4, y, pw, ph]);
+      ctx.fillStyle = paper; ctx.fillRect(x - 4, y, pw, ph);
+      ctx.fillStyle = ink2; ctx.fillText(text, x, y + ph / 2 + 0.5);
+    } else {
+      plates.push([x - 4, y, ctx.measureText(text).width + 8, Math.min(strip, 20)]);
+      ctx.fillStyle = d.depth === 1 ? ink : ink2;
+      ctx.fillText(text, x, y + Math.min(strip, 20) / 2 + 0.5);
+    }
+  }
+
+  // module names, once the rectangles are large enough to hold them
+  if (names && k > 6) {
+    ctx.font = '10.5px "JuliaMono", monospace';
+    ctx.textBaseline = "top";
+    for (let i = 0; i < N; i++) {
+      const x0 = LX0[i], x1 = LX1[i], y0 = LY0[i], y1 = LY1[i];
+      if (x1 < vx0 || x0 > vx1 || y1 < vy0 || y0 > vy1) continue;
+      const w = (x1 - x0) * k, h = (y1 - y0) * k;
+      if (w < 60 || h < 15) continue;
+      if (mask && !mask[i]) continue;
+      ctx.save();
+      ctx.beginPath(); ctx.rect(x0 * k + tx, y0 * k + ty, w - 2, h); ctx.clip();
+      ctx.fillStyle = paletteInk[cidx[i]];
+      ctx.fillText(names[i], x0 * k + tx + 3, y0 * k + ty + 3);
+      ctx.restore();
+    }
+  }
+
+  if (state.chain || state.previewChain) {
+    // faint lines hint at the order; the dots carry the positions
+    ctx.strokeStyle = ink; ctx.globalAlpha = 0.3; ctx.lineWidth = 0.7; ctx.lineJoin = "round"; ctx.beginPath();
+    meta.chain.forEach((i, j) => {
+      const x = ((LX0[i] + LX1[i]) / 2) * k + tx, y = ((LY0[i] + LY1[i]) / 2) * k + ty;
+      j ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
+    });
+    ctx.stroke(); ctx.globalAlpha = 1;
+    ctx.fillStyle = ink;
+    for (const i of meta.chain) { ctx.beginPath(); ctx.arc(((LX0[i] + LX1[i]) / 2) * k + tx, ((LY0[i] + LY1[i]) / 2) * k + ty, 3, 0, 7); ctx.fill(); }
+  }
+
+  for (const [i, width] of [[state.pinned, 2.5], [state.hover, 1.5]]) {
+    if (i < 0) continue;
+    const g = dirs[leafDir[i]].node;
+    ctx.strokeStyle = ink; ctx.lineWidth = 1; ctx.setLineDash([3, 3]);
+    ctx.strokeRect(g.x0 * k + tx, g.y0 * k + ty, (g.x1 - g.x0) * k, (g.y1 - g.y0) * k);
+    ctx.setLineDash([]); ctx.lineWidth = width;
+    const w = Math.max((LX1[i] - LX0[i]) * k, 3), h = Math.max((LY1[i] - LY0[i]) * k, 3);
+    ctx.strokeRect(LX0[i] * k + tx, LY0[i] * k + ty, w, h);
+  }
+  if (state.marker >= 0) {
+    const i = state.marker;
+    ctx.strokeStyle = ink; ctx.lineWidth = 2.5; ctx.beginPath();
+    ctx.arc(((LX0[i] + LX1[i]) / 2) * k + tx, ((LY0[i] + LY1[i]) / 2) * k + ty, 9, 0, 7); ctx.stroke();
+  }
+  $("reset-zoom").hidden = k < 1.02;
+  drawMinimapOverlay();
+}
+
+// ---------------------------------------------------------------- minimap (the signpost in the left rail)
+export const mini = $("minimap");
+export const miniCtx = mini.getContext("2d");
+export const miniBase = document.createElement("canvas");
+export function drawMinimapBase() {
+  if (!mini.offsetParent) return;
+  const dpr = Math.min(devicePixelRatio || 1, 2), mw = 200, mh = 125;
+  miniBase.width = mw * dpr; miniBase.height = mh * dpr;
+  const c = miniBase.getContext("2d");
+  c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const bg = d3.rgb(cssVar("--paper-2"));
+  c.fillStyle = bg.formatHex(); c.fillRect(0, 0, mw, mh);
+  const sx = mw / W, sy = mh / H, mask = activeMask();
+  for (let pass = 0; pass < (mask ? 2 : 1); pass++) {
+    for (let p = 0; p < palette.length; p++) {
+      let fill = palette[p];
+      if (mask && pass === 0) { const f = d3.rgb(fill); fill = d3.rgb(bg.r + (f.r - bg.r) * 0.14, bg.g + (f.g - bg.g) * 0.14, bg.b + (f.b - bg.b) * 0.14).formatHex(); }
+      c.fillStyle = fill;
+      for (let i = 0; i < N; i++) {
+        if (cidx[i] !== p) continue;
+        if (mask && (mask[i] ? pass === 0 : pass === 1)) continue;
+        // highlighted modules get at least one pixel so that a handful of them stay visible
+        const min = mask && pass === 1 ? 1.2 : 0.3;
+        c.fillRect(LX0[i] * sx, LY0[i] * sy, Math.max((LX1[i] - LX0[i]) * sx, min), Math.max((LY1[i] - LY0[i]) * sy, min));
+      }
+    }
+  }
+  drawMinimapOverlay();
+  $("rail-note").textContent = state.previewLabel || state.maskLabel || `Map of all ${fmt(N)} modules, sized by ${state.size.label.toLowerCase()}.`;
+}
+export function drawMinimapOverlay() {
+  if (!miniBase.width || !mini.offsetParent) return;
+  const dpr = miniBase.width / 200;
+  if (mini.width !== miniBase.width) { mini.width = miniBase.width; mini.height = miniBase.height; }
+  miniCtx.setTransform(1, 0, 0, 1, 0, 0);
+  miniCtx.drawImage(miniBase, 0, 0);
+  const mx = (200 / W) * dpr, my = (125 / H) * dpr, inkNow = cssVar("--ink");
+  const centre = (i) => [((LX0[i] + LX1[i]) / 2) * mx, ((LY0[i] + LY1[i]) / 2) * my];
+  if (state.chain || state.previewChain) {
+    miniCtx.strokeStyle = inkNow; miniCtx.globalAlpha = 0.35; miniCtx.lineWidth = 0.6 * dpr; miniCtx.beginPath();
+    meta.chain.forEach((i, j) => { const [x, y] = centre(i); j ? miniCtx.lineTo(x, y) : miniCtx.moveTo(x, y); });
+    miniCtx.stroke(); miniCtx.globalAlpha = 1; miniCtx.fillStyle = inkNow;
+    for (const i of meta.chain) { const [x, y] = centre(i); miniCtx.beginPath(); miniCtx.arc(x, y, 1.3 * dpr, 0, 7); miniCtx.fill(); }
+  }
+  if (state.marker >= 0) {
+    const [x, y] = centre(state.marker);
+    miniCtx.strokeStyle = inkNow; miniCtx.lineWidth = 2 * dpr; miniCtx.beginPath(); miniCtx.arc(x, y, 5 * dpr, 0, 7); miniCtx.stroke();
+    miniCtx.fillStyle = inkNow; miniCtx.beginPath(); miniCtx.arc(x, y, 2.2 * dpr, 0, 7); miniCtx.fill();
+  }
+  if (transform.k > 1.02) {
+    const sx = (200 / W) * dpr, sy = (125 / H) * dpr, { k, x, y } = transform;
+    miniCtx.strokeStyle = cssVar("--ink"); miniCtx.lineWidth = 1.5 * dpr;
+    miniCtx.strokeRect((-x / k) * sx, (-y / k) * sy, (W / k) * sx, (H / k) * sy);
+  }
+}
+export let miniTimer = 0;
+export const refreshMini = () => { clearTimeout(miniTimer); miniTimer = setTimeout(() => { drawMinimapBase(); refreshBent(); }, 30); };
+
+// ---------------------------------------------------------------- the map bent by ζ
+export const bent = $("bent"), bentTip = $("bent-tip");
+export let bentVisible = false, bentStale = true, bentPick = null;
+export function refreshBent() {
+  bentStale = true;
+  if (!bentVisible || !W) return;
+  bentStale = false;
+  bentPick = drawBent(bent, { W, H, LX0, LY0, LX1, LY1, cidx, palette, mask: activeMask(), background: d3.rgb(cssVar("--paper")).formatHex(), n: N });
+}
+new IntersectionObserver((entries) => { bentVisible = entries[0].isIntersecting; if (bentVisible && bentStale) refreshBent(); }, { rootMargin: "300px" }).observe(bent);
+export const bentLeaf = (e) => { const r = bent.getBoundingClientRect(); return bentPick ? bentPick(e.clientX - r.left, e.clientY - r.top) : -1; };
+bent.addEventListener("pointermove", (e) => {
+  const i = bentLeaf(e);
+  if (i < 0) { bentTip.style.display = "none"; return; }
+  const r = bent.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top;
+  bentTip.innerHTML = tipHtml({ leaf: i, dir: dirs[leafDir[i]] });
+  bentTip.style.display = "block";
+  bentTip.style.left = Math.max(0, Math.min(px + 14, r.width - bentTip.offsetWidth)) + "px";
+  bentTip.style.top = (py + 18 + bentTip.offsetHeight > r.height ? Math.max(0, py - bentTip.offsetHeight - 10) : py + 18) + "px";
+});
+bent.addEventListener("pointerleave", () => { bentTip.style.display = "none"; });
+bent.addEventListener("click", (e) => { const i = bentLeaf(e); if (i >= 0) openModule(i); });
+
+// ---------------------------------------------------------------- highlight masks
+export function countMask(mask) { let n = 0; for (let i = 0; i < N; i++) n += mask[i]; return n; }
+export function maskWhere(test) { const m = new Uint8Array(N); for (let i = 0; i < N; i++) if (test(i)) m[i] = 1; return m; }
+export function setMask(key, mask, label, chain = false) {
+  if (!mask || state.maskKey === key) { state.mask = null; state.maskLabel = ""; state.maskKey = ""; state.chain = false; }
+  else { state.mask = mask; state.maskKey = key; state.chain = chain; state.maskLabel = `Highlighted: ${label}`; }
+  $("highlight-bar").hidden = !state.mask;
+  $("highlight-text").textContent = state.maskLabel;
+  document.querySelectorAll("[data-mask-key]").forEach((el) => el.setAttribute("aria-pressed", String(el.dataset.maskKey === state.maskKey)));
+  requestDraw(); refreshMini();
+}
+export function setPreview(mask, label, { chain = false, marker = -1 } = {}) {
+  const maskChanged = mask !== state.preview;
+  state.preview = mask; state.previewLabel = mask ? label : ""; state.previewChain = chain; state.marker = marker;
+  requestDraw();
+  if (maskChanged) refreshMini(); else { drawMinimapOverlay(); $("rail-note").textContent = state.previewLabel || state.maskLabel || $("rail-note").textContent; }
+}
+$("highlight-clear").onclick = () => setMask("", null);
+
+// ---------------------------------------------------------------- controls and legend
+export function segmented(el, modes, current, onPick) {
+  el.innerHTML = "";
+  for (const m of modes) {
+    const b = document.createElement("button");
+    b.type = "button"; b.textContent = m.label; b.setAttribute("role", "radio"); b.setAttribute("aria-checked", String(m === current()));
+    b.onclick = () => { onPick(m); [...el.children].forEach((c, j) => c.setAttribute("aria-checked", String(modes[j] === m))); };
+    el.append(b);
+  }
+}
+segmented($("size-by"), SIZE_MODES, () => state.size, (m) => { state.size = m; layout(); renderLegend(); requestDraw(); refreshMini(); });
+segmented($("colour-by"), COLOUR_MODES, () => state.colour, (m) => { state.colour = m; recolour(); renderLegend(); requestDraw(); refreshMini(); });
+
+export function sharesBy(groupOf, groups) {
+  const totals = new Float64Array(groups), v = state.size.values;
+  let all = 0;
+  for (let i = 0; i < N; i++) { totals[groupOf(i)] += v[i]; all += v[i]; }
+  return [...totals].map((t) => t / all);
+}
+export function renderLegend() {
+  const el = $("legend"), mode = state.colour;
+  el.innerHTML = "";
+  if (mode.kind === "cat") {
+    const isField = mode.id !== "kind";
+    const labels = isField ? FAMILIES.map((f) => f.name) : KIND_NAMES;
+    const groupOf = mode.id === "field" ? moduleFamily : mode.id === "dirfield" ? dirFamily : (i) => col.kind[i];
+    const shares = sharesBy(groupOf, labels.length);
+    labels.map((name, g) => ({ name, g, share: shares[g] })).filter((d) => d.share > 0).sort((a, b) => b.share - a.share).forEach(({ name, g, share }) => {
+      const b = document.createElement("button");
+      const key = `${mode.id}:${g}`;
+      b.type = "button"; b.dataset.maskKey = key; b.setAttribute("aria-pressed", String(state.maskKey === key));
+      b.innerHTML = `<span class="sw" style="background:${palette[g]}"></span>${esc(name)} <span class="share">${pct(share)}</span>`;
+      b.title = `${pct(share)} ${state.size.unit}. Click to highlight.`;
+      b.onclick = () => setMask(key, maskWhere((i) => groupOf(i) === g), mode.id === "dirfield" ? `directories labelled “${name}”` : name);
+      el.append(b);
+    });
+  } else {
+    const ramp = palette.slice(0, 9);
+    el.innerHTML = `<span>${esc(mode.low)}</span><span class="ramp" style="background:linear-gradient(to right, ${ramp.join(",")})"></span><span>${esc(mode.high)}</span>`
+      + (mode.missing !== undefined ? `<span><span class="sw" style="background:${palette[9]}"></span>first module in its directory</span>` : "")
+      + (mode.scale !== "linear" ? `<span class="share">(${mode.scale === "log" ? "logarithmic" : "square-root"} scale)</span>` : "");
+  }
+}
+
+// ---------------------------------------------------------------- zoom, hover, click
+// A wheel gesture belongs to whatever was under the cursor when it began, so a page scroll
+// that carries the map under the cursor keeps scrolling the page.
+export let wheelOwner = null, lastWheel = 0;
+addEventListener("wheel", (e) => {
+  if (e.timeStamp - lastWheel > 350) wheelOwner = e.target === canvas ? "map" : "page";
+  lastWheel = e.timeStamp;
+}, { capture: true, passive: true });
+export const zoom = d3.zoom().scaleExtent([1, 4000])
+  .filter((e) => {
+    if (e.type === "wheel") return wheelOwner === "map" && !(e.deltaY > 0 && transform.k <= 1.0001);
+    if (e.type.startsWith("touch")) return e.touches.length > 1; // one finger scrolls the page
+    return !e.button;
+  })
+  .on("zoom", (e) => { transform = e.transform; hideTip(); requestDraw(); });
+export const sel = d3.select(canvas).call(zoom).on("dblclick.zoom", null);
+$("reset-zoom").onclick = () => sel.transition().duration(350).call(zoom.transform, d3.zoomIdentity);
+
+export function leafAt(px, py) {
+  const wx = (px - transform.x) / transform.k, wy = (py - transform.y) / transform.k;
+  let node = root;
+  while (node.children) {
+    let next = null;
+    for (const c of node.children) if (wx >= c.x0 && wx < c.x1 && wy >= c.y0 && wy < c.y1) { next = c; break; }
+    if (!next) return { dir: node.data.dir, leaf: -1 };
+    node = next;
+  }
+  return { dir: node.parent.data.dir, leaf: node.data.leaf };
+}
+export const group = (i) => meta.groups[col.group[i]];
+export const groupSize = new Uint32Array(meta.groups.length);
+for (let i = 0; i < N; i++) groupSize[col.group[i]]++;
+// One label cannot describe thousands of modules, so large groups show their directory name instead.
+export const hasLabel = (i) => groupSize[col.group[i]] <= 3000;
+export const spaced = (name) => name.replace(/([a-z0-9])([A-Z])/g, "$1 $2");
+export const labelOf = (i) => (hasLabel(i) ? group(i).label : spaced(dirs[leafDir[i]].name));
+export const kindNote = ["", "Restates one theorem that is proved in another module", "Only imports other modules", "Only sets options or notation"];
+
+export function moduleFacts(i) {
+  const d = col.decls[i];
+  return `${bytesFmt(col.bytes[i])} · ${plural(col.lines[i], "line")} · ${plural(d, "declaration")}`;
+}
+export function tipHtml(hit) {
+  if (hit.leaf < 0) {
+    const d = hit.dir;
+    return `<b>${esc(d.name)}</b><span class="path">${esc(d.path)}/</span>${plural(d.end - d.start, "module")} · ${fmt(dirSum(d, "lines"))} lines · ${bytesFmt(dirSum(d, "bytes"))}`;
+  }
+  const i = hit.leaf, g = group(i), mode = state.colour;
+  let extra = "";
+  if (mode.id === "height") extra = `<br>Import depth ${col.height[i]} of ${meta.totals.longestChain}`;
+  else if (mode.id === "dependents") extra = `<br>${plural(col.dependents[i], "module depends", "modules depend")} on it (${fmt(col.indeg[i])} import it directly)`;
+  else if (mode.id === "repeat") extra = col.repeat[i] === 255 ? "<br>First module in its directory" : `<br>${col.repeat[i]}% repeats the module before it`;
+  else if (mode.id === "digits") extra = `<br>${col.digits[i]}% of its characters are digits`;
+  return `<b>${esc(labelOf(i))}</b><span class="path">${esc(pathOf(i))}</span>${moduleFacts(i)}<br>${esc(meta.fields[col.field[i]].name)}`
+    + (col.kind[i] ? `<br>${kindNote[col.kind[i]]}` : "") + extra;
+}
+export const tip = $("tip");
+export function hideTip() { tip.style.display = "none"; if (state.hover >= 0) { state.hover = -1; requestDraw(); } }
+canvas.addEventListener("pointermove", (e) => {
+  if (e.buttons) return;
+  const r = canvas.getBoundingClientRect(), px = e.clientX - r.left, py = e.clientY - r.top;
+  const hit = leafAt(px, py);
+  if (!hit.dir) return hideTip();
+  tip.innerHTML = tipHtml(hit);
+  tip.style.display = "block";
+  const tw = tip.offsetWidth, th = tip.offsetHeight;
+  tip.style.left = Math.max(0, Math.min(px + 14, W - tw)) + "px";
+  tip.style.top = (py + 18 + th > H ? Math.max(0, py - th - 10) : py + 18) + "px";
+  if (state.hover !== hit.leaf) { state.hover = hit.leaf; requestDraw(); }
+});
+canvas.addEventListener("pointerleave", hideTip);
+export let downAt = null;
+canvas.addEventListener("pointerdown", (e) => { downAt = [e.clientX, e.clientY]; });
+canvas.addEventListener("click", (e) => {
+  if (downAt && Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) > 5) return; // it was a drag
+  const r = canvas.getBoundingClientRect();
+  const hit = leafAt(e.clientX - r.left, e.clientY - r.top);
+  if (hit.leaf >= 0) openModule(hit.leaf); else if (hit.dir) openDirectory(hit.dir);
+});
+
+export const famOf = (i) => fieldFamily[col.field[i]];
+export const famColour = (g) => (isDark() ? FAMILIES[g].dark : FAMILIES[g].light);
+
+export const chainMask = new Uint8Array(N);
+for (const i of meta.chain) chainMask[i] = 1;
+export const chainLabel = `The longest import chain, ${meta.chain.length} modules`;
+export function chainTip(j) {
+  const i = meta.chain[j - 1];
+  return `${j} of ${meta.chain.length}\n${esc(pathOf(i))}<span class="say">${esc(labelOf(i))} · ${esc(meta.fields[col.field[i]].name)}</span>`;
+}
+
+// ---------------------------------------------------------------- sizing and first paint
+export function resize() {
+  const r = canvas.getBoundingClientRect();
+  if (!r.width || (Math.round(r.width) === W && Math.round(r.height) === H)) return;
+  W = Math.round(r.width); H = Math.round(r.height);
+  const dpr = Math.min(devicePixelRatio || 1, 2);
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  zoom.extent([[0, 0], [W, H]]).translateExtent([[0, 0], [W, H]]);
+  transform = d3.zoomIdentity; sel.call(zoom.transform, d3.zoomIdentity);
+  layout(); requestDraw(); refreshMini();
+}
+buildHierarchy();
+recolour();
+resize();
+renderLegend();
+new ResizeObserver(() => resize()).observe(canvas);
+new ResizeObserver(() => refreshBent()).observe(bent);
