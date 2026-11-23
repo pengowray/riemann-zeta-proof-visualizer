@@ -160,7 +160,8 @@ figure { margin: 12px 0; }
 #bent { display: block; width: 100%; height: min(70vh, 60vw); min-height: 320px; cursor: crosshair; }
 #graph { width: 100%; height: min(80vh, 760px); min-height: 420px; background: var(--paper-2); }
 
-.chain-cells { display: flex; gap: 1px; height: 40px; max-width: 1100px; }
+.chain-cells { display: flex; gap: 1px; height: 40px; max-width: 100%; }
 .chain-cell { flex: 1 1 0; min-width: 0; border: 0; padding: 0; cursor: pointer; }
 .chain-cell:hover, .chain-cell:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; position: relative; }
-.chain-axis { display: flex; justify-content: space-between; max-width: 1100px; font-size: 0.84rem; color: var(--ink-2); margin-top: 4px; }
+.chain-axis { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 16px; max-width: 100%; font-size: 0.84rem; color: var(--ink-2); margin-top: 4px; }
+.chain-axis span { white-space: normal; }

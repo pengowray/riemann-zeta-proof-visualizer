@@ -333,6 +333,7 @@ function drawMinimapOverlay() {
   if (state.marker >= 0) {
     const [x, y] = centre(state.marker);
     miniCtx.strokeStyle = inkNow; miniCtx.lineWidth = 2 * dpr; miniCtx.beginPath(); miniCtx.arc(x, y, 5 * dpr, 0, 7); miniCtx.stroke();
+    miniCtx.fillStyle = inkNow; miniCtx.beginPath(); miniCtx.arc(x, y, 2.2 * dpr, 0, 7); miniCtx.fill();
   }
   if (transform.k > 1.02) {
     const sx = (200 / W) * dpr, sy = (125 / H) * dpr, { k, x, y } = transform;
