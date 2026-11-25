@@ -205,8 +205,8 @@ function renderUsed() {
 function renderMathlib() {
   const m = meta.mathlib, whole = meta.totals.wholeMathlibImports;
   if (m.modulesNaming < N / 2) {
-    $("mathlib-text").innerHTML = `${fmt(whole)} of the ${fmt(N)} modules import all of Mathlib with <code>import Mathlib</code>, so the imports do not show which parts each module needs. The community cleanup replaced that line with imports of single Mathlib modules: <a href="?v=cleanup#imports">see which parts of Mathlib the cleanup imports</a>.`;
-    $("mathlib-table").remove(); $("mathlib-top").remove(); $("mathlib-facts").remove(); $("mathlib-note").remove();
+    $("mathlib-text").innerHTML = `${fmt(whole)} of the ${fmt(N)} modules import all of Mathlib with <code>import Mathlib</code>, so the imports do not show which parts each module needs. The community cleanup replaced that line with imports of single Mathlib modules: <a href="?v=cleanup#imports">see the cleanup's import counts</a>.`;
+    $("mathlib-facts").remove(); $("mathlib-note").remove();
     return;
   }
   const sharedTactic = m.shared.filter((x) => x.startsWith("Mathlib.Tactic.")).length;
@@ -218,11 +218,7 @@ function renderMathlib() {
     ["Modules that import one shared list", `<b>${fmt(m.sharedImporters)}</b> import the same ${fmt(m.shared.length)} Mathlib modules, ${fmt(sharedTactic)} of them from <code>Mathlib.Tactic</code>`],
     ["Other widely imported Mathlib modules", `<b>${fmt(m.widelyImported)}</b> are each imported by 1,000 or more modules`],
   ].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
-  $("mathlib-note").textContent = "The table leaves out the shared list and counts every other import. It shows what modules import, which is more than what their proofs use: many of the imported modules come late in Mathlib's own import order and bring large parts of Mathlib with them. Point at a row to see the importing modules on the map.";
-  const max = m.areas[0][1];
-  $("mathlib-table").innerHTML = `<tr><th>Part of Mathlib</th><th class="num">Mathlib modules imported</th><th>Project modules that import it</th></tr>`
-    + m.areas.map(([name, modules, , distinct], bit) => `<tr class="hoverable" data-preview-mathlib="${bit}"><td class="mono">Mathlib.${esc(name)}</td><td class="num">${fmt(distinct)}</td><td style="white-space:nowrap"><span class="bar" style="width:${(220 * modules) / max}px;background:${cssVar("--ink-3")}"></span>${fmt(modules)} (${pct(modules / N)})</td></tr>`).join("");
-  $("mathlib-top").innerHTML = `Imported by the most modules, apart from the shared list: ${m.top.slice(0, 8).map(([name, n]) => `<code>${esc(name)}</code> (${fmt(n)})`).join(", ")}.`;
+  $("mathlib-note").textContent = "These counts show what modules import, which is more than what their proofs use: many of the imported modules come late in Mathlib's own import order and bring large parts of Mathlib with them. The table above shows what the proofs use.";
 }
 
 export function renderNameTables() {

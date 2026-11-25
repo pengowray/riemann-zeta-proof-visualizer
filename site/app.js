@@ -155,12 +155,6 @@ document.addEventListener("pointerover", (e) => {
     if (state.previewLabel !== label) setPreview(maskWhere((i) => (col.mathlibUsedAreas[i] >>> bit) & 1), label);
     return;
   }
-  const lib = e.target.closest?.("[data-preview-mathlib]");
-  if (lib) {
-    const bit = +lib.dataset.previewMathlib, label = `Modules that import from Mathlib.${meta.mathlib.areas[bit][0]}`;
-    if (state.previewLabel !== label) setPreview(maskWhere((i) => (col.mathlibAreas[i] >>> bit) & 1), label);
-    return;
-  }
   const row = e.target.closest?.("[data-preview-field],[data-preview-dir]");
   if (!row) { if (state.preview) setPreview(null); return; }
   if (row.dataset.previewField !== undefined) {
