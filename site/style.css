@@ -250,3 +250,8 @@ td.pair { white-space: nowrap; line-height: 1.5; }
 #versions.phone-only { display: none; }
 @media (max-width: 1000px) { #versions.phone-only { display: flex !important; } }
 #version-date { display: block; margin-top: 4px; }
+/* on a phone these three tables are wider than the screen: each scrolls sideways on its own */
+@media (max-width: 700px) {
+  #change-table, #used-table, #mathlib-table { display: block; overflow-x: auto; }
+  #change-table td:first-child { overflow-wrap: normal; }
+}
