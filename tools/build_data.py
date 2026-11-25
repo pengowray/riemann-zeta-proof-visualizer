@@ -66,6 +66,35 @@ def region_of(path):
     return parts[0]
 
 
+def compare_versions(before, after):
+    """What changed between the original release (`before`) and this version (`after`), from the two scans.
+    Lines are counted without import lines, because the cleanup writes one import line per Mathlib module."""
+    def measure(rs):
+        return {"modules": len(rs), "lines": sum(r["l"] - len(r["i"]) for r in rs), "bytes": sum(r["b"] for r in rs),
+                "decls": sum(sum(r["d"].values()) for r in rs)}
+    old = {r["p"]: r for r in before}
+    new = {r["p"]: r for r in after}
+    same_path = [p for p in new if p in old]
+    regions = {}
+    for which, rs in ((0, before), (1, after)):
+        for r in rs:
+            reg = regions.setdefault(region_of(r["p"]), [[0, 0], [0, 0]])
+            reg[which][0] += 1
+            reg[which][1] += r["l"] - len(r["i"])
+    return {
+        "before": measure(before),
+        "after": measure(after),
+        "samePath": len(same_path),
+        # same path and the same text once names, numbers and import lines are ignored
+        "sameShape": sum(1 for p in same_path if old[p]["sh"] == new[p]["sh"]),
+        "gone": sum(1 for p in old if p not in new),
+        "newPaths": sum(1 for p in new if p not in old),
+        "merged": sum(1 for r in after if r.get("cl")),
+        # [directory, modules before, lines before, modules now, lines now]
+        "regions": sorted(([k, v[0][0], v[0][1], v[1][0], v[1][1]] for k, v in regions.items()), key=lambda x: -x[2]),
+    }
+
+
 def main():
     cache, labels_dir, out = sys.argv[1:4]
     # optional: --source FILE (JSON describing where the code is published, copied into meta.json)
@@ -74,6 +103,7 @@ def main():
     opts = dict(zip(sys.argv[4::2], sys.argv[5::2]))
     source = json.load(open(opts["--source"])) if "--source" in opts else {}
     train_cache = opts.get("--train-cache")
+    compare = None
     os.makedirs(out, exist_ok=True)
     rows = [json.loads(line) for line in open(os.path.join(cache, "files.jsonl"))]
 
@@ -275,6 +305,7 @@ def main():
         if train_cache:
             train_rows = [json.loads(line) for line in open(os.path.join(train_cache, "files.jsonl"))]
             train_index = {r["p"]: i for i, r in enumerate(train_rows)}
+            compare = compare_versions(train_rows, rows)
         else:
             train_rows, train_index = rows, index
         class_n, feat_n, total_n, vocab = Counter(), defaultdict(Counter), Counter(), set()
@@ -411,6 +442,7 @@ def main():
         "modulesBeyondShared": sum(1 for a in row_areas if a),
         "shared": sorted(shared),
         "sharedImporters": shared_importers,
+        "widelyImported": sum(1 for m, c in mathlib_module_n.items() if c >= 1000 and m not in shared),
         "top": [[m, c] for m, c in mathlib_module_n.most_common(40) if m not in shared][:12],
         "otherLibraries": other_libs.most_common(8),
     }
@@ -520,6 +552,7 @@ def main():
         "tacticBits": tactic_bits,
         "declKinds": decl_kinds.most_common(),
         "source": source,
+        "compare": compare,
         "mathlib": mathlib,
         "notReached": not_reached[:5000],
         "notImported": not_imported[:50],

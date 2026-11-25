@@ -15,7 +15,7 @@ versionsReady.then((versions) => {
     `<a href="${v.id === "original" ? "./" : "?v=" + v.id}"${v.id === VERSION ? ' aria-current="page"' : ""}><b>${esc(v.label)}</b> ${dateFmt(v.date)} · ${fmt(v.modules)} modules</a>`).join("");
   const original = versions.find((v) => v.id === "original");
   if (VERSION === "cleanup" && original) {
-    $("cleanup-lede").innerHTML = `Members of the Lean community are cleaning up Levent Alpöge's Lean 4 formalization of the Riemann Hypothesis, released on 20 November 2026, in <a href="${REPO}">${esc(SOURCE.repo)}</a>. This page shows their <code>main</code> branch as it was on ${dateFmt(SOURCE.date)} (commit <code>${shortSha}</code>): ${fmt(N)} modules and ${fmt(meta.totals.lines)} lines, down from ${fmt(original.modules)} modules and ${fmt(original.lines)} lines in the original release. ${fmt(meta.totals.mergedModules)} of the modules were made by a script that joins several smaller modules into one. ${fmt(meta.mathlib.lines)} of the lines are imports of single Mathlib modules, which the original wrote as one line, <code>import Mathlib</code>. A module is one <code>.lean</code> file.`;
+    $("cleanup-lede").innerHTML = `Members of the Lean community are cleaning up Levent Alpöge's Lean 4 formalization of the Riemann Hypothesis, released on 20 November 2026, in <a href="${REPO}">${esc(SOURCE.repo)}</a>. This page shows their <code>main</code> branch as it was on ${dateFmt(SOURCE.date)} (commit <code>${shortSha}</code>): ${fmt(N)} modules and ${fmt(meta.totals.lines)} lines, down from ${fmt(original.modules)} modules and ${fmt(original.lines)} lines in the original release. A module is one <code>.lean</code> file.`;
   }
 });
 $("source-note").innerHTML = VERSION === "cleanup"
@@ -34,7 +34,7 @@ $("facts").innerHTML = [
   ["Comments and docstrings", `<b>${meta.totals.commentBytes ? bytesFmt(meta.totals.commentBytes) : "None"}</b>${meta.totals.mergeRecordBytes ? `. ${bytesFmt(meta.totals.mergeRecordBytes)} of that is records written by the cleanup's merge script, which lists the smaller modules each merged module was made from` : ""}`],
   ["Uses of <code>sorry</code>", `<b>${fmt(sorryCount)}</b> (<code>sorry</code> is Lean's placeholder for a step left unproved)${meta.sorryModules.length ? `, all in ${meta.sorryModules.map(([p]) => esc(p)).join(", ")}` : ""}`],
   ["Longest import chain", `<b>${fmt(meta.totals.longestChain)}</b> modules`],
-].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
+].filter(Boolean).map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
 
 const zerosSeen = drawZeta($("zeta"), 60, (t) => { $("zeta-t").textContent = t.toFixed(1).padStart(4, " "); });
 $("zeta-zeros").textContent = `The ${zerosSeen.length} zeros up to t = 60 are at t ≈ ${zerosSeen.map((z) => z.toFixed(2)).join(", ")}.`;

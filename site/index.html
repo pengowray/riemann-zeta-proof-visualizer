@@ -17,6 +17,7 @@
   <nav id="toc">
     <a href="#statement">The statement</a>
     <a href="#map">Map of every module</a>
+    <a href="#changes" data-only="cleanup">What the cleanup changed</a>
     <a href="#space">What takes up the space</a>
     <a href="#modules">Why so many modules</a>
     <a href="#fields">Areas of mathematics</a>
@@ -79,6 +80,14 @@
   <ol id="steps" class="step-list"></ol>
 </section>
 
+<section id="changes" data-only="cleanup">
+  <h2>What the cleanup changed</h2>
+  <dl id="change-facts" class="facts"></dl>
+  <p id="change-text"></p>
+  <table id="change-table" class="data"></table>
+  <p class="note">Lines are counted without import lines, because the cleanup writes one import line for each Mathlib module. Point at a row to see that directory on the map.</p>
+</section>
+
 <section id="space">
   <h2>What takes up the space</h2>
   <p id="space-text"></p>
@@ -112,6 +121,8 @@
   <figure><figcaption>Imports between fields. Each row shows where that field's imports go. Point at a square to see those modules on the map.</figcaption><div id="matrix-chart" class="chart"></div></figure>
   <h3>Imports from Mathlib</h3>
   <p id="mathlib-text"></p>
+  <dl id="mathlib-facts" class="facts"></dl>
+  <p id="mathlib-note"></p>
   <table id="mathlib-table" class="data"></table>
   <p id="mathlib-top" class="note"></p>
   <h3>Import graph of the main directories</h3>

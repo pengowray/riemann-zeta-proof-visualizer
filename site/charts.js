@@ -21,7 +21,28 @@ function previewOnHover(plot, describe) {
   plot.addEventListener("pointerleave", () => { plot.dataset.key = ""; if (state.preview) setPreview(null); });
 }
 
+/** Cleanup page only: the original release beside this version, in total and by directory. */
+function renderChanges() {
+  const c = meta.compare;
+  if (!c || !$("change-table")) return;
+  const change = (a, b) => `${b >= a ? "+" : "−"}${pct(Math.abs(b - a) / a)}`;
+  const row = (label, a, b, f = fmt, note = "") => `<dt>${label}</dt><dd>${f(a)} → <b>${f(b)}</b> (${change(a, b)})${note}</dd>`;
+  $("change-facts").innerHTML = row("Modules", c.before.modules, c.after.modules)
+    + row("Lines without imports", c.before.lines, c.after.lines)
+    + row("Declarations", c.before.decls, c.after.decls)
+    + row("Source size", c.before.bytes, c.after.bytes, bytesFmt, meta.totals.mergeRecordBytes ? `. ${bytesFmt(meta.totals.mergeRecordBytes)} of the new size is records written by the merge script` : "");
+  $("change-text").textContent = `${fmt(c.gone)} modules of the original release are no longer at their path: they were removed or joined into another module. ${fmt(c.merged)} of the cleanup's modules were made by a script that joins several smaller modules into one. ${fmt(c.samePath)} modules are at the same path as before, and ${fmt(c.sameShape)} of those have the same text once names, numbers and import lines are ignored. ${fmt(c.newPaths)} modules are at paths the original did not have.`;
+  const max = d3.max(c.regions, (r) => r[2]);
+  $("change-table").innerHTML = `<tr><th>Directory</th><th class="num">Modules before</th><th class="num">Modules now</th><th class="num">Change</th><th>Lines before and now</th><th class="num">Change</th></tr>`
+    + c.regions.filter((r) => r[1] >= 20).map(([path, m0, l0, m1, l1]) => {
+      const d = dirs.find((x) => x.path === path);
+      return `<tr class="hoverable"${d ? ` data-preview-dir="${d.i}"` : ""}><td>${esc(path)}</td><td class="num">${fmt(m0)}</td><td class="num">${fmt(m1)}</td><td class="num">${change(m0, m1)}</td>
+        <td class="pair"><span class="bar before" style="width:${(110 * l0) / max}px"></span>${fmt(l0)}<br><span class="bar" style="width:${(110 * l1) / max}px;background:${cssVar("--ink")}"></span>${fmt(l1)}</td><td class="num">${change(l0, l1)}</td></tr>`;
+    }).join("");
+}
+
 export function renderCharts() {
+  renderChanges();
   // --- what takes up the space: share of each family under five measures
   const measures = [["Modules", ones], ["Lines", col.lines], ["Bytes", col.bytes], ["Compressed bytes", col.zbytes], ["Declarations", col.decls]];
   const rows = [];
@@ -162,11 +183,19 @@ function renderMathlib() {
   const m = meta.mathlib, whole = meta.totals.wholeMathlibImports;
   if (m.modulesNaming < N / 2) {
     $("mathlib-text").innerHTML = `${fmt(whole)} of the ${fmt(N)} modules import all of Mathlib with <code>import Mathlib</code>, so the imports do not show which parts each module needs. The community cleanup replaced that line with imports of single Mathlib modules: <a href="?v=cleanup#imports">see which parts of Mathlib the cleanup imports</a>.`;
-    $("mathlib-table").remove(); $("mathlib-top").remove();
+    $("mathlib-table").remove(); $("mathlib-top").remove(); $("mathlib-facts").remove(); $("mathlib-note").remove();
     return;
   }
   const sharedTactic = m.shared.filter((x) => x.startsWith("Mathlib.Tactic.")).length;
-  $("mathlib-text").innerHTML = `${fmt(m.modulesNaming)} of the ${fmt(N)} modules name the Mathlib modules they import, and ${fmt(whole)} import all of Mathlib. Together they name ${fmt(m.distinct)} different Mathlib modules in ${fmt(m.lines)} import lines. ${m.shared.length ? `${fmt(m.sharedImporters)} modules import the same list of ${fmt(m.shared.length)} Mathlib modules, ${fmt(sharedTactic)} of them from <code>Mathlib.Tactic</code>, so that list says nothing about a single module and the table leaves it out. ` : ""}${fmt(m.modulesBeyondShared)} modules import Mathlib modules that are not on the list. The table counts those imports. An import shows what a module asks for, which can be more than its proofs use. Point at a row to see the importing modules on the map.`;
+  $("mathlib-text").innerHTML = `The cleanup replaced <code>import Mathlib</code> with imports of single Mathlib modules.`;
+  $("mathlib-facts").innerHTML = [
+    ["Modules that name the Mathlib modules they import", `<b>${fmt(m.modulesNaming)}</b> of ${fmt(N)}`],
+    ["Modules that still import all of Mathlib", `<b>${fmt(whole)}</b>`],
+    ["Mathlib import lines", `<b>${fmt(m.lines)}</b>, naming ${fmt(m.distinct)} different Mathlib modules`],
+    ["Modules that import one shared list", `<b>${fmt(m.sharedImporters)}</b> import the same ${fmt(m.shared.length)} Mathlib modules, ${fmt(sharedTactic)} of them from <code>Mathlib.Tactic</code>`],
+    ["Other widely imported Mathlib modules", `<b>${fmt(m.widelyImported)}</b> are each imported by 1,000 or more modules`],
+  ].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
+  $("mathlib-note").textContent = "The table leaves out the shared list and counts every other import. It shows what modules import, which is more than what their proofs use: many of the imported modules come late in Mathlib's own import order and bring large parts of Mathlib with them. Point at a row to see the importing modules on the map.";
   const max = m.areas[0][1];
   $("mathlib-table").innerHTML = `<tr><th>Part of Mathlib</th><th class="num">Mathlib modules imported</th><th>Project modules that import it</th></tr>`
     + m.areas.map(([name, modules, , distinct], bit) => `<tr class="hoverable" data-preview-mathlib="${bit}"><td class="mono">Mathlib.${esc(name)}</td><td class="num">${fmt(distinct)}</td><td style="white-space:nowrap"><span class="bar" style="width:${(220 * modules) / max}px;background:${cssVar("--ink-3")}"></span>${fmt(modules)} (${pct(modules / N)})</td></tr>`).join("");
