@@ -24,7 +24,9 @@ Put the paths of your two local checkouts in `tools/local.json` (see the top of 
 python3 tools/update.py cleanup
 ```
 
-This fetches the newest `main`, scans it and rebuilds `site/data/cleanup/`. The cleanup changes
+This fetches the newest `main`, scans it and rebuilds `site/data/cleanup/`. It needs the original
+release's scan in `data/cache/` (run `python3 tools/update.py original` once), because the field
+classifier is trained on modules of the original release. The cleanup changes
 many times a day, so run it again whenever the numbers should be brought up to date, then commit
 `site/data/`. `python3 tools/update.py original` rebuilds the original release's data.
 

@@ -380,14 +380,24 @@ def main():
     other_libs = Counter()
     row_areas = []
     for r in rows:
+        for m in r["i"]:
+            if m.startswith("Mathlib."):
+                mathlib_module_n[m] += 1
+    # Mathlib modules that more than half of the project's modules import are one shared list,
+    # pasted in place of "import Mathlib". They say nothing about a single module, so the
+    # per-area counts leave them out.
+    shared = {m for m, c in mathlib_module_n.items() if c > n / 2}
+    shared_importers = sum(1 for r in rows if shared and shared <= set(r["i"]))
+    for r in rows:
         areas = set()
         for m in r["i"]:
             if m.startswith("Mathlib."):
+                if m in shared:
+                    continue
                 area = m.split(".")[1]
                 areas.add(area)
                 area_lines[area] += 1
                 area_distinct[area].add(m)
-                mathlib_module_n[m] += 1
             elif m != "Mathlib" and m not in module:
                 other_libs[m.split(".")[0]] += 1
         area_modules.update(areas)
@@ -396,9 +406,12 @@ def main():
     mathlib = {
         "areas": [[a, area_modules[a], area_lines[a], len(area_distinct[a])] for a in area_names],
         "distinct": len(mathlib_module_n),
-        "lines": sum(area_lines.values()),
-        "modulesNaming": sum(1 for a in row_areas if a),
-        "top": mathlib_module_n.most_common(20),
+        "lines": sum(mathlib_module_n.values()),
+        "modulesNaming": sum(1 for r in rows if any(m.startswith("Mathlib.") for m in r["i"])),
+        "modulesBeyondShared": sum(1 for a in row_areas if a),
+        "shared": sorted(shared),
+        "sharedImporters": shared_importers,
+        "top": [[m, c] for m, c in mathlib_module_n.most_common(40) if m not in shared][:12],
         "otherLibraries": other_libs.most_common(8),
     }
 
@@ -508,7 +521,7 @@ def main():
         "declKinds": decl_kinds.most_common(),
         "source": source,
         "mathlib": mathlib,
-        "notReached": not_reached[:50],
+        "notReached": not_reached[:5000],
         "notImported": not_imported[:50],
         "sorryModules": [[r["p"], r["t"]["sorry"]] for r in rows if r["t"].get("sorry")][:50],
         "totals": {

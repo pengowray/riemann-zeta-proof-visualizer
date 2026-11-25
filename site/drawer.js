@@ -100,7 +100,8 @@ function crumbs(d, last = false) {
 const natural = new Intl.Collator("en", { numeric: true });
 const moduleRow = (i) => `<tr><td><button class="link" data-open="${i}">${esc(names[i])}</button></td><td class="num">${fmt(col.lines[i])}</td><td class="num">${bytesFmt(col.bytes[i])}</td></tr>`;
 /** Lists a directory: its subdirectories, then the modules directly in it. */
-export async function openDirectory(d, all = false) {
+const PAGE = 1000; // rows added by each press of "Show more": a 42,000-row table takes seconds to draw
+export async function openDirectory(d, rows = 200) {
   await namesReady;
   state.pinned = -1; requestDraw();
   const subs = dirs.filter((x) => x.parent === d.i).sort((a, b) => natural.compare(a.name, b.name));
@@ -108,8 +109,9 @@ export async function openDirectory(d, all = false) {
   const largest = own.length ? [] : d3.range(d.start, d.end).sort((a, b) => col.bytes[b] - col.bytes[a]).slice(0, SHOWN);
   const g = d.end > d.start ? group(d.start) : null;
   const sameGroup = g && d.path.startsWith(g.id);
-  const shown = all ? own : own.slice(0, 200);
-  drawer.hidden = false; if (!all) drawer.scrollTop = 0;
+  const shown = own.slice(0, rows);
+  const top = rows > 200 ? drawer.scrollTop : 0; // adding rows keeps the reader's place
+  drawer.hidden = false;
   drawerBody.innerHTML = `<h2>${esc(d.name)}</h2>
     ${crumbs(d)}
     <a class="path" href="${treeUrl(d.path)}" target="_blank" rel="noopener">Open on GitHub</a>
@@ -120,13 +122,14 @@ export async function openDirectory(d, all = false) {
     <table class="data"><tr><th>Directory</th><th class="num">Modules</th><th class="num">Size</th></tr>${subs.map((x) => `<tr><td><button class="link" data-open-dir="${x.i}">${esc(x.name)}/</button></td><td class="num">${fmt(x.end - x.start)}</td><td class="num">${bytesFmt(dirSum(x, "bytes"))}</td></tr>`).join("")}</table>` : ""}
     ${own.length ? `<h3>${plural(own.length, "module")}${subs.length ? " directly in this directory" : ""}</h3>
     <table class="data"><tr><th>Module</th><th class="num">Lines</th><th class="num">Size</th></tr>${shown.map(moduleRow).join("")}</table>
-    ${shown.length < own.length ? `<button type="button" class="link show-files" data-all-dir="${d.i}">Show all ${fmt(own.length)} modules</button>` : ""}` : ""}
+    ${shown.length < own.length ? `<button type="button" class="link show-files" data-more-dir="${d.i}" data-rows="${shown.length + PAGE}">Show ${fmt(Math.min(PAGE, own.length - shown.length))} more (${fmt(shown.length)} of ${fmt(own.length)} shown)</button>` : ""}` : ""}
     ${largest.length ? `<h3>Largest modules below this directory</h3>
     <table class="data"><tr><th>Module</th><th class="num">Size</th></tr>${largest.map((i) => `<tr><td><button class="link" data-open="${i}">${esc(pathOf(i).slice(d.path.length + 1))}</button></td><td class="num">${bytesFmt(col.bytes[i])}</td></tr>`).join("")}</table>` : ""}`;
+  drawer.scrollTop = top;
 }
 document.addEventListener("click", (e) => {
-  const b = e.target.closest("[data-open-dir],[data-all-dir]");
-  if (b) openDirectory(dirs[+(b.dataset.openDir ?? b.dataset.allDir)], b.dataset.allDir !== undefined);
+  const b = e.target.closest("[data-open-dir],[data-more-dir]");
+  if (b) openDirectory(dirs[+(b.dataset.openDir ?? b.dataset.moreDir)], b.dataset.rows ? +b.dataset.rows : undefined);
 });
 document.addEventListener("click", (e) => {
   const b = e.target.closest("[data-open]");

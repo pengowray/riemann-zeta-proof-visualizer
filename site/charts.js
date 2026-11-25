@@ -107,7 +107,7 @@ export function renderCharts() {
     const rowTotal = d3.sum(used, (b) => meta.fieldMatrix[a][b]);
     for (const b of used) cells.push({ from: meta.fields[a].name, to: meta.fields[b].name, n: meta.fieldMatrix[a][b], share: meta.fieldMatrix[a][b] / rowTotal });
   }
-  $("imports-text").innerHTML = `The project has ${fmt(meta.totals.importEdges)} imports between its own modules. ${pct(same / total)} of them stay inside one field and ${pct(1 - same / total)} cross from one field to another. ${meta.totals.notReached ? `Following imports from Main.lean reaches all but ${fmt(meta.totals.notReached)} of the ${fmt(N)} modules. One of them is Challenge.lean, which is meant to stand apart. <button type="button" class="link" id="unreached-show" data-mask-key="unreached" aria-pressed="false">Show the ${fmt(meta.totals.notReached)} on the map</button>` : `Every module is imported: all ${fmt(N)} are reachable from Main.lean by following imports.`}`;
+  $("imports-text").innerHTML = `The project has ${fmt(meta.totals.importEdges)} imports between its own modules. ${pct(same / total)} of them stay inside one field and ${pct(1 - same / total)} cross from one field to another. ${meta.totals.notReached ? `Following imports from Main.lean reaches all but ${fmt(meta.totals.notReached)} of the ${fmt(N)} modules. ${meta.notReached.includes("Challenge.lean") ? "One of them is Challenge.lean, which is meant to stand apart. " : ""}<button type="button" class="link" id="unreached-show" data-mask-key="unreached" aria-pressed="false">Show the ${fmt(meta.totals.notReached)} on the map</button>` : `Every module is imported: all ${fmt(N)} are reachable from Main.lean by following imports.`}`;
   renderMathlib();
   if ($("unreached-show")) $("unreached-show").onclick = () => {
     const paths = new Set(meta.notReached);
@@ -165,11 +165,12 @@ function renderMathlib() {
     $("mathlib-table").remove(); $("mathlib-top").remove();
     return;
   }
-  $("mathlib-text").innerHTML = `${fmt(m.modulesNaming)} of the ${fmt(N)} modules name the Mathlib modules they import, and ${fmt(whole)} import all of Mathlib. Together they name ${fmt(m.distinct)} different Mathlib modules in ${fmt(m.lines)} import lines. The cleanup narrowed these imports to make builds faster (pull requests <a href="${REPO}/pull/1023">1023</a> and <a href="${REPO}/pull/1402">1402</a>). ${fmt(m.top[0][1])} modules import <code>${esc(m.top[0][0])}</code> and the same list of other modules, so that list was pasted in place of <code>import Mathlib</code> and is more than each module needs. The table shows what the modules import, which is more than what their proofs use. Point at a row to see the importing modules on the map.`;
+  const sharedTactic = m.shared.filter((x) => x.startsWith("Mathlib.Tactic.")).length;
+  $("mathlib-text").innerHTML = `${fmt(m.modulesNaming)} of the ${fmt(N)} modules name the Mathlib modules they import, and ${fmt(whole)} import all of Mathlib. Together they name ${fmt(m.distinct)} different Mathlib modules in ${fmt(m.lines)} import lines. ${m.shared.length ? `${fmt(m.sharedImporters)} modules import the same list of ${fmt(m.shared.length)} Mathlib modules, ${fmt(sharedTactic)} of them from <code>Mathlib.Tactic</code>, so that list says nothing about a single module and the table leaves it out. ` : ""}${fmt(m.modulesBeyondShared)} modules import Mathlib modules that are not on the list. The table counts those imports. An import shows what a module asks for, which can be more than its proofs use. Point at a row to see the importing modules on the map.`;
   const max = m.areas[0][1];
   $("mathlib-table").innerHTML = `<tr><th>Part of Mathlib</th><th class="num">Mathlib modules imported</th><th>Project modules that import it</th></tr>`
     + m.areas.map(([name, modules, , distinct], bit) => `<tr class="hoverable" data-preview-mathlib="${bit}"><td class="mono">Mathlib.${esc(name)}</td><td class="num">${fmt(distinct)}</td><td style="white-space:nowrap"><span class="bar" style="width:${(220 * modules) / max}px;background:${cssVar("--ink-3")}"></span>${fmt(modules)} (${pct(modules / N)})</td></tr>`).join("");
-  $("mathlib-top").innerHTML = `Imported by the most modules: ${m.top.slice(0, 8).map(([name, n]) => `<code>${esc(name)}</code> (${fmt(n)})`).join(", ")}.`;
+  $("mathlib-top").innerHTML = `Imported by the most modules, apart from the shared list: ${m.top.slice(0, 8).map(([name, n]) => `<code>${esc(name)}</code> (${fmt(n)})`).join(", ")}.`;
 }
 
 export function renderNameTables() {
