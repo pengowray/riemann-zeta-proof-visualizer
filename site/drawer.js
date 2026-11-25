@@ -20,7 +20,8 @@ export async function openModule(i) {
   const path = pathOf(i), g = group(i);
   drawer.hidden = false; drawer.scrollTop = 0;
   drawerBody.innerHTML = `<h2>${esc(names[i])}.lean</h2>
-    <a class="path" href="${blobUrl(path)}" target="_blank" rel="noopener">${esc(path)}</a>
+    ${crumbs(dirs[leafDir[i]], true)}
+    <a class="path" href="${blobUrl(path)}" target="_blank" rel="noopener">Open on GitHub</a>
     <dl>
       <dt>Size</dt><dd>${moduleFacts(i)}</dd>
       <dt>Field</dt><dd>${esc(meta.fields[col.field[i]].name)} (estimate)</dd>
@@ -90,34 +91,58 @@ document.addEventListener("click", (e) => {
   if (b) { b.previousElementSibling.hidden = false; b.remove(); }
 });
 
-export async function openDirectory(d) {
+/** The directories on the way to d as buttons that open each one's list. `last` also makes d itself a button. */
+function crumbs(d, last = false) {
+  const chain = [];
+  for (let x = d; x && x.parent >= 0; x = dirs[x.parent]) chain.unshift(x);
+  return `<div class="crumbs">${chain.map((x, j) => (j === chain.length - 1 && !last ? `<span>${esc(x.name)}</span>` : `<button type="button" class="link" data-open-dir="${x.i}">${esc(x.name)}</button>`)).join("<span class=\"sep\">/</span>")}</div>`;
+}
+const natural = new Intl.Collator("en", { numeric: true });
+const moduleRow = (i) => `<tr><td><button class="link" data-open="${i}">${esc(names[i])}</button></td><td class="num">${fmt(col.lines[i])}</td><td class="num">${bytesFmt(col.bytes[i])}</td></tr>`;
+/** Lists a directory: its subdirectories, then the modules directly in it. */
+export async function openDirectory(d, all = false) {
   await namesReady;
-  state.pinned = -1;
-  const idx = d3.range(d.start, d.end).sort((a, b) => col.bytes[b] - col.bytes[a]).slice(0, 12);
+  state.pinned = -1; requestDraw();
+  const subs = dirs.filter((x) => x.parent === d.i).sort((a, b) => natural.compare(a.name, b.name));
+  const own = d3.range(d.start, d.start + d.count).sort((a, b) => natural.compare(names[a], names[b]));
+  const largest = own.length ? [] : d3.range(d.start, d.end).sort((a, b) => col.bytes[b] - col.bytes[a]).slice(0, SHOWN);
   const g = d.end > d.start ? group(d.start) : null;
   const sameGroup = g && d.path.startsWith(g.id);
-  drawer.hidden = false; drawer.scrollTop = 0;
+  const shown = all ? own : own.slice(0, 200);
+  drawer.hidden = false; if (!all) drawer.scrollTop = 0;
   drawerBody.innerHTML = `<h2>${esc(d.name)}</h2>
-    <a class="path" href="${treeUrl(d.path)}" target="_blank" rel="noopener">${esc(d.path)}/</a>
-    <dl><dt>Modules</dt><dd>${fmt(d.end - d.start)}</dd><dt>Lines</dt><dd>${fmt(dirSum(d, "lines"))}</dd>
+    ${crumbs(d)}
+    <a class="path" href="${treeUrl(d.path)}" target="_blank" rel="noopener">Open on GitHub</a>
+    <dl><dt>Modules</dt><dd>${fmt(d.end - d.start)}${subs.length && own.length ? `, ${fmt(own.length)} of them directly in this directory` : ""}</dd><dt>Lines</dt><dd>${fmt(dirSum(d, "lines"))}</dd>
     <dt>Size</dt><dd>${bytesFmt(dirSum(d, "bytes"))}</dd><dt>Declarations</dt><dd>${fmt(dirSum(d, "decls"))}</dd></dl>
     ${sameGroup && hasLabel(d.start) ? groupBlock(g) : ""}
-    <h3>Largest modules</h3>
-    <table class="data">${idx.map((i) => `<tr><td><button class="link" data-open="${i}">${esc(pathOf(i).slice(d.path.length + 1))}</button></td><td class="num">${bytesFmt(col.bytes[i])}</td></tr>`).join("")}</table>`;
+    ${subs.length ? `<h3>${plural(subs.length, "subdirectory", "subdirectories")}</h3>
+    <table class="data"><tr><th>Directory</th><th class="num">Modules</th><th class="num">Size</th></tr>${subs.map((x) => `<tr><td><button class="link" data-open-dir="${x.i}">${esc(x.name)}/</button></td><td class="num">${fmt(x.end - x.start)}</td><td class="num">${bytesFmt(dirSum(x, "bytes"))}</td></tr>`).join("")}</table>` : ""}
+    ${own.length ? `<h3>${plural(own.length, "module")}${subs.length ? " directly in this directory" : ""}</h3>
+    <table class="data"><tr><th>Module</th><th class="num">Lines</th><th class="num">Size</th></tr>${shown.map(moduleRow).join("")}</table>
+    ${shown.length < own.length ? `<button type="button" class="link show-files" data-all-dir="${d.i}">Show all ${fmt(own.length)} modules</button>` : ""}` : ""}
+    ${largest.length ? `<h3>Largest modules below this directory</h3>
+    <table class="data"><tr><th>Module</th><th class="num">Size</th></tr>${largest.map((i) => `<tr><td><button class="link" data-open="${i}">${esc(pathOf(i).slice(d.path.length + 1))}</button></td><td class="num">${bytesFmt(col.bytes[i])}</td></tr>`).join("")}</table>` : ""}`;
 }
+document.addEventListener("click", (e) => {
+  const b = e.target.closest("[data-open-dir],[data-all-dir]");
+  if (b) openDirectory(dirs[+(b.dataset.openDir ?? b.dataset.allDir)], b.dataset.allDir !== undefined);
+});
 document.addEventListener("click", (e) => {
   const b = e.target.closest("[data-open]");
   if (b) openModule(+b.dataset.open);
 });
 
 // hover text for Lean code, shared by every code block
+/** A long line read aloud would cover the code it describes, so it is cut at a word boundary. */
+const clip = (s, max = 220) => (s.length <= max ? s : s.slice(0, s.lastIndexOf(" ", max)) + " …");
 export const codetip = $("codetip");
 document.addEventListener("pointermove", (e) => {
   const tk = e.target.closest?.(".tk[data-tip]"), ln = e.target.closest?.("pre.lean .ln");
-  if (ln && ln.closest("#drawer")) $("drawer-spoken").textContent = ln.dataset.say ? `Read aloud: ${ln.dataset.say}` : "";
+  if (ln && ln.closest("#drawer")) $("drawer-spoken").textContent = ln.dataset.say ? `Read aloud: ${clip(ln.dataset.say)}` : "";
   const cell = e.target.closest?.("[data-chain]");
   if (!cell && !tk && !(ln && !ln.closest("#drawer") && ln.dataset.say)) { codetip.hidden = true; return; }
-  codetip.innerHTML = cell ? chainTip(+cell.dataset.chain) : (tk ? esc(tk.dataset.tip) : "") + (ln && !ln.closest("#drawer") && ln.dataset.say ? `<span class="say">Read aloud: ${esc(ln.dataset.say)}</span>` : "");
+  codetip.innerHTML = cell ? chainTip(+cell.dataset.chain) : (tk ? esc(tk.dataset.tip) : "") + (ln && !ln.closest("#drawer") && ln.dataset.say ? `<span class="say">Read aloud: ${esc(clip(ln.dataset.say))}</span>` : "");
   codetip.hidden = false;
   codetip.style.left = Math.min(e.clientX + 14, innerWidth - codetip.offsetWidth - 8) + "px";
   codetip.style.top = (e.clientY + 20 + codetip.offsetHeight > innerHeight ? e.clientY - codetip.offsetHeight - 10 : e.clientY + 20) + "px";

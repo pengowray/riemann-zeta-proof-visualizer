@@ -154,7 +154,7 @@ export function draw() {
   // directory names: a name plate in the top-left corner, drawn once the directory is large enough
   // on screen and the plate would not cover a plate already drawn
   ctx.textBaseline = "middle";
-  const plates = [];
+  const plates = plateHits = [];
   for (const d of dirs) {
     if (quads || d.depth === 0 || d.depth > 8) continue;
     const n = d.node;
@@ -176,7 +176,7 @@ export function draw() {
     const y = Math.max(n.y0 * k + ty, 0);
     const pw = ctx.measureText(text).width + 8, ph = top ? 18 : 15;
     if (plates.some((p) => x - 4 < p[0] + p[2] && p[0] < x - 4 + pw && y < p[1] + p[3] && p[1] < y + ph)) continue;
-    plates.push([x - 4, y, pw, ph]);
+    plates.push([x - 4, y, pw, ph, d]);
     ctx.fillStyle = paper; ctx.fillRect(x - 4, y, pw, ph);
     ctx.fillStyle = top ? ink : ink2; ctx.fillText(text, x, y + ph / 2 + 0.5);
   }
@@ -444,7 +444,11 @@ export const zoom = d3.zoom().scaleExtent([1, 4000])
 export const sel = d3.select(canvas).call(zoom).on("dblclick.zoom", null);
 $("reset-zoom").onclick = () => sel.transition().duration(350).call(zoom.transform, d3.zoomIdentity);
 
+/** Name plates drawn by the last draw(): [x, y, width, height, directory] in canvas pixels. */
+let plateHits = [];
 export function leafAt(px, py) {
+  // a directory's name plate is drawn over its first modules; pointing at the plate means the directory
+  for (const p of plateHits) if (px >= p[0] && px < p[0] + p[2] && py >= p[1] && py < p[1] + p[3]) return { dir: p[4], leaf: -1, plate: true };
   const wx = (px - transform.x) / transform.k, wy = (py - transform.y) / transform.k;
   if (quads) { const i = quadAt(wx, wy); return i < 0 ? { dir: null, leaf: -1 } : { dir: dirs[leafDir[i]], leaf: i }; }
   let node = root;
@@ -478,7 +482,7 @@ function fieldLine(i) {
 export function tipHtml(hit) {
   if (hit.leaf < 0) {
     const d = hit.dir;
-    return `<b>${esc(d.name)}</b><span class="path">${esc(d.path)}/</span>${plural(d.end - d.start, "module")} · ${fmt(dirSum(d, "lines"))} lines · ${bytesFmt(dirSum(d, "bytes"))}`;
+    return `<b>${esc(d.name)}</b><span class="path">${esc(d.path)}/</span>${plural(d.end - d.start, "module")} · ${fmt(dirSum(d, "lines"))} lines · ${bytesFmt(dirSum(d, "bytes"))}${hit.plate ? "<br>Click to list what is in it" : ""}`;
   }
   const i = hit.leaf, g = group(i), mode = state.colour;
   let extra = "";
@@ -503,6 +507,7 @@ canvas.addEventListener("pointermove", (e) => {
   const tw = tip.offsetWidth, th = tip.offsetHeight;
   tip.style.left = Math.max(0, Math.min(px + 14, W - tw)) + "px";
   tip.style.top = (py + 18 + th > H ? Math.max(0, py - th - 10) : py + 18) + "px";
+  canvas.style.cursor = hit.plate ? "pointer" : "";
   if (state.hover !== hit.leaf) { state.hover = hit.leaf; requestDraw(); }
 });
 canvas.addEventListener("pointerleave", hideTip);
