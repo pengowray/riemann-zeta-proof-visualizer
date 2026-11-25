@@ -184,7 +184,7 @@ function renderUsed() {
   const u = meta.mathlibUsed;
   if (!u) {
     $("used-text").innerHTML = `This was measured on the community cleanup, whose compiled files are published: <a href="?v=cleanup#mathlib-use">see what the cleanup's modules use from Mathlib</a>.`;
-    for (const id of ["used-facts", "used-table", "used-top"]) $(id).remove();
+    for (const id of ["used-facts", "used-table", "used-top", "used-not"]) $(id).remove();
     return;
   }
   $("used-text").textContent = "A program read Lean's compiled file for each module and listed the Mathlib declarations that the module's own declarations mention in their statements and proofs. Nothing was compiled or checked again.";
@@ -196,7 +196,8 @@ function renderUsed() {
   const max = u.areas[0][1];
   $("used-table").innerHTML = `<tr><th>Part of Mathlib</th><th class="num">Mathlib modules mentioned</th><th>Project modules that mention it</th></tr>`
     + u.areas.map(([name, modules, distinct], bit) => `<tr class="hoverable" data-preview-used="${bit}"><td class="mono">Mathlib.${esc(name)}</td><td class="num">${fmt(distinct)}</td><td style="white-space:nowrap"><span class="bar" style="width:${(220 * modules) / max}px;background:${cssVar("--ink-3")}"></span>${fmt(modules)} (${pct(modules / N)})</td></tr>`).join("");
-  $("used-top").innerHTML = `Mentioned by the most modules: ${u.top.slice(0, 8).map(([name, n]) => `<code>${esc(name)}</code> (${fmt(n)})`).join(", ")}. Only direct mentions are counted: a declaration that a mentioned declaration itself depends on is not. Tactics and notation used to write a proof are also not counted, because the compiled proof no longer names them. Point at a row to see the modules on the map, or <button type="button" class="link" id="used-on-map">colour the map by Mathlib declarations used</button>.`;
+  $("used-top").innerHTML = `Mentioned by the most modules: ${u.top.slice(0, 8).map(([name, n]) => `<code>${esc(name)}</code> (${fmt(n)})`).join(", ")}. Point at a row to see the modules on the map, or <button type="button" class="link" id="used-on-map">colour the map by Mathlib declarations used</button>.`;
+  $("used-limits").innerHTML = `<li>Declarations that a mentioned declaration itself depends on.</li><li>Tactics and notation used to write a proof. The compiled proof no longer names them.</li>`;
   $("used-on-map").onclick = () => { [...$("colour-by").children].find((b) => b.textContent === "Mathlib declarations used")?.click(); $("map").scrollIntoView(); };
 }
 
