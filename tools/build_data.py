@@ -388,6 +388,9 @@ def main():
         ("build", "H", [min(65535, max(1, round(build_seconds[r["p"]] * 10))) if r["p"] in build_seconds else 0 for r in rows]),
         # numeric literals: how many, and how many per 100 lines
         ("literals", "H", [min(65535, r["nl"]) for r in rows]),
+        # commands that define new syntax: notations (with infix, prefix, postfix) and macros (with syntax, elab)
+        ("notations", "B", [min(255, r["nt"]) for r in rows]),
+        ("macros", "B", [min(255, r["mc"]) for r in rows]),
         ("literalRate", "B", [min(255, round(100 * r["nl"] / max(r["l"], 1))) for r in rows]),
         ("digits", "B", [min(100, round(100 * r["dg"] / max(r["b"], 1))) for r in rows]),
     ]
@@ -460,6 +463,11 @@ def main():
             "wholeMathlibImports": sum("Mathlib" in r["i"] for r in rows),
             "longestChain": len(chain),
             "literals": sum(r["nl"] for r in rows),
+            "notations": sum(r["nt"] for r in rows),
+            "localNotations": sum(r["ntl"] for r in rows),
+            "modulesWithNotation": sum(1 for r in rows if r["nt"]),
+            "macros": sum(r["mc"] for r in rows),
+            "modulesWithMacro": sum(1 for r in rows if r["mc"]),
             "longLiterals": sum(r["ln"] for r in rows),
             "modulesWithLongLiterals": sum(1 for r in rows if r["ln"]),
             "buildSeconds": round(sum(build_seconds.values())),

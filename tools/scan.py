@@ -32,6 +32,9 @@ HEARTBEAT_RE = re.compile(r"set_option[ \t]+maxHeartbeats[ \t]+(\d+)")
 IDENT_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_'!?₀-₉]*(?:\.[A-Za-z_][A-Za-z0-9_'!?₀-₉]*)*")
 CAP_IDENT_RE = re.compile(r"(?<![A-Za-z0-9_.'])[A-Z][A-Za-z0-9]{3,}(?:\.[A-Za-z][A-Za-z0-9_']*)*")
 NUM_RE = re.compile(r"\d+")
+# Commands that define new syntax. NOTATION_RE captures "local" so that file-local notations can be counted apart.
+NOTATION_RE = re.compile(r"^[ \t]*(?:(local|scoped)[ \t]+)?(?:notation3?|infix[lr]?|prefix|postfix)\b", re.M)
+MACRO_RE = re.compile(r"^[ \t]*(?:(?:local|scoped)[ \t]+)?(?:macro|macro_rules|syntax|elab|elab_rules)\b", re.M)
 SET_OPTION_RE = re.compile(r"set_option[ \t]+\S+[ \t]+\S+")
 LONGNUM_RE = re.compile(r"\d{7,}")
 # A numeric literal: a run of digits (optionally with a decimal part) that is not part of a
@@ -110,6 +113,9 @@ def scan_file(root, rel, prev_raw=b""):
         "dg": digits,
         "ln": len(LONGNUM_RE.findall(maths)),
         "nl": len(LITERAL_RE.findall(maths)),
+        "nt": len(NOTATION_RE.findall(nocomment)),
+        "ntl": NOTATION_RE.findall(nocomment).count("local"),
+        "mc": len(MACRO_RE.findall(nocomment)),
         "nb": len(set(LITERAL_RE.findall(maths)) - {"0", "1", "2"}),  # distinct literals other than 0, 1 and 2
         "na": len(NONASCII_RE.findall(nocomment)),
         "cb": comment_bytes,
