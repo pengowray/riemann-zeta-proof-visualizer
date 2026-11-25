@@ -22,16 +22,18 @@
     <a href="#fields">Areas of mathematics</a>
     <a href="#imports">Dependencies</a>
     <a href="#numbers">Numbers and tactics</a>
-    <a href="#checks">Who has checked the proof</a>
+    <a href="#checks" data-only="original">Who has checked the proof</a>
     <a href="#sources">Sources and method</a>
   </nav>
 </aside>
 
 <main>
+<nav id="versions" aria-label="Version of the proof"></nav>
 <header id="top">
   <div class="hero-text">
     <h1>The Lean proof of the Riemann Hypothesis, as a treemap</h1>
-    <p class="lede">On 20 November 2026 Levent Alpöge released a Lean 4 formalization, written with Claude, that states and proves the Riemann Hypothesis and its generalization to Dirichlet <i>L</i>-functions. The source is 175,187 modules (a module is one <code>.lean</code> file). This page shows what is in them.</p>
+    <p class="lede" data-only="cleanup" id="cleanup-lede"></p>
+    <p class="lede" data-only="original">On 20 November 2026 Levent Alpöge released a Lean 4 formalization, written with Claude, that states and proves the Riemann Hypothesis and its generalization to Dirichlet <i>L</i>-functions. The source is 175,187 modules (a module is one <code>.lean</code> file). This page shows what is in them.</p>
     <dl id="facts"></dl>
   </div>
   <figure class="hero-art">
@@ -42,7 +44,8 @@
 
 <section id="statement">
   <h2>The statement</h2>
-  <p>These two files are the whole claim. <code>Statements.lean</code> defines four propositions. <code>Main.lean</code> proves them, and Mathlib's own <code>RiemannHypothesis</code>, by citing theorems from the other 175,185 modules. Point at a symbol to see how to say it and what type it has.</p>
+  <p data-only="cleanup"><code>Statements.lean</code> defines the propositions and <code>Main.lean</code> proves them, and Mathlib's own <code>RiemannHypothesis</code>, by citing theorems from the other modules. The cleanup also has <code>Challenge.lean</code>, which states the same theorems with <code>sorry</code> in place of each proof so that a checker can compare the two files. Point at a symbol to see how to say it and what type it has.</p>
+  <p data-only="original">These two files are the whole claim. <code>Statements.lean</code> defines four propositions. <code>Main.lean</code> proves them, and Mathlib's own <code>RiemannHypothesis</code>, by citing theorems from the other 175,185 modules. Point at a symbol to see how to say it and what type it has.</p>
   <div class="code-pair">
     <figure class="codebox"><figcaption>Statements.lean</figcaption><pre class="lean" id="code-statements"></pre></figure>
     <figure class="codebox"><figcaption>Main.lean</figcaption><pre class="lean" id="code-main"></pre></figure>
@@ -105,8 +108,12 @@
 <section id="imports">
   <h2>How modules depend on each other</h2>
   <p id="imports-text"></p>
-  <p>A <a href="https://news.ycombinator.com/item?id=50574968">comment on Hacker News</a> reported 204 modules "not referenced anywhere", without a list or a method. In the import graph no module is unreferenced: every module except Main.lean is imported by at least one other module. The comment may be counting something that imports do not show, such as declarations that nothing uses.</p>
+  <p data-only="original">A <a href="https://news.ycombinator.com/item?id=50574968">comment on Hacker News</a> reported 204 modules "not referenced anywhere", without a list or a method. In the import graph no module is unreferenced: every module except Main.lean is imported by at least one other module. The comment may be counting something that imports do not show, such as declarations that nothing uses.</p>
   <figure><figcaption>Imports between fields. Each row shows where that field's imports go. Point at a square to see those modules on the map.</figcaption><div id="matrix-chart" class="chart"></div></figure>
+  <h3>Imports from Mathlib</h3>
+  <p id="mathlib-text"></p>
+  <table id="mathlib-table" class="data"></table>
+  <p id="mathlib-top" class="note"></p>
   <h3>Import graph of the main directories</h3>
   <p id="graph-text"></p>
   <p class="note phone-only">Scroll the graph sideways to see all of it.</p>
@@ -131,7 +138,7 @@
   <div id="tactic-chart" class="chart"></div>
 </section>
 
-<section id="checks">
+<section id="checks" data-only="original">
   <h2>Who has checked the proof</h2>
   <p>What each of these public pages reported when read on 23 November 2026. None of the checks were run in building this page.</p>
   <table class="data" id="checks-table"></table>
@@ -141,12 +148,20 @@
 <section id="sources">
   <h2>Sources and method</h2>
   <ul>
-    <li>The Lean source is from <a href="https://alpo.ge/remark.pdf">Alpöge's announcement</a>. The page reads it from the mirror <a id="repo-link" href="https://github.com/1337isnot1337/riemann-hypothesis-solved">1337isnot1337/riemann-hypothesis-solved</a> at commit <code>6193bb5</code>. The archive declares no licence, so this site does not store the Lean files; it stores module names and counts, and loads code from the mirror when you open a module.</li>
-    <li>All counts on this page come from a script that reads every file once. Its totals match the independent checks above: 175,187 files, 17,374,215 lines, longest import chain 203.</li>
-    <li>Declarations are counted by matching keywords such as <code>theorem</code> and <code>def</code> at the start of a line. Lean's kernel sees more declarations (1,484,729 in the <code>nanoda</code> runs) because Lean generates auxiliary ones.</li>
+    <li id="source-note"></li>
+    <li data-only="original">All counts on this page come from a script that reads every file once. Its totals match the independent checks above: 175,187 files, 17,374,215 lines, longest import chain 203.</li>
+    <li>Declarations are counted by matching keywords such as <code>theorem</code> and <code>def</code> at the start of a line. <span data-only="original">Lean's kernel sees more declarations (1,484,729 in the <code>nanoda</code> runs) because Lean generates auxiliary ones.</span></li>
     <li id="agree-note"></li>
-    <li id="build-note"></li>
+    <li id="build-note" data-only="original"></li>
     <li>The proof steps on the map follow <a href="https://github.com/jae-63/rh-alpoge-blueprint/blob/main/BLUEPRINT.md">jae-63's blueprint</a>, which matched Alpöge's timeline to Lean names by search and partial reading. It is one reader's interpretation.</li>
+  </ul>
+  <h3>Other maps and cleanups of the proof</h3>
+  <ul>
+    <li><a href="https://riemannhypothesissolved.com/">riemannhypothesissolved.com</a>: an interactive map of the files, grouped into 2,647 clusters in 63 themes, with guides to the proof at several levels.</li>
+    <li><a href="https://nasqret.github.io/riemann-rev/atlas/">An illustrated atlas</a> (nasqret.github.io): the argument component by component, with each step linked to the Lean source and marked with what has been machine-checked.</li>
+    <li><a href="https://scottcochran.github.io/riemann-diagrams/">Riemann Hypothesis proof diagrams</a> (scottcochran.github.io): twenty zoomable posters of the theorem dependency graph, drawn from a blueprint of 416 statements.</li>
+    <li><a href="https://rh-shrink.github.io/">RH proof size</a> (rh-shrink.github.io): charts of how much the community cleanup has shrunk the source, updated every 15 minutes.</li>
+    <li><a href="https://riemann.verifytask.cn/">riemann.verifytask.cn</a>: a separate public challenge to compress 158,055 of the files, 92% of the source, with each result checked by Lean.</li>
   </ul>
 </section>
 </main>

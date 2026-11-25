@@ -20,12 +20,15 @@ GROUP_DEPTH = 3  # directory components that identify a group, e.g. Development/
 
 DECL_RE = re.compile(
     r"^[ \t]*(?:@\[[^\]\n]*\][ \t\n]*)*"
-    r"(?:(?:private|protected|noncomputable|nonrec|unsafe|partial|scoped|local)[ \t]+)*"
+    r"(?:(?:private|public|meta|protected|noncomputable|nonrec|unsafe|partial|scoped|local)[ \t]+)*"
     r"(theorem|lemma|def|instance|abbrev|structure|class|inductive|example|opaque|axiom)\b"
     r"[ \t]*([^\s:({\[⦃]*)",
     re.M,
 )
-IMPORT_RE = re.compile(r"^import[ \t]+(\S+)", re.M)
+# Lean's module system (used by the community cleanup) writes "public import X" and "meta import X".
+IMPORT_RE = re.compile(r"^(?:(?:public|private|meta)[ \t]+)*import[ \t]+(?:all[ \t]+)?(\S+)", re.M)
+# File headers of the module system that are not mathematics: "module", "public section", "@[expose] public section".
+HEADER_RE = re.compile(r"^(?:module|(?:@\[expose\][ \t]*)?public[ \t]+section)[ \t]*$", re.M)
 NAMESPACE_RE = re.compile(r"^namespace[ \t]+(\S+)", re.M)
 OPEN_RE = re.compile(r"^open[ \t]+(.+)$", re.M)
 HEARTBEAT_RE = re.compile(r"set_option[ \t]+maxHeartbeats[ \t]+(\d+)")
@@ -35,6 +38,9 @@ NUM_RE = re.compile(r"\d+")
 # Commands that define new syntax. NOTATION_RE captures "local" so that file-local notations can be counted apart.
 NOTATION_RE = re.compile(r"^[ \t]*(?:(local|scoped)[ \t]+)?(?:notation3?|infix[lr]?|prefix|postfix)\b", re.M)
 MACRO_RE = re.compile(r"^[ \t]*(?:(?:local|scoped)[ \t]+)?(?:macro|macro_rules|syntax|elab|elab_rules)\b", re.M)
+# Records that the cleanup's scripts/clump.py writes into a module it made by joining smaller modules.
+CLUMP_RE = re.compile(r"^-- (?:clump-header:|Members:|===== clump member:|This file was produced by scripts/clump\.py)[^\n]*", re.M)
+
 SET_OPTION_RE = re.compile(r"set_option[ \t]+\S+[ \t]+\S+")
 LONGNUM_RE = re.compile(r"\d{7,}")
 # A numeric literal: a run of digits (optionally with a decimal part) that is not part of a
@@ -69,7 +75,7 @@ def scan_file(root, rel, prev_raw=b""):
     text = raw.decode("utf-8", errors="replace")
     lines = text.count("\n") + (0 if text.endswith("\n") or not text else 1)
     imports = IMPORT_RE.findall(text)
-    body = IMPORT_RE.sub("", text)
+    body = HEADER_RE.sub("", IMPORT_RE.sub("", text))
     comment_bytes = sum(len(m) for m in BLOCK_COMMENT_RE.findall(body))
     nocomment = BLOCK_COMMENT_RE.sub("", body)
     comment_bytes += sum(len(m) for m in LINE_COMMENT_RE.findall(nocomment))
@@ -119,6 +125,7 @@ def scan_file(root, rel, prev_raw=b""):
         "nb": len(set(LITERAL_RE.findall(maths)) - {"0", "1", "2"}),  # distinct literals other than 0, 1 and 2
         "na": len(NONASCII_RE.findall(nocomment)),
         "cb": comment_bytes,
+        "cl": sum(len(m.encode()) for m in CLUMP_RE.findall(text)),  # bytes of merge records
         "d": dict(decls),
         "n": names,
         "hb": max(heartbeats, default=0),

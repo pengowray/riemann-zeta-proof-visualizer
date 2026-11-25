@@ -1,0 +1,24 @@
+[
+ {
+  "id": "original",
+  "label": "Original release",
+  "repo": "leanprover-community/riemann-hypothesis",
+  "sha": "40e56bab026552e089d7afcfeff08d2defb9c005",
+  "prefix": "src/",
+  "date": "2026-11-20",
+  "data": "data/",
+  "modules": 175187,
+  "lines": 17374215
+ },
+ {
+  "id": "cleanup",
+  "label": "Community cleanup",
+  "repo": "leanprover-community/riemann-hypothesis",
+  "sha": "4a5b4a2d2a5177a2b6cb876425f0cb4cb6b85061",
+  "prefix": "src/",
+  "date": "2026-11-25",
+  "data": "data/cleanup/",
+  "modules": 59807,
+  "lines": 15711430
+ }
+]

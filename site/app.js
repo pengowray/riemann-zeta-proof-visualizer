@@ -2,9 +2,25 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import { renderLean } from "./speech.js";
 import { drawZeta } from "./zeta.js";
-import { moduleFamily, rawUrl, $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, darkQuery, state, names, namesReady, termsReady } from "./data.js";
+import { VERSION, SOURCE, REPO, versionsReady, dateFmt, moduleFamily, rawUrl, $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, darkQuery, state, names, namesReady, termsReady } from "./data.js";
 import { recolour, requestDraw, refreshMini, countMask, maskWhere, setMask, setPreview, renderLegend, chainMask, chainLabel } from "./map.js";
 import "./graph.js";
+
+// ---------------------------------------------------------------- which version of the proof this is
+// text that is true of only one version carries data-only="original" or data-only="cleanup"
+document.querySelectorAll("[data-only]").forEach((el) => { if (el.dataset.only !== VERSION) el.remove(); });
+const shortSha = SOURCE.sha.slice(0, 7);
+versionsReady.then((versions) => {
+  $("versions").innerHTML = `<span class="control-label">Version</span>` + versions.map((v) =>
+    `<a href="${v.id === "original" ? "./" : "?v=" + v.id}"${v.id === VERSION ? ' aria-current="page"' : ""}><b>${esc(v.label)}</b> ${dateFmt(v.date)} · ${fmt(v.modules)} modules</a>`).join("");
+  const original = versions.find((v) => v.id === "original");
+  if (VERSION === "cleanup" && original) {
+    $("cleanup-lede").innerHTML = `Members of the Lean community are cleaning up Levent Alpöge's Lean 4 formalization of the Riemann Hypothesis, released on 20 November 2026, in <a href="${REPO}">${esc(SOURCE.repo)}</a>. This page shows their <code>main</code> branch as it was on ${dateFmt(SOURCE.date)} (commit <code>${shortSha}</code>): ${fmt(N)} modules and ${fmt(meta.totals.lines)} lines, down from ${fmt(original.modules)} modules and ${fmt(original.lines)} lines in the original release. ${fmt(meta.totals.mergedModules)} of the modules were made by a script that joins several smaller modules into one. ${fmt(meta.mathlib.lines)} of the lines are imports of single Mathlib modules, which the original wrote as one line, <code>import Mathlib</code>. A module is one <code>.lean</code> file.`;
+  }
+});
+$("source-note").innerHTML = VERSION === "cleanup"
+  ? `The Lean source is the <code>main</code> branch of <a href="${REPO}">${esc(SOURCE.repo)}</a> at commit <a href="${REPO}/tree/${SOURCE.sha}"><code>${shortSha}</code></a> of ${dateFmt(SOURCE.date)}. That branch changes many times a day, so the numbers here are a snapshot. This site stores module names and counts, and loads code from GitHub when you open a module.`
+  : `The Lean source is from <a href="https://alpo.ge/remark.pdf">Alpöge's announcement</a>. The page reads it from the <code>original</code> branch of <a href="${REPO}">${esc(SOURCE.repo)}</a> at commit <a href="${REPO}/tree/${SOURCE.sha}"><code>${shortSha}</code></a>, which keeps the release unchanged. The archive declares no licence, so this site does not store the Lean files; it stores module names and counts, and loads code from GitHub when you open a module.`;
 
 // ---------------------------------------------------------------- hero
 const declTotal = d3.sum(meta.declKinds, (d) => d[1]);
@@ -15,8 +31,8 @@ $("facts").innerHTML = [
   ["Lines of Lean", `<b>${fmt(meta.totals.lines)}</b>`],
   ["Source size", `<b>${bytesFmt(meta.totals.bytes)}</b>, or ${bytesFmt(meta.totals.zbytes)} with each file compressed by zlib`],
   ["Declarations", `<b>${fmt(declTotal)}</b>: ${fmt((declCount.theorem || 0) + (declCount.lemma || 0))} theorems and lemmas, ${fmt((declCount.def || 0) + (declCount.abbrev || 0))} definitions`],
-  ["Comments and docstrings", `<b>${meta.totals.commentBytes ? fmt(meta.totals.commentBytes) + " bytes" : "None"}</b>`],
-  ["Uses of <code>sorry</code>", `<b>${fmt(sorryCount)}</b> (<code>sorry</code> is Lean's placeholder for a step left unproved)`],
+  ["Comments and docstrings", `<b>${meta.totals.commentBytes ? bytesFmt(meta.totals.commentBytes) : "None"}</b>${meta.totals.mergeRecordBytes ? `. ${bytesFmt(meta.totals.mergeRecordBytes)} of that is records written by the cleanup's merge script, which lists the smaller modules each merged module was made from` : ""}`],
+  ["Uses of <code>sorry</code>", `<b>${fmt(sorryCount)}</b> (<code>sorry</code> is Lean's placeholder for a step left unproved)${meta.sorryModules.length ? `, all in ${meta.sorryModules.map(([p]) => esc(p)).join(", ")}` : ""}`],
   ["Longest import chain", `<b>${fmt(meta.totals.longestChain)}</b> modules`],
 ].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
 
@@ -42,7 +58,7 @@ meta.terms.forEach((term, t) => {
   termsEl.append(b);
 });
 // steps of the announcement's timeline, mapped to module paths by the blueprint
-$("build-note").innerHTML = `Build times are wall-clock times from one rebuild by <a href="https://github.com/patunz/rh-build-live">Lucio Patone</a> (snapshot of 22 November 2026), ${fmt(Math.round(meta.totals.buildSeconds / 3600))} hours in total over ${fmt(meta.totals.buildMeasured)} modules. Many modules compiled at once on one machine, so a module's time depends on what else was running.`;
+if ($("build-note")) $("build-note").innerHTML = `Build times are wall-clock times from one rebuild by <a href="https://github.com/patunz/rh-build-live">Lucio Patone</a> (snapshot of 22 November 2026), ${fmt(Math.round(meta.totals.buildSeconds / 3600))} hours in total over ${fmt(meta.totals.buildMeasured)} modules. Many modules compiled at once on one machine, so a module's time depends on what else was running.`;
 const stepMasks = new Map(); // step number -> { mask, label }, for previews while the pointer is over a step
 const DOTS = { clear: "●", partial: "◐", weak: "○" };
 const CONFIDENCE = { clear: "the blueprint found the object clearly", partial: "names and position fit, proofs not read", weak: "weak evidence" };
@@ -71,7 +87,7 @@ Promise.all([fetch("data/steps.json").then((r) => r.json()), namesReady]).then((
 });
 
 // table of independent checks; the cells hold trusted HTML written for this page
-fetch("data/checks.json").then((r) => r.json()).then((data) => {
+if ($("checks-table")) fetch("data/checks.json").then((r) => r.json()).then((data) => {
   $("checks-table").innerHTML = `<tr><th>Who</th><th>What was run</th><th>Reported result</th></tr>`
     + data.checks.map((c) => `<tr><td data-label="Who"><a href="${c.url}">${c.who}</a>${c.detail ? (c.detail.startsWith("(") ? " " : ", ") + c.detail : ""}</td><td data-label="What was run">${c.ran}</td><td data-label="Reported result">${c.result}</td></tr>`).join("");
 });
@@ -100,7 +116,7 @@ $("find").addEventListener("input", (e) => {
 });
 
 const truth = meta.totals.truth;
-$("agree-note").textContent = `The field of a module is a statistical estimate. A language model read ${fmt(truth.trained + truth.n)} sampled modules and named each one's field. A naive Bayes classifier learned from ${fmt(truth.trained)} of them, using the identifiers and namespaces each module mentions, and was then tested on the other ${fmt(truth.n)}. It gave the same field as the model for ${pct(truth.exact / truth.n)} of them and a field of the same colour family for ${pct(truth.family / truth.n)} (${pct(truth.familyOrSecond / truth.n)} when the model's second choice also counts). Hand-written keyword rules reached ${pct(truth.keywordFamily / truth.n)} in the same family, and the directory labels ${pct(truth.dirFamily / truth.n)}.`;
+$("agree-note").textContent = !truth.n ? `The field of a module is a statistical estimate. A naive Bayes classifier learned from ${fmt(truth.trained)} modules of the original release that a language model read and named a field for, using the identifiers and namespaces each module mentions. It was tested on the original release (see that version's page) and is applied here unchanged.` : `The field of a module is a statistical estimate. A language model read ${fmt(truth.trained + truth.n)} sampled modules and named each one's field. A naive Bayes classifier learned from ${fmt(truth.trained)} of them, using the identifiers and namespaces each module mentions, and was then tested on the other ${fmt(truth.n)}. It gave the same field as the model for ${pct(truth.exact / truth.n)} of them and a field of the same colour family for ${pct(truth.family / truth.n)} (${pct(truth.familyOrSecond / truth.n)} when the model's second choice also counts). Hand-written keyword rules reached ${pct(truth.keywordFamily / truth.n)} in the same family, and the directory labels ${pct(truth.dirFamily / truth.n)}.`;
 
 // rows that preview a highlight on the map while the pointer is over them
 document.addEventListener("pointerover", (e) => {
@@ -127,6 +143,12 @@ document.addEventListener("pointerover", (e) => {
   if (famEl) {
     const g = +famEl.dataset.previewFamily, label = famEl.children[1].textContent;
     if (state.previewLabel !== label) setPreview(maskWhere((i) => moduleFamily(i) === g), label);
+    return;
+  }
+  const lib = e.target.closest?.("[data-preview-mathlib]");
+  if (lib) {
+    const bit = +lib.dataset.previewMathlib, label = `Modules that import from Mathlib.${meta.mathlib.areas[bit][0]}`;
+    if (state.previewLabel !== label) setPreview(maskWhere((i) => (col.mathlibAreas[i] >>> bit) & 1), label);
     return;
   }
   const row = e.target.closest?.("[data-preview-field],[data-preview-dir]");

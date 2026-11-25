@@ -226,3 +226,12 @@ button.link:hover { text-decoration: underline; }
 #field-table { max-width: 900px; }
 #field-table .field-row td { border-bottom: 0; padding-bottom: 0; }
 #field-table .objects-row td { padding: 2px 12px 9px 18px; }
+
+/* switch between the original release and the community cleanup */
+#versions { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-bottom: 18px; font-size: 0.9rem; }
+#versions a { padding: 5px 10px; border: 1px solid var(--rule); color: var(--ink-2); text-decoration: none; }
+#versions a b { color: var(--ink); font-weight: 600; margin-right: 4px; }
+#versions a:hover { border-color: var(--ink-3); }
+#versions a[aria-current] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+#versions a[aria-current] b { color: var(--paper); }
+td.mono { font-family: var(--mono); font-size: 0.85em; }

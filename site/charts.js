@@ -1,7 +1,7 @@
 // The charts and tables in the sections below the map. Loaded after the map has painted.
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.16/+esm";
-import { $, fmt, pct, bytesFmt, esc, meta, N, col, ones, dirs, FAMILIES, fieldFamily, KIND_COLOURS, isDark, cssVar, state, names, pathOf, dirSum } from "./data.js";
+import { REPO, $, fmt, pct, bytesFmt, esc, meta, N, col, ones, dirs, FAMILIES, fieldFamily, KIND_COLOURS, isDark, cssVar, state, names, pathOf, dirSum } from "./data.js";
 import { KEYWORDS } from "./speech.js";
 import { maskWhere, setPreview, luminance, setMask, labelOf, famOf, famColour } from "./map.js";
 
@@ -58,7 +58,7 @@ export function renderCharts() {
   const sortedLines = Float64Array.from(col.lines).sort();
   for (let i = 0; i < N; i++) { kindCount[col.kind[i]]++; if (col.decls[i] === 1) one[col.kind[i] ? 1 : 0]++; }
   const shapeDup = d3.sum(col.shape, (s) => (s >= 10 ? 1 : 0));
-  $("modules-text").textContent = `The median module is ${sortedLines[N >> 1]} lines long, and ${fmt(one[0] + one[1])} modules (${pct((one[0] + one[1]) / N)}) contain exactly one declaration: the source is split to roughly one result per file. ${fmt(kindCount[1])} modules (${pct(kindCount[1] / N)}) do no mathematics of their own. Each of them restates one theorem and proves it by citing the same theorem from another module. They account for ${pct(d3.sum(col.bytes, (b, i) => (col.kind[i] === 1 ? b : 0)) / meta.totals.bytes)} of the bytes. Each module imports ${(meta.totals.importEdges / N).toFixed(1)} other modules of the project on average, and ${fmt(meta.totals.wholeMathlibImports)} modules import all of Mathlib.`;
+  $("modules-text").textContent = `The median module is ${sortedLines[N >> 1]} lines long, and ${fmt(one[0] + one[1])} modules (${pct((one[0] + one[1]) / N)}) contain exactly one declaration${(one[0] + one[1]) / N > 0.4 ? ": the source is split to roughly one result per file" : ""}. ${kindCount[1] ? `${fmt(kindCount[1])} modules (${pct(kindCount[1] / N)}) do no mathematics of their own. Each of them restates one theorem and proves it by citing the same theorem from another module. They account for ${pct(d3.sum(col.bytes, (b, i) => (col.kind[i] === 1 ? b : 0)) / meta.totals.bytes)} of the bytes. ` : ""}Each module imports ${(meta.totals.importEdges / N).toFixed(1)} other modules of the project on average, and ${fmt(meta.totals.wholeMathlibImports)} modules import all of Mathlib.`;
   const edges = [1, 4, 10, 32, 100, 316, 1000, 1e9];
   const binLabel = (b) => (b === edges.length - 2 ? `${fmt(edges[b])}+` : `${fmt(edges[b])}–${fmt(edges[b + 1] - 1)}`);
   const lineBin = (i) => d3.bisectRight(edges, Math.max(col.lines[i], 1)) - 1;
@@ -91,11 +91,12 @@ export function renderCharts() {
   const objects = meta.fields.map(() => new Map());
   meta.groups.forEach((g, gi) => { for (const o of g.objects) objects[g.field].set(o, (objects[g.field].get(o) || 0) + 1); });
   const maxLines = d3.max(fieldTotals, (t) => t.lines);
-  $("field-table").innerHTML = `<tr><th>Field</th><th class="num">Share of modules</th><th class="num" title="Share of the ${fmt(meta.totals.randomN)} randomly sampled modules that a language model assigned to this field after reading them">Share in ${fmt(meta.totals.randomN)} modules read by a model</th><th>Lines</th></tr>`
+  const hasRead = meta.totals.randomN > 0; // the reading model's sample is from the original release
+  $("field-table").innerHTML = `<tr><th>Field</th><th class="num">Share of modules</th>${hasRead ? `<th class="num" title="Share of the ${fmt(meta.totals.randomN)} randomly sampled modules that a language model assigned to this field after reading them">Share in ${fmt(meta.totals.randomN)} modules read by a model</th>` : ""}<th>Lines</th></tr>`
     + meta.fields.map((f, fi) => ({ f, fi, t: fieldTotals[fi] })).filter((r) => r.t.modules).sort((a, b) => b.t.lines - a.t.lines).map(({ f, fi, t }) =>
-      `<tr class="hoverable field-row" data-preview-field="${fi}"><td style="white-space:nowrap"><span class="sw" style="background:${famColour(fieldFamily[fi])}"></span>${esc(f.name)}</td><td class="num">${pct(t.modules / N)}</td><td class="num">${pct(meta.totals.randomCounts[fi] / meta.totals.randomN)}</td>
+      `<tr class="hoverable field-row" data-preview-field="${fi}"><td style="white-space:nowrap"><span class="sw" style="background:${famColour(fieldFamily[fi])}"></span>${esc(f.name)}</td><td class="num">${pct(t.modules / N)}</td>${hasRead ? `<td class="num">${pct(meta.totals.randomCounts[fi] / meta.totals.randomN)}</td>` : ""}
        <td style="white-space:nowrap"><span class="bar" style="width:${(150 * t.lines) / maxLines}px;background:${famColour(fieldFamily[fi])}"></span>${fmt(t.lines)}</td></tr>
-       <tr class="hoverable objects-row" data-preview-field="${fi}"><td colspan="4" class="objects">${[...objects[fi]].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([o]) => esc(o)).join(" · ") || "No objects named"}</td></tr>`).join("");
+       <tr class="hoverable objects-row" data-preview-field="${fi}"><td colspan="${hasRead ? 4 : 3}" class="objects">${[...objects[fi]].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([o]) => esc(o)).join(" · ") || "No objects named"}</td></tr>`).join("");
 
   // --- imports between fields
   const used = meta.fields.map((f, fi) => fi).filter((fi) => fieldTotals[fi].modules > 100);
@@ -106,7 +107,12 @@ export function renderCharts() {
     const rowTotal = d3.sum(used, (b) => meta.fieldMatrix[a][b]);
     for (const b of used) cells.push({ from: meta.fields[a].name, to: meta.fields[b].name, n: meta.fieldMatrix[a][b], share: meta.fieldMatrix[a][b] / rowTotal });
   }
-  $("imports-text").textContent = `The project has ${fmt(meta.totals.importEdges)} imports between its own modules. ${pct(same / total)} of them stay inside one field and ${pct(1 - same / total)} cross from one field to another. Every module is imported: all ${fmt(N)} are reachable from Main.lean by following imports.`;
+  $("imports-text").innerHTML = `The project has ${fmt(meta.totals.importEdges)} imports between its own modules. ${pct(same / total)} of them stay inside one field and ${pct(1 - same / total)} cross from one field to another. ${meta.totals.notReached ? `Following imports from Main.lean reaches all but ${fmt(meta.totals.notReached)} of the ${fmt(N)} modules. One of them is Challenge.lean, which is meant to stand apart. <button type="button" class="link" id="unreached-show" data-mask-key="unreached" aria-pressed="false">Show the ${fmt(meta.totals.notReached)} on the map</button>` : `Every module is imported: all ${fmt(N)} are reachable from Main.lean by following imports.`}`;
+  renderMathlib();
+  if ($("unreached-show")) $("unreached-show").onclick = () => {
+    const paths = new Set(meta.notReached);
+    setMask("unreached", maskWhere((i) => paths.has(pathOf(i))), `${fmt(meta.totals.notReached)} modules that Main.lean does not reach through imports`); $("map").scrollIntoView();
+  };
   const fieldOrder = used.slice().sort((a, b) => fieldFamily[a] - fieldFamily[b]).map((fi) => meta.fields[fi].name);
   const fieldIndex = new Map(meta.fields.map((f, fi) => [f.name, fi]));
   previewOnHover(mount("matrix-chart", Plot.plot({
@@ -149,6 +155,21 @@ export function renderCharts() {
     return { key: d.name, label: `${fmt(tacticModules[b])} modules that use ${d.name}`, test: (i) => (col.tactics[i] >>> b) & 1 };
   });
   document.querySelectorAll("#tactic-chart [aria-label='y-axis tick label'] text").forEach((t) => { t.style.fontFamily = cssVar("--mono"); });
+}
+
+/** Which parts of Mathlib the modules import by name. Only the cleanup names them; the original imports all of Mathlib. */
+function renderMathlib() {
+  const m = meta.mathlib, whole = meta.totals.wholeMathlibImports;
+  if (m.modulesNaming < N / 2) {
+    $("mathlib-text").innerHTML = `${fmt(whole)} of the ${fmt(N)} modules import all of Mathlib with <code>import Mathlib</code>, so the imports do not show which parts each module needs. The community cleanup replaced that line with imports of single Mathlib modules: <a href="?v=cleanup#imports">see which parts of Mathlib the cleanup imports</a>.`;
+    $("mathlib-table").remove(); $("mathlib-top").remove();
+    return;
+  }
+  $("mathlib-text").innerHTML = `${fmt(m.modulesNaming)} of the ${fmt(N)} modules name the Mathlib modules they import, and ${fmt(whole)} import all of Mathlib. Together they name ${fmt(m.distinct)} different Mathlib modules in ${fmt(m.lines)} import lines. The cleanup narrowed these imports to make builds faster (pull requests <a href="${REPO}/pull/1023">1023</a> and <a href="${REPO}/pull/1402">1402</a>). ${fmt(m.top[0][1])} modules import <code>${esc(m.top[0][0])}</code> and the same list of other modules, so that list was pasted in place of <code>import Mathlib</code> and is more than each module needs. The table shows what the modules import, which is more than what their proofs use. Point at a row to see the importing modules on the map.`;
+  const max = m.areas[0][1];
+  $("mathlib-table").innerHTML = `<tr><th>Part of Mathlib</th><th class="num">Mathlib modules imported</th><th>Project modules that import it</th></tr>`
+    + m.areas.map(([name, modules, , distinct], bit) => `<tr class="hoverable" data-preview-mathlib="${bit}"><td class="mono">Mathlib.${esc(name)}</td><td class="num">${fmt(distinct)}</td><td style="white-space:nowrap"><span class="bar" style="width:${(220 * modules) / max}px;background:${cssVar("--ink-3")}"></span>${fmt(modules)} (${pct(modules / N)})</td></tr>`).join("");
+  $("mathlib-top").innerHTML = `Imported by the most modules: ${m.top.slice(0, 8).map(([name, n]) => `<code>${esc(name)}</code> (${fmt(n)})`).join(", ")}.`;
 }
 
 export function renderNameTables() {

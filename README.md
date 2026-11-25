@@ -13,15 +13,23 @@ Then open http://localhost:8737. The page is static: `site/` can be hosted anywh
 
 ## Rebuild the data
 
-The data in `site/data/` is built from a local copy of the Lean source
-(the `extracted/lean/src` directory of the mirror repository).
+The page shows two versions of the proof, both from
+[leanprover-community/riemann-hypothesis](https://github.com/leanprover-community/riemann-hypothesis):
+the original release (its `original` branch, data in `site/data/`) and the community cleanup
+(its `main` branch, data in `site/data/cleanup/`, shown at `?v=cleanup`).
+
+Put the paths of your two local checkouts in `tools/local.json` (see the top of `tools/update.py`), then:
 
 ```bash
-python3 -I tools/scan.py /path/to/extracted/lean/src data/cache
-python3 -I tools/build_data.py data/cache data/labels site/data /path/to/extracted/lean/src
+python3 tools/update.py cleanup
 ```
 
-- `tools/scan.py` reads every `.lean` file once and writes one row per file to `data/cache/` (not committed).
+This fetches the newest `main`, scans it and rebuilds `site/data/cleanup/`. The cleanup changes
+many times a day, so run it again whenever the numbers should be brought up to date, then commit
+`site/data/`. `python3 tools/update.py original` rebuilds the original release's data.
+
+- `tools/scan.py` reads every `.lean` file once and writes one row per file to `data/cache/` (not committed;
+  the cleanup's rows go to `data/cache/cleanup/`).
   The search terms and the keyword patterns for fields are in `tools/patterns.json`.
 - `data/labels/` holds topic labels for 746 directories, written by a language model from
   digests of each directory's identifiers (`data/labels/PROMPT.md` is its instruction).
@@ -39,4 +47,4 @@ aloud, `zeta.js` and `bent.js` evaluate the zeta function. Content that is not c
 `site/data/steps.json` (proof steps) and `site/data/checks.json` (independent checks).
 
 The Lean archive declares no licence, so this repository stores no Lean source. The page
-loads code from a public mirror when a module is opened.
+loads code from GitHub when a module is opened.

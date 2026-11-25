@@ -1,12 +1,9 @@
 // Loads the data files and defines the names, colours and shared state every other module uses.
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 
-export const REPO = "https://github.com/1337isnot1337/riemann-hypothesis-solved";
-export const SHA = "6193bb5ef61846c045c70c51ee05824f910d50cc";
-export const SRC = "extracted/lean/src/";
-export const blobUrl = (path) => `${REPO}/blob/${SHA}/${SRC}${encodeURI(path)}`;
-export const treeUrl = (path) => `${REPO}/tree/${SHA}/${SRC}${encodeURI(path)}`;
-export const rawUrl = (path) => `https://raw.githubusercontent.com/1337isnot1337/riemann-hypothesis-solved/${SHA}/${SRC}${encodeURI(path)}`;
+// The page shows one version of the proof at a time: the original release, or the community cleanup (?v=cleanup).
+export const VERSION = new URLSearchParams(location.search).get("v") === "cleanup" ? "cleanup" : "original";
+export const DATA = VERSION === "cleanup" ? "data/cleanup/" : "data/";
 
 export const $ = (id) => document.getElementById(id);
 export const fmt = d3.format(",");
@@ -17,10 +14,18 @@ export const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "
 
 // ---------------------------------------------------------------- data
 export const [meta, colBuf] = await Promise.all([
-  fetch("data/meta.json").then((r) => r.json()),
-  fetch("data/cols.bin").then((r) => r.arrayBuffer()),
+  fetch(DATA + "meta.json").then((r) => r.json()),
+  fetch(DATA + "cols.bin").then((r) => r.arrayBuffer()),
 ]);
 export const N = meta.files;
+// where the code of this version is published: every link and every fetched module uses this commit
+export const SOURCE = meta.source;
+export const REPO = `https://github.com/${SOURCE.repo}`;
+export const blobUrl = (path) => `${REPO}/blob/${SOURCE.sha}/${SOURCE.prefix}${encodeURI(path)}`;
+export const treeUrl = (path) => `${REPO}/tree/${SOURCE.sha}/${SOURCE.prefix}${encodeURI(path)}`;
+export const rawUrl = (path) => `https://raw.githubusercontent.com/${SOURCE.repo}/${SOURCE.sha}/${SOURCE.prefix}${encodeURI(path)}`;
+export const versionsReady = fetch("data/versions.json").then((r) => r.json());
+export const dateFmt = (iso) => new Date(iso + "T00:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 export const TYPES = { I: Uint32Array, H: Uint16Array, B: Uint8Array };
 export const col = {};
 for (const c of meta.columns) col[c.name] = new TYPES[c.type](colBuf, c.offset, N);
@@ -64,7 +69,7 @@ export const SIZE_MODES = [
   { id: "modules", label: "Modules", values: ones, unit: "of the modules" },
   { id: "decls", label: "Declarations", values: col.decls, unit: "of the declarations" },
   { id: "build", label: "Build time", values: col.build, unit: "of the build time" },
-];
+].filter((m) => m.id !== "build" || meta.totals.buildMeasured); // build times exist only for the original release
 export const COLOUR_MODES = [
   { id: "field", label: "Field of each module", kind: "cat" },
   { id: "dirfield", label: "Field of its directory", kind: "cat" },
@@ -75,14 +80,14 @@ export const COLOUR_MODES = [
   { id: "build", label: "Build time", kind: "seq", values: col.build, scale: "log", low: "under a second", high: `${fmt(Math.round(d3.max(col.build) / 10))} seconds`, noun: "build time" },
   { id: "literals", label: "Numeric literals", kind: "seq", values: col.literalRate, scale: "sqrt", max: 125, low: "no numeric literals", high: "125 or more per 100 lines", noun: "numeric literals" },
   { id: "digits", label: "Digit characters 0–9", kind: "seq", values: col.digits, scale: "sqrt", max: 12, low: "0% of characters are digits", high: "12% or more", noun: "digits" }, // almost every module is under 12%, so the scale stops there
-];
+].filter((m) => m.id !== "build" || meta.totals.buildMeasured); // build times exist only for the original release
 export const state = { size: SIZE_MODES[0], colour: COLOUR_MODES[0], mask: null, maskLabel: "", maskKey: "", preview: null, previewLabel: "", previewTint: null, chain: false, previewChain: false, marker: -1, bend: 0, hover: -1, pinned: -1 };
 
 export let names = null; // loaded after first paint
-export const namesReady = fetch("data/names.txt").then((r) => r.text()).then((t) => { names = t.split("\n"); return names; });
+export const namesReady = fetch(DATA + "names.txt").then((r) => r.text()).then((t) => { names = t.split("\n"); return names; });
 export const pathOf = (i) => { const d = dirs[leafDir[i]]; return (d.path ? d.path + "/" : "") + (names ? names[i] : "…") + ".lean"; };
 export let termBits = null;
-export const termsReady = () => (termBits ||= fetch("data/terms.bin").then((r) => r.arrayBuffer()).then((b) => new Uint8Array(b)));
+export const termsReady = () => (termBits ||= fetch(DATA + "terms.bin").then((r) => r.arrayBuffer()).then((b) => new Uint8Array(b)));
 
 // prefix sums give any directory's total in constant time (a subtree is a contiguous range of files)
 export const prefix = {};

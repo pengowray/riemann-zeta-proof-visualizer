@@ -68,6 +68,12 @@ def region_of(path):
 
 def main():
     cache, labels_dir, out = sys.argv[1:4]
+    # optional: --source FILE (JSON describing where the code is published, copied into meta.json)
+    #           --train-cache DIR (scan of the source the reading model's samples came from, when it
+    #           is not the one being built; the classifier is trained there and applied here)
+    opts = dict(zip(sys.argv[4::2], sys.argv[5::2]))
+    source = json.load(open(opts["--source"])) if "--source" in opts else {}
+    train_cache = opts.get("--train-cache")
     os.makedirs(out, exist_ok=True)
     rows = [json.loads(line) for line in open(os.path.join(cache, "files.jsonl"))]
 
@@ -77,7 +83,8 @@ def main():
     if os.path.exists(build_path):
         values = array("f")
         values.frombytes(open(build_path, "rb").read())
-        for path, sec in zip(sorted(r["p"] for r in rows), values):
+        # the file lists one time per module of the original release, in sorted path order
+        for path, sec in zip(sorted(r["p"] for r in rows), values) if len(values) == len(rows) else ():
             if sec == sec:  # skip NaN
                 build_seconds[path] = sec
 
@@ -265,18 +272,23 @@ def main():
         not_random = set()
         for path in glob.glob(os.path.join(base, "train*", "stratified.json")):
             not_random.update(json.load(open(path)))
+        if train_cache:
+            train_rows = [json.loads(line) for line in open(os.path.join(train_cache, "files.jsonl"))]
+            train_index = {r["p"]: i for i, r in enumerate(train_rows)}
+        else:
+            train_rows, train_index = rows, index
         class_n, feat_n, total_n, vocab = Counter(), defaultdict(Counter), Counter(), set()
         for path in train_files:
             for entry in json.load(open(path)):
-                i = index.get(train_key.get(entry.get("id"), ""))
+                i = train_index.get(train_key.get(entry.get("id"), ""))
                 label = entry.get("field")
                 if i is None or label not in scan_fields:
                     continue
-                if rows[i]["p"] not in not_random:
+                if train_rows[i]["p"] not in not_random and not train_cache:
                     random_counts[field_ids.index(label)] += 1
                 trained += 1
                 class_n[label] += 1
-                for k, v in features(rows[i]).items():
+                for k, v in features(train_rows[i]).items():
                     feat_n[label][k] += v
                     total_n[label] += v
                     vocab.add(k)
@@ -300,6 +312,7 @@ def main():
                     best, best_score = c, score
             field_col[i] = field_ids.index(best)
         print("classifier trained on", trained, "modules")
+        del train_rows, train_index
 
     # ---- check against a random sample of modules whose field a language model judged
     # from the module text (data/truth). Reported on the page as the estimate's accuracy.
@@ -309,7 +322,7 @@ def main():
                    "keywordExact": 0, "keywordFamily": 0, "trained": trained}
     truth_counts = [0] * len(FIELDS)
     key_path = os.path.join(os.path.dirname(labels_dir.rstrip("/")), "truth", "key.json")
-    if os.path.exists(key_path):
+    if os.path.exists(key_path) and not train_cache:  # the sample was read from the original release
         key = json.load(open(key_path))
         for path in sorted(glob.glob(os.path.join(os.path.dirname(key_path), "batch_*.json"))):
             for entry in json.load(open(path)):
@@ -351,6 +364,44 @@ def main():
             imports_fields[i] |= 1 << field_col[j]
             imported_by_fields[j] |= 1 << field_col[i]
 
+    # ---- which modules Main.lean reaches through imports, and which no module imports
+    reached = [False] * n
+    stack = [module["Main"]] if "Main" in module else []
+    while stack:
+        i = stack.pop()
+        if not reached[i]:
+            reached[i] = True
+            stack.extend(adj[i])
+    not_reached = [rows[i]["p"] for i in range(n) if not reached[i]]
+    not_imported = [rows[i]["p"] for i in range(n) if indeg[i] == 0]
+
+    # ---- Mathlib modules imported by name. "import Mathlib" (all of it) is counted apart.
+    area_modules, area_lines, area_distinct, mathlib_module_n = Counter(), Counter(), defaultdict(set), Counter()
+    other_libs = Counter()
+    row_areas = []
+    for r in rows:
+        areas = set()
+        for m in r["i"]:
+            if m.startswith("Mathlib."):
+                area = m.split(".")[1]
+                areas.add(area)
+                area_lines[area] += 1
+                area_distinct[area].add(m)
+                mathlib_module_n[m] += 1
+            elif m != "Mathlib" and m not in module:
+                other_libs[m.split(".")[0]] += 1
+        area_modules.update(areas)
+        row_areas.append(areas)
+    area_names = [a for a, _n in area_modules.most_common(32)]  # one bit per area in the mathlibAreas column
+    mathlib = {
+        "areas": [[a, area_modules[a], area_lines[a], len(area_distinct[a])] for a in area_names],
+        "distinct": len(mathlib_module_n),
+        "lines": sum(area_lines.values()),
+        "modulesNaming": sum(1 for a in row_areas if a),
+        "top": mathlib_module_n.most_common(20),
+        "otherLibraries": other_libs.most_common(8),
+    }
+
     # ---- exact-shape clusters
     shape_count = Counter(r["sh"] for r in rows)
 
@@ -391,6 +442,7 @@ def main():
         # commands that define new syntax: notations (with infix, prefix, postfix) and macros (with syntax, elab)
         ("notations", "B", [min(255, r["nt"]) for r in rows]),
         ("macros", "B", [min(255, r["mc"]) for r in rows]),
+        ("mathlibAreas", "I", [sum(1 << area_names.index(a) for a in areas if a in area_names) for areas in row_areas]),
         ("literalRate", "B", [min(255, round(100 * r["nl"] / max(r["l"], 1))) for r in rows]),
         ("digits", "B", [min(100, round(100 * r["dg"] / max(r["b"], 1))) for r in rows]),
     ]
@@ -454,14 +506,23 @@ def main():
         "tactics": tactics.most_common(),
         "tacticBits": tactic_bits,
         "declKinds": decl_kinds.most_common(),
+        "source": source,
+        "mathlib": mathlib,
+        "notReached": not_reached[:50],
+        "notImported": not_imported[:50],
+        "sorryModules": [[r["p"], r["t"]["sorry"]] for r in rows if r["t"].get("sorry")][:50],
         "totals": {
             "bytes": sum(r["b"] for r in rows),
             "lines": sum(r["l"] for r in rows),
             "zbytes": sum(r["z"] for r in rows),
             "commentBytes": sum(r["cb"] for r in rows),
+            "mergeRecordBytes": sum(r.get("cl", 0) for r in rows),
+            "mergedModules": sum(1 for r in rows if r.get("cl")),
             "importEdges": sum(len(a) for a in adj),
             "wholeMathlibImports": sum("Mathlib" in r["i"] for r in rows),
             "longestChain": len(chain),
+            "notReached": len(not_reached),
+            "notImported": len(not_imported),
             "literals": sum(r["nl"] for r in rows),
             "notations": sum(r["nt"] for r in rows),
             "localNotations": sum(r["ntl"] for r in rows),

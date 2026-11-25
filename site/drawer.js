@@ -78,7 +78,7 @@ export function outlineHtml(text) {
     const statement = (end > 0 ? rest.slice(0, end) : rest.slice(0, 400)).trim();
     decls.push(`<div class="decl"><span class="decl-kind">${m[1]}</span> <b>${esc(m[2] || "(unnamed)")}</b><pre class="lean">${renderLean(statement.length > 900 ? statement.slice(0, 900) + " …" : statement)}</pre></div>`);
   }
-  const imports = [...text.matchAll(/^import[ \t]+(\S+)/gm)].map((x) => x[1]);
+  const imports = [...text.matchAll(/^(?:(?:public|private|meta)[ \t]+)*import[ \t]+(?:all[ \t]+)?(\S+)/gm)].map((x) => x[1]);
   const importRows = imports.map((name) => {
     const i = moduleLookup(name);
     return i === undefined ? `<div class="mono">${esc(name)}</div>` : `<div><button class="link" data-open="${i}">${esc(name)}</button></div>`;
