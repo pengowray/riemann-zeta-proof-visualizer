@@ -447,6 +447,54 @@ def main():
         "otherLibraries": other_libs.most_common(8),
     }
 
+    # ---- Mathlib declarations that each module's own declarations mention, read from the compiled
+    # files by tools/usage.lean (present only when that analysis has been run for this source)
+    used_areas = [set() for _ in rows]
+    used_refs = [0] * n
+    mathlib_used = None
+    usage_files = sorted(glob.glob(os.path.join(cache, "usage", "usage_*.txt")))
+    if usage_files:
+        lib_names = {}
+        u_area_modules, u_area_refs, u_area_distinct = Counter(), Counter(), defaultdict(set)
+        u_module_n, u_libs = Counter(), Counter()
+        measured = 0
+        for path in usage_files:
+            for line in open(path):
+                parts = line.rstrip("\n").split("\t")
+                if parts[0] == "L":
+                    lib_names[parts[1]] = parts[2]
+                elif parts[0] == "P" and parts[1] in module:
+                    i = module[parts[1]]
+                    measured += 1
+                    libs = set()
+                    for cell in parts[3].split():
+                        idx, count = cell.split(":")
+                        name = lib_names[idx]
+                        libs.add(name.split(".")[0])
+                        if name.startswith("Mathlib."):
+                            area = name.split(".")[1]
+                            used_areas[i].add(area)
+                            used_refs[i] += int(count)
+                            u_area_refs[area] += int(count)
+                            u_area_distinct[area].add(name)
+                            u_module_n[name] += 1
+                    u_area_modules.update(used_areas[i])
+                    u_libs.update(libs)
+        used_area_names = [a for a, _n in u_area_modules.most_common(32)]
+        mathlib_used = {
+            "measured": measured,
+            # [area, project modules that mention it, Mathlib modules of the area mentioned, mentions]
+            "areas": [[a, u_area_modules[a], len(u_area_distinct[a]), u_area_refs[a]] for a in used_area_names],
+            "distinct": len(u_module_n),
+            "mathlibModules": sum(1 for name in lib_names.values() if name.startswith("Mathlib.")),
+            "modulesUsingMathlib": sum(1 for a in used_areas if a),
+            "top": u_module_n.most_common(12),
+            "libraries": u_libs.most_common(10),
+        }
+        used_area_bits = [sum(1 << used_area_names.index(a) for a in areas if a in used_area_names) for areas in used_areas]
+    else:
+        used_area_bits = [0] * n
+
     # ---- exact-shape clusters
     shape_count = Counter(r["sh"] for r in rows)
 
@@ -488,6 +536,8 @@ def main():
         ("notations", "B", [min(255, r["nt"]) for r in rows]),
         ("macros", "B", [min(255, r["mc"]) for r in rows]),
         ("mathlibAreas", "I", [sum(1 << area_names.index(a) for a in areas if a in area_names) for areas in row_areas]),
+        ("mathlibUsedAreas", "I", used_area_bits),
+        ("mathlibRefs", "H", [min(65535, x) for x in used_refs]),
         ("literalRate", "B", [min(255, round(100 * r["nl"] / max(r["l"], 1))) for r in rows]),
         ("digits", "B", [min(100, round(100 * r["dg"] / max(r["b"], 1))) for r in rows]),
     ]
@@ -554,6 +604,7 @@ def main():
         "source": source,
         "compare": compare,
         "mathlib": mathlib,
+        "mathlibUsed": mathlib_used,
         "notReached": not_reached[:5000],
         "notImported": not_imported[:50],
         "sorryModules": [[r["p"], r["t"]["sorry"]] for r in rows if r["t"].get("sorry")][:50],

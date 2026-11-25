@@ -130,6 +130,7 @@ export function renderCharts() {
   }
   $("imports-text").innerHTML = `The project has ${fmt(meta.totals.importEdges)} imports between its own modules. ${pct(same / total)} of them stay inside one field and ${pct(1 - same / total)} cross from one field to another. ${meta.totals.notReached ? `Following imports from Main.lean reaches all but ${fmt(meta.totals.notReached)} of the ${fmt(N)} modules. ${meta.notReached.includes("Challenge.lean") ? "One of them is Challenge.lean, which is meant to stand apart. " : ""}<button type="button" class="link" id="unreached-show" data-mask-key="unreached" aria-pressed="false">Show the ${fmt(meta.totals.notReached)} on the map</button>` : `Every module is imported: all ${fmt(N)} are reachable from Main.lean by following imports.`}`;
   renderMathlib();
+  renderUsed();
   if ($("unreached-show")) $("unreached-show").onclick = () => {
     const paths = new Set(meta.notReached);
     setMask("unreached", maskWhere((i) => paths.has(pathOf(i))), `${fmt(meta.totals.notReached)} modules that Main.lean does not reach through imports`); $("map").scrollIntoView();
@@ -176,6 +177,27 @@ export function renderCharts() {
     return { key: d.name, label: `${fmt(tacticModules[b])} modules that use ${d.name}`, test: (i) => (col.tactics[i] >>> b) & 1 };
   });
   document.querySelectorAll("#tactic-chart [aria-label='y-axis tick label'] text").forEach((t) => { t.style.fontFamily = cssVar("--mono"); });
+}
+
+/** Which Mathlib declarations the modules' own declarations mention, measured from Lean's compiled files. */
+function renderUsed() {
+  const u = meta.mathlibUsed;
+  if (!u) {
+    $("used-text").innerHTML = `This was measured on the community cleanup, whose compiled files are published: <a href="?v=cleanup#mathlib-use">see what the cleanup's modules use from Mathlib</a>.`;
+    for (const id of ["used-facts", "used-table", "used-top"]) $(id).remove();
+    return;
+  }
+  $("used-text").textContent = "A program read Lean's compiled file for each module and listed the Mathlib declarations that the module's own declarations mention in their statements and proofs. Nothing was compiled or checked again.";
+  $("used-facts").innerHTML = [
+    ["Modules measured", `<b>${fmt(u.measured)}</b> of ${fmt(N)}`],
+    ["Modules that mention a Mathlib declaration", `<b>${fmt(u.modulesUsingMathlib)}</b>`],
+    ["Mathlib modules mentioned", `<b>${fmt(u.distinct)}</b> of ${fmt(u.mathlibModules)} (${pct(u.distinct / u.mathlibModules)})`],
+  ].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
+  const max = u.areas[0][1];
+  $("used-table").innerHTML = `<tr><th>Part of Mathlib</th><th class="num">Mathlib modules mentioned</th><th>Project modules that mention it</th></tr>`
+    + u.areas.map(([name, modules, distinct], bit) => `<tr class="hoverable" data-preview-used="${bit}"><td class="mono">Mathlib.${esc(name)}</td><td class="num">${fmt(distinct)}</td><td style="white-space:nowrap"><span class="bar" style="width:${(220 * modules) / max}px;background:${cssVar("--ink-3")}"></span>${fmt(modules)} (${pct(modules / N)})</td></tr>`).join("");
+  $("used-top").innerHTML = `Mentioned by the most modules: ${u.top.slice(0, 8).map(([name, n]) => `<code>${esc(name)}</code> (${fmt(n)})`).join(", ")}. Only direct mentions are counted: a declaration that a mentioned declaration itself depends on is not. Tactics and notation used to write a proof are also not counted, because the compiled proof no longer names them. Point at a row to see the modules on the map, or <button type="button" class="link" id="used-on-map">colour the map by Mathlib declarations used</button>.`;
+  $("used-on-map").onclick = () => { [...$("colour-by").children].find((b) => b.textContent === "Mathlib declarations used")?.click(); $("map").scrollIntoView(); };
 }
 
 /** Which parts of Mathlib the modules import by name. Only the cleanup names them; the original imports all of Mathlib. */

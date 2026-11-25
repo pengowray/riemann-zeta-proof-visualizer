@@ -13,6 +13,10 @@ const shortSha = SOURCE.sha.slice(0, 7);
 versionsReady.then((versions) => {
   $("versions").innerHTML = `<span class="control-label">Version</span>` + versions.map((v) =>
     `<a href="${v.id === "original" ? "./" : "?v=" + v.id}"${v.id === VERSION ? ' aria-current="page"' : ""}><b>${esc(v.label)}</b> ${dateFmt(v.date)} · ${fmt(v.modules)} modules</a>`).join("");
+  // the sidebar's picker: the same choice, kept in view while the page scrolls
+  $("version-pick").innerHTML = versions.map((v) => `<option value="${v.id}"${v.id === VERSION ? " selected" : ""}>${esc(v.label)}</option>`).join("");
+  $("version-pick").onchange = (e) => { location.href = e.target.value === "original" ? "./" : "?v=" + e.target.value; };
+  $("version-date").textContent = `${dateFmt(SOURCE.date)} · ${fmt(N)} modules`;
   const original = versions.find((v) => v.id === "original");
   if (VERSION === "cleanup" && original) {
     $("cleanup-lede").innerHTML = `Members of the Lean community are cleaning up Levent Alpöge's Lean 4 formalization of the Riemann Hypothesis, released on 20 November 2026, in <a href="${REPO}">${esc(SOURCE.repo)}</a>. This page shows their <code>main</code> branch as it was on ${dateFmt(SOURCE.date)} (commit <code>${shortSha}</code>): ${fmt(N)} modules and ${fmt(meta.totals.lines)} lines, down from ${fmt(original.modules)} modules and ${fmt(original.lines)} lines in the original release. A module is one <code>.lean</code> file.`;
@@ -143,6 +147,12 @@ document.addEventListener("pointerover", (e) => {
   if (famEl) {
     const g = +famEl.dataset.previewFamily, label = famEl.children[1].textContent;
     if (state.previewLabel !== label) setPreview(maskWhere((i) => moduleFamily(i) === g), label);
+    return;
+  }
+  const usedRow = e.target.closest?.("[data-preview-used]");
+  if (usedRow) {
+    const bit = +usedRow.dataset.previewUsed, label = `Modules that mention declarations of Mathlib.${meta.mathlibUsed.areas[bit][0]}`;
+    if (state.previewLabel !== label) setPreview(maskWhere((i) => (col.mathlibUsedAreas[i] >>> bit) & 1), label);
     return;
   }
   const lib = e.target.closest?.("[data-preview-mathlib]");

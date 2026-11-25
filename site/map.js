@@ -491,6 +491,7 @@ export function tipHtml(hit) {
   else if (mode.id === "repeat") extra = col.repeat[i] === 255 ? "<br>First module in its directory" : `<br>${col.repeat[i]}% repeats the module before it`;
   else if (mode.id === "build" || state.size.id === "build") extra = `<br>Built in ${secondsFmt(col.build[i] / 10)} in one independent rebuild`;
   else if (mode.id === "literals") extra = `<br>${plural(col.literals[i], "numeric literal")} (${col.literalRate[i]} per 100 lines)`;
+  else if (mode.id === "mathlib") extra = `<br>Its declarations mention ${plural(col.mathlibRefs[i], "Mathlib declaration")}`;
   else if (mode.id === "digits") extra = `<br>${col.digits[i]}% of its characters are the digits 0–9`;
   return `<b>${esc(labelOf(i))}</b><span class="path">${esc(pathOf(i))}</span>${moduleFacts(i)}<br>${fieldLine(i)}`
     + (col.kind[i] ? `<br>${kindNote[col.kind[i]]}` : "") + extra;

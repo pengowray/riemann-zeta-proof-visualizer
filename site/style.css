@@ -245,3 +245,8 @@ td.pair { white-space: nowrap; line-height: 1.5; }
 .bar.before { background: var(--ink-3); }
 #change-table td:first-child { overflow-wrap: anywhere; }
 #change-table th { white-space: normal; }
+#version-pick-label { display: block; font-size: 0.8rem; color: var(--ink-2); margin-bottom: 10px; }
+#version-pick { display: block; width: 100%; margin-top: 3px; padding: 5px 6px; font: 600 0.9rem var(--serif); color: var(--ink); background: var(--paper); border: 1px solid var(--ink-3); }
+#versions.phone-only { display: none; }
+@media (max-width: 1000px) { #versions.phone-only { display: flex !important; } }
+#version-date { display: block; margin-top: 4px; }

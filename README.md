@@ -30,6 +30,17 @@ classifier is trained on modules of the original release. The cleanup changes
 many times a day, so run it again whenever the numbers should be brought up to date, then commit
 `site/data/`. `python3 tools/update.py original` rebuilds the original release's data.
 
+The "What the modules use from Mathlib" table comes from Lean's compiled files, which the scan
+does not read. To refresh it after an update, install Lean with `elan`, then in the cleanup clone run
+`lake exe cache get` (about 80 GB) and:
+
+```bash
+python3 tools/usage_run.py /path/to/clone data/cache/cleanup/usage
+```
+
+and run `python3 tools/update.py cleanup` again. `tools/usage.lean` reads which library
+declarations each module's declarations mention; it took about six minutes for 59,806 modules.
+
 - `tools/scan.py` reads every `.lean` file once and writes one row per file to `data/cache/` (not committed;
   the cleanup's rows go to `data/cache/cleanup/`).
   The search terms and the keyword patterns for fields are in `tools/patterns.json`.

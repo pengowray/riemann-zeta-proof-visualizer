@@ -12,6 +12,7 @@
 </head>
 <body>
 <aside id="rail" aria-label="Where you are">
+  <label id="version-pick-label">Version <select id="version-pick"></select><span id="version-date"></span></label>
   <canvas id="minimap" width="200" height="125" aria-hidden="true"></canvas>
   <p id="rail-note"></p>
   <nav id="toc">
@@ -29,7 +30,7 @@
 </aside>
 
 <main>
-<nav id="versions" aria-label="Version of the proof"></nav>
+<nav id="versions" class="phone-only" aria-label="Version of the proof"></nav>
 <header id="top">
   <div class="hero-text">
     <h1>The Lean proof of the Riemann Hypothesis, as a treemap</h1>
@@ -119,6 +120,11 @@
   <p id="imports-text"></p>
   <p data-only="original">A <a href="https://news.ycombinator.com/item?id=50574968">comment on Hacker News</a> reported 204 modules "not referenced anywhere", without a list or a method. In the import graph no module is unreferenced: every module except Main.lean is imported by at least one other module. The comment may be counting something that imports do not show, such as declarations that nothing uses.</p>
   <figure><figcaption>Imports between fields. Each row shows where that field's imports go. Point at a square to see those modules on the map.</figcaption><div id="matrix-chart" class="chart"></div></figure>
+  <h3 id="mathlib-use">What the modules use from Mathlib</h3>
+  <p id="used-text"></p>
+  <dl id="used-facts" class="facts"></dl>
+  <table id="used-table" class="data"></table>
+  <p id="used-top" class="note"></p>
   <h3>Imports from Mathlib</h3>
   <p id="mathlib-text"></p>
   <dl id="mathlib-facts" class="facts"></dl>
