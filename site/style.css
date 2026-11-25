@@ -243,3 +243,5 @@ dl.facts dd { margin: 0; }
 @media (max-width: 700px) { dl.facts { grid-template-columns: 1fr; } dl.facts dd { margin-bottom: 6px; } }
 td.pair { white-space: nowrap; line-height: 1.5; }
 .bar.before { background: var(--ink-3); }
+#change-table td:first-child { overflow-wrap: anywhere; }
+#change-table th { white-space: normal; }

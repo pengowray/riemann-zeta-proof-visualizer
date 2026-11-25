@@ -37,7 +37,7 @@ function renderChanges() {
     + c.regions.filter((r) => r[1] >= 20).map(([path, m0, l0, m1, l1]) => {
       const d = dirs.find((x) => x.path === path);
       return `<tr class="hoverable"${d ? ` data-preview-dir="${d.i}"` : ""}><td>${esc(path)}</td><td class="num">${fmt(m0)}</td><td class="num">${fmt(m1)}</td><td class="num">${change(m0, m1)}</td>
-        <td class="pair"><span class="bar before" style="width:${(110 * l0) / max}px"></span>${fmt(l0)}<br><span class="bar" style="width:${(110 * l1) / max}px;background:${cssVar("--ink")}"></span>${fmt(l1)}</td><td class="num">${change(l0, l1)}</td></tr>`;
+        <td class="pair"><span class="bar before" style="width:${(60 * l0) / max}px"></span>${fmt(l0)}<br><span class="bar" style="width:${(60 * l1) / max}px;background:${cssVar("--ink")}"></span>${fmt(l1)}</td><td class="num">${change(l0, l1)}</td></tr>`;
     }).join("");
 }
 
