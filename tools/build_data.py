@@ -495,6 +495,26 @@ def main():
     else:
         used_area_bits = [0] * n
 
+    # ---- page counts if the source were printed (see the "If it were printed" section of the page)
+    def pages_of(per_page, key):
+        return -(-sum(r["wr"][key] for r in rows) // per_page)
+    solid_path = os.path.join(cache, "solid.json")
+    solid = json.load(open(solid_path)) if os.path.exists(solid_path) else {}
+    compiled_path = os.path.join(cache, "compiled.json")
+    compiled = json.load(open(compiled_path)) if os.path.exists(compiled_path) else {}
+    base64_pages = lambda size: -(-(-(-size // 3) * 4) // 4800)  # base64 writes 4 characters for 3 bytes; 80 x 60 per page
+    printed = {
+        "a4NewPage": sum(-(-r["wr"]["a80"] // 60) for r in rows),  # every module starts a new page
+        "a4": pages_of(60, "a80"),
+        "a4Code": pages_of(60, "c80"),
+        "book": pages_of(40, "c65"),
+        "text": -(-sum(r["ch"] for r in rows) // 3000),
+        "xzBytes": solid.get("xzBytes", 0),
+        "xzPages": base64_pages(solid["xzBytes"]) if solid.get("xzBytes") else 0,
+        "compiledBytes": compiled.get("bytes", 0),
+        "compiledPages": base64_pages(compiled["bytes"]) if compiled.get("bytes") else 0,
+    }
+
     # ---- exact-shape clusters
     shape_count = Counter(r["sh"] for r in rows)
 
@@ -603,6 +623,7 @@ def main():
         "declKinds": decl_kinds.most_common(),
         "source": source,
         "compare": compare,
+        "printed": printed,
         "mathlib": mathlib,
         "mathlibUsed": mathlib_used,
         "notReached": not_reached[:5000],

@@ -37,6 +37,15 @@ def build(version, src, source, extra=()):
     source_path = os.path.join(cache, "source.json")
     json.dump(source, open(source_path, "w"))
     run(sys.executable, "-I", os.path.join(ROOT, "tools", "scan.py"), src, cache)
+    # size of the whole source as one xz archive, for the page count of the compressed form
+    files = subprocess.run(["find", ".", "-name", "*.lean"], cwd=src, capture_output=True, text=True, check=True).stdout
+    tar = subprocess.Popen(["tar", "-cf", "-", "--sort=name", "--mtime=2026-11-20", "--owner=0", "--group=0", "-T", "-"],
+                           cwd=src, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+    xz = subprocess.Popen(["xz", "-9", "-T0", "-c"], stdin=tar.stdout, stdout=subprocess.PIPE)
+    count = subprocess.Popen(["wc", "-c"], stdin=xz.stdout, stdout=subprocess.PIPE)
+    tar.stdin.write(files.encode())
+    tar.stdin.close()
+    json.dump({"xzBytes": int(count.communicate()[0])}, open(os.path.join(cache, "solid.json"), "w"))
     run(sys.executable, os.path.join(ROOT, "tools", "build_data.py"), cache, os.path.join(ROOT, "data", "labels"), out,
         "--source", source_path, *extra)
     return out
@@ -52,8 +61,9 @@ def main():
         })
     if which in ("cleanup", "all"):
         clone = local["cleanup_clone"]
-        run("git", "-C", clone, "fetch", "--depth", "1", "origin", "main")
-        run("git", "-C", clone, "reset", "--hard", "FETCH_HEAD")
+        if "--no-fetch" not in sys.argv:  # --no-fetch rebuilds from the commit already checked out
+            run("git", "-C", clone, "fetch", "--depth", "1", "origin", "main")
+            run("git", "-C", clone, "reset", "--hard", "FETCH_HEAD")
         build("cleanup", os.path.join(clone, "src"), {
             "id": "cleanup", "label": "Community cleanup", "repo": REPO, "sha": git(clone, "rev-parse", "HEAD"),
             "prefix": "src/", "date": git(clone, "log", "-1", "--format=%cI")[:10],
@@ -64,7 +74,8 @@ def main():
         path = os.path.join(ROOT, "site", folder, "meta.json")
         if os.path.exists(path):
             meta = json.load(open(path))
-            versions.append({**meta["source"], "data": folder + "/", "modules": meta["files"], "lines": meta["totals"]["lines"]})
+            versions.append({**meta["source"], "data": folder + "/", "modules": meta["files"], "lines": meta["totals"]["lines"],
+                             "printed": meta["printed"]})
     json.dump(versions, open(os.path.join(ROOT, "site", "data", "versions.json"), "w"), indent=1)
     print(versions)
 

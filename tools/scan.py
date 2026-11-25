@@ -41,6 +41,7 @@ MACRO_RE = re.compile(r"^[ \t]*(?:(?:local|scoped)[ \t]+)?(?:macro|macro_rules|s
 # Records that the cleanup's scripts/clump.py writes into a module it made by joining smaller modules.
 CLUMP_RE = re.compile(r"^-- (?:clump-header:|Members:|===== clump member:|This file was produced by scripts/clump\.py)[^\n]*", re.M)
 
+WS_RE = re.compile(r"\s+")
 SET_OPTION_RE = re.compile(r"set_option[ \t]+\S+[ \t]+\S+")
 LONGNUM_RE = re.compile(r"\d{7,}")
 # A numeric literal: a run of digits (optionally with a decimal part) that is not part of a
@@ -109,8 +110,21 @@ def scan_file(root, rel, prev_raw=b""):
     # numbers in `set_option` lines are settings, not mathematics, so they are left out of the counts
     maths = SET_OPTION_RE.sub("", nocomment)
     digits = sum(len(x) for x in NUM_RE.findall(maths))
+    # ---- how the file would print: lines after wrapping at 80 and at 65 characters, counted for
+    # the whole file ("all") and again without blank lines and import lines ("code")
+    wrap = {"a80": 0, "a65": 0, "c80": 0, "c65": 0}
+    for line in text.split("\n")[:lines]:
+        size = len(line.rstrip())
+        n80, n65 = max(1, -(-size // 80)), max(1, -(-size // 65))
+        wrap["a80"] += n80
+        wrap["a65"] += n65
+        if size and not IMPORT_RE.match(line) and not HEADER_RE.match(line):
+            wrap["c80"] += n80
+            wrap["c65"] += n65
     row = {
         "p": rel,
+        "wr": wrap,
+        "ch": len(WS_RE.sub(" ", text)),  # characters when every run of spaces and line breaks is one space
         "b": len(raw),
         "l": lines,
         "z": len(zlib.compress(raw, 6)),

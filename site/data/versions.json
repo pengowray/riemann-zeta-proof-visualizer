@@ -8,7 +8,18 @@
   "date": "2026-11-20",
   "data": "data/",
   "modules": 175187,
-  "lines": 17374215
+  "lines": 17374215,
+  "printed": {
+   "a4NewPage": 463733,
+   "a4": 374453,
+   "a4Code": 319765,
+   "book": 535938,
+   "text": 310073,
+   "xzBytes": 145252336,
+   "xzPages": 40348,
+   "compiledBytes": 0,
+   "compiledPages": 0
+  }
  },
  {
   "id": "cleanup",
@@ -19,6 +30,17 @@
   "date": "2026-11-25",
   "data": "data/cleanup/",
   "modules": 59807,
-  "lines": 15711430
+  "lines": 15711430,
+  "printed": {
+   "a4NewPage": 391312,
+   "a4": 361557,
+   "a4Code": 288566,
+   "book": 489618,
+   "text": 322980,
+   "xzBytes": 117711420,
+   "xzPages": 32698,
+   "compiledBytes": 64656000000,
+   "compiledPages": 17960000
+  }
  }
 ]

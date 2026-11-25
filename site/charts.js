@@ -1,7 +1,7 @@
 // The charts and tables in the sections below the map. Loaded after the map has painted.
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.16/+esm";
-import { REPO, $, fmt, pct, bytesFmt, esc, meta, N, col, ones, dirs, FAMILIES, fieldFamily, KIND_COLOURS, isDark, cssVar, state, names, pathOf, dirSum } from "./data.js";
+import { REPO, VERSION, versionsReady, dateFmt, $, fmt, pct, bytesFmt, esc, meta, N, col, ones, dirs, FAMILIES, fieldFamily, KIND_COLOURS, isDark, cssVar, state, names, pathOf, dirSum } from "./data.js";
 import { KEYWORDS } from "./speech.js";
 import { maskWhere, setPreview, luminance, setMask, labelOf, famOf, famColour } from "./map.js";
 
@@ -41,8 +41,33 @@ function renderChanges() {
     }).join("");
 }
 
+/** Page counts for the source under several layouts, with the other version's count for comparison. */
+function renderPrinted() {
+  const p = meta.printed;
+  const stack = (pages) => { const m = (pages / 2) * 0.0001; return m >= 1000 ? `${(m / 1000).toFixed(1)} km` : m >= 10 ? `${Math.round(m)} m` : `${m.toFixed(1)} m`; };
+  const rows = [
+    ["A4 listing, each module starting a new page", p.a4NewPage],
+    ["A4 listing, modules printed one after another", p.a4],
+    ["The same without blank lines and import lines", p.a4Code],
+    ["Book pages, without blank lines and import lines", p.book],
+    ["Set as continuous text with line breaks removed, 3,000 characters a page", p.text],
+    p.xzPages && [`Compressed into one xz archive (${bytesFmt(p.xzBytes)}) and printed as base64 in the A4 listing layout`, p.xzPages],
+    p.compiledPages && [`Lean's compiled files for these modules (${bytesFmt(p.compiledBytes)}), printed as base64 in the A4 listing layout`, p.compiledPages],
+  ].filter(Boolean);
+  const draw = (extra = []) => {
+    $("printed-table").innerHTML = `<tr><th>Layout</th><th class="num">Pages</th><th class="num">Stack of paper</th></tr>`
+      + [...rows, ...extra].map(([label, pages]) => `<tr><td>${label}</td><td class="num">${fmt(pages)}</td><td class="num">${stack(pages)}</td></tr>`).join("");
+  };
+  draw();
+  versionsReady.then((versions) => {
+    const other = versions.find((v) => v.id !== VERSION);
+    if (other?.printed) draw([[`${esc(other.label)} of ${dateFmt(other.date)}: A4 listing, modules printed one after another`, other.printed.a4]]);
+  });
+}
+
 export function renderCharts() {
   renderChanges();
+  renderPrinted();
   // --- what takes up the space: share of each family under five measures
   const measures = [["Modules", ones], ["Lines", col.lines], ["Bytes", col.bytes], ["Compressed bytes", col.zbytes], ["Declarations", col.decls]];
   const rows = [];
