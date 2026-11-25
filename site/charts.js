@@ -31,7 +31,7 @@ function renderChanges() {
     + row("Lines without imports", c.before.lines, c.after.lines)
     + row("Declarations", c.before.decls, c.after.decls)
     + row("Source size", c.before.bytes, c.after.bytes, bytesFmt, meta.totals.mergeRecordBytes ? `. ${bytesFmt(meta.totals.mergeRecordBytes)} of the new size is records written by the merge script` : "");
-  $("change-text").textContent = `${fmt(c.gone)} modules of the original release are no longer at their path: they were removed or joined into another module. ${fmt(c.merged)} of the cleanup's modules were made by a script that joins several smaller modules into one. ${fmt(c.samePath)} modules are at the same path as before, and ${fmt(c.sameShape)} of those have the same text once names, numbers and import lines are ignored. ${fmt(c.newPaths)} modules are at paths the original did not have.`;
+  $("change-text").textContent = `${fmt(c.gone)} modules of the original release were removed or joined into another module. ${fmt(c.merged)} of the cleanup's modules were made by a script that joins several smaller modules into one. ${fmt(c.samePath)} modules are at the same path as before, and ${fmt(c.sameShape)} of those have the same text once names, numbers and import lines are ignored. ${fmt(c.newPaths)} modules are at paths the original did not have.`;
   const max = d3.max(c.regions, (r) => r[2]);
   $("change-table").innerHTML = `<tr><th>Directory</th><th class="num">Modules before</th><th class="num">Modules now</th><th class="num">Change</th><th>Lines before and now</th><th class="num">Change</th></tr>`
     + c.regions.filter((r) => r[1] >= 20).map(([path, m0, l0, m1, l1]) => {
