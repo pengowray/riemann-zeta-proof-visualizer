@@ -197,7 +197,7 @@ function renderUsed() {
   $("used-table").innerHTML = `<tr><th>Part of Mathlib</th><th class="num">Mathlib modules mentioned</th><th>Project modules that mention it</th></tr>`
     + u.areas.map(([name, modules, distinct], bit) => `<tr class="hoverable" data-preview-used="${bit}"><td class="mono">Mathlib.${esc(name)}</td><td class="num">${fmt(distinct)}</td><td style="white-space:nowrap"><span class="bar" style="width:${(220 * modules) / max}px;background:${cssVar("--ink-3")}"></span>${fmt(modules)} (${pct(modules / N)})</td></tr>`).join("");
   $("used-top").innerHTML = `Mentioned by the most modules: ${u.top.slice(0, 8).map(([name, n]) => `<code>${esc(name)}</code> (${fmt(n)})`).join(", ")}. Point at a row to see the modules on the map, or <button type="button" class="link" id="used-on-map">colour the map by Mathlib declarations used</button>.`;
-  $("used-limits").innerHTML = `<li>Declarations that a mentioned declaration itself depends on.</li><li>Tactics and notation used to write a proof. The compiled proof no longer names them.</li>`;
+  $("used-limits").innerHTML = `<li>Declarations that a mentioned declaration itself depends on.</li><li>Tactics and notation used to write a proof. They are not stored in Lean's compiled files.</li>`;
   $("used-on-map").onclick = () => { [...$("colour-by").children].find((b) => b.textContent === "Mathlib declarations used")?.click(); $("map").scrollIntoView(); };
 }
 
