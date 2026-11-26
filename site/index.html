@@ -35,7 +35,7 @@
 <header id="top">
   <div class="hero-text">
     <h1>The Lean proof of the Riemann Hypothesis, as a treemap</h1>
-    <p class="lede" data-only="cleanup main compact jamesyc" id="version-lede"></p>
+    <p class="lede" data-only="cleanup main grh compact jamesyc" id="version-lede"></p>
     <p class="lede" data-only="original">On 20 November 2026 Levent Alpöge released a Lean 4 formalization, written with Claude, that states and proves the Riemann Hypothesis and its generalization to Dirichlet <i>L</i>-functions. The source is 175,187 modules (a module is one <code>.lean</code> file). This page shows what is in them.</p>
     <dl id="facts"></dl>
   </div>
@@ -48,7 +48,7 @@
 <section id="statement">
   <h2>The statement</h2>
   <p data-only="cleanup"><code>Statements.lean</code> defines the propositions and <code>Main.lean</code> proves them, and Mathlib's own <code>RiemannHypothesis</code>, by citing theorems from the other modules. The cleanup also has <code>Challenge.lean</code>, which states the same theorems with <code>sorry</code> in place of each proof so that a checker can compare the two files. Point at a symbol to see how to say it and what type it has.</p>
-  <p data-only="main compact"><code>Main.lean</code> proves the Riemann Hypothesis and the Generalized Riemann Hypothesis for Dirichlet <i>L</i>-functions as five theorems, using only Lean's three standard axioms (<code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>). <code>Statements.lean</code> states the five theorems in Mathlib's terms. Both editions of the rewrite also have <code>Challenge.lean</code>, which states the same five theorems with <code>sorry</code> in place of each proof, so that a checker can compare the two files. Point at a symbol to see how to say it and what type it has.</p>
+  <p data-only="main grh compact"><code>Main.lean</code> proves the Riemann Hypothesis and the Generalized Riemann Hypothesis for Dirichlet <i>L</i>-functions as five theorems, using only Lean's three standard axioms (<code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>). <code>Statements.lean</code> states the five theorems in Mathlib's terms. Both editions of the rewrite also have <code>Challenge.lean</code>, which states the same five theorems with <code>sorry</code> in place of each proof, so that a checker can compare the two files. Point at a symbol to see how to say it and what type it has.</p>
   <p data-only="jamesyc" id="statement-gaps"></p>
   <p data-only="original">These two files are the whole claim. <code>Statements.lean</code> defines four propositions. <code>Main.lean</code> proves them, and Mathlib's own <code>RiemannHypothesis</code>, by citing theorems from the other 175,185 modules. Point at a symbol to see how to say it and what type it has.</p>
   <div class="code-pair">
@@ -120,11 +120,11 @@
 
 <section id="fields">
   <h2>Areas of mathematics</h2>
-  <p>Each module's field is predicted by a classifier from the Mathlib and project identifiers it uses. <span data-only="original cleanup">The prediction agrees with a language model's reading of the module about half the time (details under Sources and method).</span><span data-only="main compact jamesyc">The classifier was trained and tested on modules of the original release; it was not tested on this version, whose names differ.</span> Point at a row to see where that field sits on the map.</p>
+  <p>Each module's field is predicted by a classifier from the Mathlib and project identifiers it uses. <span data-only="original cleanup">The prediction agrees with a language model's reading of the module about half the time (details under Sources and method).</span><span data-only="main grh compact jamesyc">The classifier was trained and tested on modules of the original release; it was not tested on this version, whose names differ.</span> Point at a row to see where that field sits on the map.</p>
   <table id="field-table" class="data"></table>
   <p class="note" data-only="original cleanup">The line under each field lists objects and theorems named in the labels that a language model gave to each of 746 directories after reading a digest of its identifiers. Treat them as a guide, not a census.</p>
   <p class="note" data-only="jamesyc">The line under each field lists objects and theorems named in the labels written for this version's two directories from the names of their modules. Treat them as a guide, not a census.</p>
-  <p class="note" data-only="main compact">The line under each field lists objects and theorems named in the labels that a language model gave to each of <span id="labelled-groups"></span> directories after reading the rewrite's guide, its list of files and the start of each module. Treat them as a guide, not a census.</p>
+  <p class="note" data-only="main grh compact">The line under each field lists objects and theorems named in the labels that a language model gave to each of <span id="labelled-groups"></span> directories after reading the rewrite's guide, its list of files and the start of each module. Treat them as a guide, not a census.</p>
 </section>
 
 <section id="imports">

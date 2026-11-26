@@ -13,32 +13,33 @@ Then open http://localhost:8737. The page is static: `site/` can be hosted anywh
 
 ## Rebuild the data
 
-The page shows five versions of the proof. Each has its own data folder and is picked with `?v=<id>`:
+The page shows these versions of the proof; the hidden ones open only from their link. Each has its own data folder and is picked with `?v=<id>`:
 
 | Version | id | Source | Data |
 |---|---|---|---|
 | Original release | `original` | `original` branch of [leanprover-community/riemann-hypothesis](https://github.com/leanprover-community/riemann-hypothesis) | `site/data/` |
 | Original, community cleanup | `cleanup` | its `alpoge` branch, where the cleanup of the original stopped on 25 November 2026 | `site/data/cleanup/` |
-| Shorter rewrite, community cleanup | `main` | its `main` branch, a copy of the readable edition of [lsernau/grh-lean](https://github.com/lsernau/grh-lean) that the community is cleaning up | `site/data/main/` |
+| Shorter rewrite, readable edition | `grh` | `grh/` in [lsernau/grh-lean](https://github.com/lsernau/grh-lean) | `site/data/grh/` |
 | Shorter rewrite, compact edition | `compact` | `grh-compact/` in lsernau/grh-lean | `site/data/compact/` |
 | New formalization by jamesyc, unfinished (hidden from the version lists) | `jamesyc` | [jamesyc/riemann-hypothesis](https://github.com/jamesyc/riemann-hypothesis), written with GPT-6.2 Sol; `holes.md` lists the steps left unproved | `site/data/jamesyc/` |
+| Shorter rewrite, community cleanup (hidden from the version lists) | `main` | `main` branch of leanprover-community/riemann-hypothesis, a copy of the readable edition that the community is cleaning up | `site/data/main/` |
 
 The versions and their settings (file names, optional sections) are listed in `VERSIONS` at the top
 of `tools/update.py`, which copies the settings into `site/data/versions.json` for the page. Put the paths of your local
 checkouts in `tools/local.json` (see the top of `tools/update.py`), then:
 
 ```bash
-python3 tools/update.py main
+python3 tools/update.py grh
 ```
 
-This fetches the newest `main`, scans it and rebuilds `site/data/main/`. It needs the original
+This fetches lsernau/grh-lean, scans the readable edition and rebuilds `site/data/grh/`. It needs the original
 release's scan in `data/cache/` (run `python3 tools/update.py original` once), because the field
-classifier is trained on modules of the original release. `main` changes many times a day, so run it
-again whenever the numbers should be brought up to date, then commit `site/data/`. The other ids
+classifier is trained on modules of the original release. The community's `main` changes many times a day;
+run `python3 tools/update.py main` to bring that hidden version up to date, then commit `site/data/`. The other ids
 rebuild the other versions, and `all` rebuilds every one.
 
-The shorter rewrite has its own directory names, so its directory labels are in `data/labels-main/`
-and `data/labels-compact/`. A language model wrote them from the rewrite's `GUIDE.md`, `CONTENTS.md`
+The shorter rewrite has its own directory names, so its directory labels are in `data/labels-grh/`
+(the same as `data/labels-main/`) and `data/labels-compact/`. A language model wrote them from the rewrite's `GUIDE.md`, `CONTENTS.md`
 and the head of each module, following `data/labels/PROMPT.md`. `data/labels-jamesyc/` labels that
 version's two directories.
 

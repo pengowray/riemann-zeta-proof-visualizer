@@ -36,6 +36,7 @@ ORIGINAL_SHA = "40e56bab026552e089d7afcfeff08d2defb9c005"  # tip of the reposito
 #   features        optional sections: "steps" (jae-63's blueprint, which names the original's paths),
 #                   "checks" (independent checks of the original), "changes" (comparison with the original)
 #   hidden          left out of the version lists, but still shown at ?v=<id>
+#   mapOrder        top-level directories to place first on the map, in this order (the rest follow)
 #   mathlibHub      the one module the others reach Mathlib through, when the imports do not name Mathlib modules
 VERSIONS = [
     {"id": "original", "label": "Original release", "family": "Original", "short": "Release", "repo": REPO, "src": "src/",
@@ -47,10 +48,14 @@ VERSIONS = [
     # main is a copy of grh-lean's readable edition (grh/) at commit 72fead1, cleaned up by the community.
     {"id": "main", "label": "Shorter rewrite, community cleanup", "family": "Shorter rewrite", "short": "Community cleanup", "repo": REPO,
      "clone": "main_clone", "branch": "main", "src": "src/", "statements": "Statements.lean", "main": "Main.lean",
-     "mathlibHub": "Lib/Speed.lean"},
+     "mathlibHub": "Lib/Speed.lean", "mapOrder": ["New", "Lib"], "hidden": True},
+    {"id": "grh", "label": "Shorter rewrite, readable edition", "family": "Shorter rewrite", "short": "Readable edition",
+     "repo": "lsernau/grh-lean", "clone": "grh_clone", "branch": "main", "src": "grh/src/",
+     "statements": "Statements.lean", "main": "Main.lean", "mathlibHub": "Lib/Speed.lean", "mapOrder": ["New", "Lib"]},
     {"id": "compact", "label": "Shorter rewrite, compact edition", "family": "Shorter rewrite", "short": "Compact edition",
      "repo": "lsernau/grh-lean", "clone": "grh_clone", "branch": "main", "src": "grh-compact/src/",
-     "statements": "Statements.lean", "main": "Main.lean", "mathlibHub": "Lib/General/LinearAlgebra/Base.lean"},
+     "statements": "Statements.lean", "main": "Main.lean", "mathlibHub": "Lib/General/LinearAlgebra/Base.lean",
+     "mapOrder": ["New", "Lib"]},
     # An unfinished new formalization written with GPT-6.2 Sol; holes.md lists the open obligations.
     {"id": "jamesyc", "label": "New formalization by jamesyc, unfinished", "family": "New formalization", "short": "jamesyc, unfinished",
      "repo": "jamesyc/riemann-hypothesis", "clone": "jamesyc_clone", "branch": "main", "src": "formalization/",
@@ -59,7 +64,7 @@ VERSIONS = [
 
 
 # the settings copied into the page's data
-PAGE_KEYS = ("id", "label", "family", "short", "repo", "statements", "main", "features", "mathlibHub", "hidden")
+PAGE_KEYS = ("id", "label", "family", "short", "repo", "statements", "main", "features", "mathlibHub", "hidden", "mapOrder")
 
 
 def run(*args, **kw):

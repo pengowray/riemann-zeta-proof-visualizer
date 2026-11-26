@@ -72,6 +72,11 @@
   "prefix": "src/",
   "sha": "388ec4364376d78ea8d33c0f9e79a91e8b319f3a",
   "date": "2026-11-26",
+  "mapOrder": [
+   "New",
+   "Lib"
+  ],
+  "hidden": true,
   "data": "data/main/",
   "modules": 802,
   "lines": 476535,
@@ -88,6 +93,37 @@
   }
  },
  {
+  "id": "grh",
+  "label": "Shorter rewrite, readable edition",
+  "family": "Shorter rewrite",
+  "short": "Readable edition",
+  "repo": "lsernau/grh-lean",
+  "statements": "Statements.lean",
+  "main": "Main.lean",
+  "mathlibHub": "Lib/Speed.lean",
+  "mapOrder": [
+   "New",
+   "Lib"
+  ],
+  "prefix": "grh/src/",
+  "sha": "72fead102f663d5c7a407964a13dc0cf9d977207",
+  "date": "2026-11-25",
+  "data": "data/grh/",
+  "modules": 803,
+  "lines": 477124,
+  "printed": {
+   "a4NewPage": 11062,
+   "a4": 10670,
+   "a4Code": 9898,
+   "book": 16674,
+   "text": 9142,
+   "xzBytes": 5859392,
+   "xzPages": 1628,
+   "compiledBytes": 0,
+   "compiledPages": 0
+  }
+ },
+ {
   "id": "compact",
   "label": "Shorter rewrite, compact edition",
   "repo": "lsernau/grh-lean",
@@ -99,6 +135,10 @@
   "statements": "Statements.lean",
   "main": "Main.lean",
   "mathlibHub": "Lib/General/LinearAlgebra/Base.lean",
+  "mapOrder": [
+   "New",
+   "Lib"
+  ],
   "data": "data/compact/",
   "modules": 794,
   "lines": 112827,
@@ -125,6 +165,7 @@
   "prefix": "formalization/",
   "sha": "b52203eeafe411fd9ee54223eda534c59a038a4a",
   "date": "2026-11-25",
+  "hidden": true,
   "data": "data/jamesyc/",
   "modules": 244,
   "lines": 40541,
@@ -138,7 +179,6 @@
    "xzPages": 103,
    "compiledBytes": 0,
    "compiledPages": 0
-  },
-  "hidden": true
+  }
  }
 ]

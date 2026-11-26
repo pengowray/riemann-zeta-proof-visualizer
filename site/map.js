@@ -1,7 +1,7 @@
 // The treemap: layout, colours, drawing, the sidebar map, the ζ bend, highlights, zoom and hover.
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import { makeBend } from "./bent.js";
-import { $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, FAMILIES, fieldFamily, moduleFamily, dirFamily, KIND_NAMES, KIND_COLOURS, isDark, cssVar, SIZE_MODES, COLOUR_MODES, state, names, pathOf, dirSum } from "./data.js";
+import { SETTINGS, $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, FAMILIES, fieldFamily, moduleFamily, dirFamily, KIND_NAMES, KIND_COLOURS, isDark, cssVar, SIZE_MODES, COLOUR_MODES, state, names, pathOf, dirSum } from "./data.js";
 import { openModule, openDirectory } from "./drawer.js";
 
 // ---------------------------------------------------------------- treemap layout
@@ -10,7 +10,9 @@ export const ctx = canvas.getContext("2d");
 // Directories are separated by outlines drawn at a fixed width on screen (px, by depth).
 // Gaps or name strips built into the layout grow with the zoom and become thick bands
 // once you zoom into a small directory.
-export const OUTLINE = [0, 3, 2, 1];
+// With only two or three top-level directories (the rewrite has New and Lib), the line between them is
+// drawn wider so the map reads as separate parts.
+export const OUTLINE = [0, dirs.filter((d) => d.depth === 1).length <= 3 ? 8 : 3, 2, 1];
 export let W = 0, H = 0, root = null;
 export const LX0 = new Float32Array(N), LY0 = new Float32Array(N), LX1 = new Float32Array(N), LY1 = new Float32Array(N);
 
@@ -21,6 +23,10 @@ export function buildHierarchy() {
     for (let i = d.start; i < d.start + d.count; i++) node.children.push({ leaf: i });
     if (d.parent >= 0) nodes[d.parent].children.push(node);
   }
+  // the version's settings can put some top-level directories first, which the layout places top left
+  const order = SETTINGS.mapOrder || [];
+  const rank = (c) => { const k = c.dir ? order.indexOf(c.dir.name) : -1; return k < 0 ? order.length : k; };
+  nodes[0].children.sort((a, b) => rank(a) - rank(b));
   root = d3.hierarchy(nodes[0]);
   root.each((n) => { if (n.data.dir) n.data.dir.node = n; });
 }
@@ -28,7 +34,11 @@ export function buildHierarchy() {
 export function layout() {
   const values = state.size.values;
   root.sum((d) => (d.leaf === undefined ? 0 : values[d.leaf]));
-  d3.treemap().size([W, H]).round(false)(root);
+  // with a map order (the rewrite's New and Lib), the top level is split left to right in that order
+  const tile = SETTINGS.mapOrder
+    ? (node, x0, y0, x1, y1) => (node.depth === 0 ? d3.treemapDice : d3.treemapSquarify)(node, x0, y0, x1, y1)
+    : d3.treemapSquarify;
+  d3.treemap().tile(tile).size([W, H]).round(false)(root);
   for (const n of root.leaves()) {
     const i = n.data.leaf;
     if (i === undefined) continue;
