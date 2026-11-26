@@ -49,6 +49,8 @@ LONGNUM_RE = re.compile(r"\d{7,}")
 LITERAL_RE = re.compile(r"(?<![A-Za-z_\d.'₀-₉!?])\d+(?:\.\d+)?(?![A-Za-z_\d'])")
 BLOCK_COMMENT_RE = re.compile(r"/-.*?-/", re.S)
 LINE_COMMENT_RE = re.compile(r"--[^\n]*")
+MODULE_DOC_RE = re.compile(r"/-!(.*?)-/", re.S)  # the module's own comment, which says what the file is for
+SENTENCE_END_RE = re.compile(r"(?<=[.!?])\s+(?=[A-Z(`])")
 SHIM_RE = re.compile(r":=\s*by\s*\n?\s*first\s*\|\s*exact\b")
 NONASCII_RE = re.compile(r"[^\x00-\x7f]")
 TACTICS = [
@@ -97,6 +99,19 @@ def scan_file(root, rel, prev_raw=b""):
     shape = re.sub(r"\s+", " ", shape).strip()
     shape_hash = hashlib.blake2b(shape.encode(), digest_size=6).hexdigest()
 
+    # lines that hold code: not blank, and not only a comment (block comments keep their line breaks)
+    code = BLOCK_COMMENT_RE.sub(lambda m: "\n" * m.group(0).count("\n"), text)
+    code_lines = sum(1 for s in LINE_COMMENT_RE.sub("", code).split("\n") if s.strip())
+    # what the module's own comment says it is: its Markdown heading if it starts with one, otherwise
+    # the first sentence of its first paragraph, with line breaks turned into spaces and Markdown marks dropped
+    doc = MODULE_DOC_RE.search(text)
+    doc = doc.group(1).strip() if doc else ""
+    if doc.startswith("#"):
+        doc = doc.split("\n", 1)[0].lstrip("#").strip()
+    elif doc:
+        doc = SENTENCE_END_RE.split(" ".join(doc.split("\n\n", 1)[0].split()), 1)[0]
+    doc = doc.replace("`", "").replace("**", "")[:240]
+
     stripped = nocomment.strip()
     if not stripped:
         kind = "imports"  # nothing but import lines: gathers other modules
@@ -139,6 +154,8 @@ def scan_file(root, rel, prev_raw=b""):
         "nb": len(set(LITERAL_RE.findall(maths)) - {"0", "1", "2"}),  # distinct literals other than 0, 1 and 2
         "na": len(NONASCII_RE.findall(nocomment)),
         "cb": comment_bytes,
+        "lc": code_lines,
+        "doc": doc,
         "cl": sum(len(m.encode()) for m in CLUMP_RE.findall(text)),  # bytes of merge records
         "d": dict(decls),
         "n": names,

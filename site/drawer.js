@@ -1,7 +1,7 @@
 // The details drawer for a module or directory, and the hover text for Lean code.
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import { renderLean } from "./speech.js";
-import { blobUrl, treeUrl, rawUrl, $, fmt, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, state, names, namesReady, pathOf, dirSum } from "./data.js";
+import { blobUrl, treeUrl, rawUrl, $, fmt, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, state, names, namesReady, docs, docsReady, pathOf, dirSum } from "./data.js";
 import { secondsFmt, canvas, requestDraw, group, hasLabel, kindNote, moduleFacts, chainTip } from "./map.js";
 
 // ---------------------------------------------------------------- details drawer
@@ -12,17 +12,18 @@ addEventListener("keydown", (e) => { if (e.key === "Escape" && !drawer.hidden) c
 addEventListener("pointerdown", (e) => { if (!drawer.hidden && !drawer.contains(e.target) && e.target !== canvas && !e.target.closest("#graph") && !e.target.closest("button.link")) closeDrawer(); });
 
 export function groupBlock(g) {
-  return `<p><b>${esc(g.label)}.</b> ${esc(g.gloss)}</p>` + (g.objects.length ? `<p class="note">Named in this directory's label: ${g.objects.map(esc).join(", ")}.</p>` : "");
+  return `<h3>Directory label</h3><p class="note">Written by a language model from the directory's contents.</p><p><b>${esc(g.label)}.</b> ${esc(g.gloss)}</p>` + (g.objects.length ? `<p class="note">Named in this directory's label: ${g.objects.map(esc).join(", ")}.</p>` : "");
 }
 export async function openModule(i) {
-  await namesReady;
+  await Promise.all([namesReady, docsReady]);
   state.pinned = i; requestDraw();
   const path = pathOf(i), g = group(i);
-  drawer.hidden = false; drawer.scrollTop = 0;
+  drawer.hidden = false; drawer.scrollTop = 0; drawer.dataset.dir = "";
   drawerBody.innerHTML = `<h2>${esc(names[i])}.lean</h2>
     ${crumbs(dirs[leafDir[i]], true)}
     <a class="path" href="${blobUrl(path)}" target="_blank" rel="noopener">Open on GitHub</a>
     <dl>
+      ${docs && docs[i] ? `<dt>About</dt><dd>${esc(docs[i])} <span class="note">(from the module's own comment)</span></dd>` : ""}
       <dt>Size</dt><dd>${moduleFacts(i)}</dd>
       <dt>Field</dt><dd>${esc(meta.fields[col.field[i]].name)} (estimate)</dd>
       ${col.kind[i] ? `<dt>Kind</dt><dd>${kindNote[col.kind[i]]}</dd>` : ""}
@@ -111,7 +112,7 @@ export async function openDirectory(d, rows = 200) {
   const sameGroup = g && d.path.startsWith(g.id);
   const shown = own.slice(0, rows);
   const top = rows > 200 ? drawer.scrollTop : 0; // adding rows keeps the reader's place
-  drawer.hidden = false;
+  drawer.hidden = false; drawer.dataset.dir = String(d.i); // which directory is shown, so a second click closes it
   drawerBody.innerHTML = `<h2>${esc(d.name)}</h2>
     ${crumbs(d)}
     <a class="path" href="${treeUrl(d.path)}" target="_blank" rel="noopener">Open on GitHub</a>

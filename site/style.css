@@ -282,3 +282,15 @@ table.data .none { color: var(--ink-3); }
 table.data tr.group-row td { padding-top: 14px; border-bottom: 1px solid var(--ink-3); }
 #always-more summary { cursor: pointer; }
 #always-more table td:first-child { overflow-wrap: break-word; }
+/* the first sentence of a module's own comment, in the map popup */
+#tip .doc, .maptip .doc { display: block; font-style: italic; margin: 2px 0 4px; }
+/* full screen: the map section fills the screen, the map takes the height left under the controls */
+#map:fullscreen, body.map-full #map { background: var(--paper); padding: 12px 24px; display: flex; flex-direction: column; }
+/* the map takes the height left under the controls; the intro, search, term chips and steps wait outside */
+#map:fullscreen #map-wrap, body.map-full #map-wrap { flex: 1 1 auto; min-height: 240px; }
+#map:fullscreen #treemap, body.map-full #treemap { height: 100%; min-height: 0; }
+#map:fullscreen > p:first-of-type, body.map-full #map > p:first-of-type,
+#map:fullscreen #map-wrap ~ *, body.map-full #map #map-wrap ~ * { display: none; }
+body.map-full #map { position: fixed; inset: 0; z-index: 50; margin: 0; max-width: none; }
+#full-screen { font: inherit; font-size: 0.9rem; color: var(--ink); background: none; border: 1px solid var(--rule); padding: 4px 10px; cursor: pointer; }
+#full-screen:hover { border-color: var(--ink-3); }

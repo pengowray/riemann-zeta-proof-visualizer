@@ -2,7 +2,7 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import { renderLean } from "./speech.js";
 import { drawZeta } from "./zeta.js";
-import { VERSION, SOURCE, REPO, listed, PARTS, partOf, ORIGINAL, SETTINGS, hasFeature, versionUrl, dateFmt, moduleFamily, rawUrl, $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, darkQuery, state, names, namesReady, termsReady } from "./data.js";
+import { VERSION, SOURCE, REPO, listed, PARTS, partOf, HAS_COMMENTS, ORIGINAL, SETTINGS, hasFeature, versionUrl, dateFmt, moduleFamily, rawUrl, $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, darkQuery, state, names, namesReady, termsReady } from "./data.js";
 import { recolour, requestDraw, refreshMini, countMask, maskWhere, setMask, setPreview, renderLegend, chainMask, chainLabel } from "./map.js";
 import "./graph.js";
 
@@ -66,7 +66,7 @@ function sorryWhere() {
 }
 $("facts").innerHTML = [
   ["Modules", `<b>${fmt(N)}</b>`],
-  ["Lines of Lean", `<b>${fmt(meta.totals.lines)}</b>`],
+  ["Lines of Lean", `<b>${fmt(meta.totals.lines)}</b>${HAS_COMMENTS ? `, of which ${fmt(meta.totals.codeLines)} are code (not blank, not only a comment)` : ""}`],
   ["Source size", `<b>${bytesFmt(meta.totals.bytes)}</b>, or ${bytesFmt(meta.totals.zbytes)} with each file compressed by zlib`],
   ["Declarations", `<b>${fmt(declTotal)}</b>: ${fmt((declCount.theorem || 0) + (declCount.lemma || 0))} theorems and lemmas, ${fmt((declCount.def || 0) + (declCount.abbrev || 0))} definitions`],
   ["Comments and docstrings", `<b>${meta.totals.commentBytes ? bytesFmt(meta.totals.commentBytes) : "None"}</b>${meta.totals.mergeRecordBytes ? `. ${bytesFmt(meta.totals.mergeRecordBytes)} of that is records written by the cleanup's merge script, which lists the smaller modules each merged module was made from` : ""}`],

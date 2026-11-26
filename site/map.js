@@ -1,8 +1,8 @@
 // The treemap: layout, colours, drawing, the sidebar map, the ζ bend, highlights, zoom and hover.
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import { makeBend } from "./bent.js";
-import { SETTINGS, $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, FAMILIES, fieldFamily, moduleFamily, dirFamily, KIND_NAMES, KIND_COLOURS, isDark, cssVar, SIZE_MODES, COLOUR_MODES, state, names, pathOf, dirSum } from "./data.js";
-import { openModule, openDirectory } from "./drawer.js";
+import { SETTINGS, PARTS, partOf, $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, FAMILIES, fieldFamily, moduleFamily, dirFamily, KIND_NAMES, KIND_COLOURS, isDark, cssVar, SIZE_MODES, COLOUR_MODES, state, names, docs, docsReady, HAS_COMMENTS, pathOf, dirSum } from "./data.js";
+import { openModule, openDirectory, closeDrawer } from "./drawer.js";
 
 // ---------------------------------------------------------------- treemap layout
 export const canvas = $("treemap");
@@ -32,9 +32,11 @@ export function buildHierarchy() {
   root.each((n) => { if (n.data.dir) n.data.dir.node = n; });
 }
 
+/** A module's size on the map: its value in the size measure, or 0 when the map shows only another part. */
+const visibleValue = (i) => (state.showPart < 0 || partOf[i] === state.showPart ? state.size.values[i] : 0);
+
 export function layout() {
-  const values = state.size.values;
-  root.sum((d) => (d.leaf === undefined ? 0 : values[d.leaf]));
+  root.sum((d) => (d.leaf === undefined ? 0 : visibleValue(d.leaf)));
   // with a map order (the rewrite's New and Lib), the top level is split left to right in that order
   const tile = SETTINGS.mapOrder
     ? (node, x0, y0, x1, y1) => (node.depth === 0 ? d3.treemapDice : d3.treemapSquarify)(node, x0, y0, x1, y1)
@@ -174,7 +176,7 @@ export function draw() {
     // every directory name is a plate in its top-left corner; the top-level ones are bold and appear first
     const top = d.depth === 1;
     if (top ? w < 60 || h < 24 : d.depth === 2 ? w < 90 || h < 40 : w < 150 || h < 60) continue;
-    const size = top ? (FEW_TOP ? 17 : 13) : 11;
+    const size = top ? (FEW_TOP ? 18 : 14) : 12;
     ctx.font = `${d.depth === 1 ? 600 : 400} ${size}px "STIX Two Text", serif`;
     const x = Math.max(n.x0 * k + tx, 0) + 4;
     const room = Math.min(n.x1 * k + tx - x - 4, 260);
@@ -185,7 +187,7 @@ export function draw() {
       text += "…";
     }
     const y = Math.max(n.y0 * k + ty, 0);
-    const pw = ctx.measureText(text).width + 8, ph = top ? 18 : 15;
+    const pw = ctx.measureText(text).width + 8, ph = top ? 20 : 17;
     if (plates.some((p) => x - 4 < p[0] + p[2] && p[0] < x - 4 + pw && y < p[1] + p[3] && p[1] < y + ph)) continue;
     plates.push([x - 4, y, pw, ph, d]);
     ctx.fillStyle = paper; ctx.fillRect(x - 4, y, pw, ph);
@@ -193,24 +195,34 @@ export function draw() {
   }
 
   // module names, once the rectangles are large enough to hold them
+  // module names, once the rectangles are large enough to hold them: the name wraps at its word
+  // boundaries, and the size the map is drawn by goes on the line below when there is room
   if (names && k > 6 && !quads) {
-    ctx.font = '10.5px "JuliaMono", monospace';
+    const LINE = 14, nameFont = '12px "JuliaMono", monospace', sizeFont = '11.5px "STIX Two Text", serif';
     ctx.textBaseline = "top";
     for (let i = 0; i < N; i++) {
       const x0 = LX0[i], x1 = LX1[i], y0 = LY0[i], y1 = LY1[i];
       if (x1 < vx0 || x0 > vx1 || y1 < vy0 || y0 > vy1) continue;
       const w = (x1 - x0) * k, h = (y1 - y0) * k;
-      if (w < 60 || h < 15) continue;
+      if (w < 60 || h < 17) continue;
       if (mask && !mask[i]) continue;
       // a directory's name plate sits in the same corner as its first module's name: move the module name below it
       const nx = x0 * k + tx + 3;
       let ny = y0 * k + ty + 3;
-      for (const p of plates) if (nx < p[0] + p[2] && nx + 60 > p[0] && ny < p[1] + p[3] && ny + 12 > p[1]) ny = p[1] + p[3] + 2;
-      if (ny + 12 > y1 * k + ty) continue;
+      for (const p of plates) if (nx < p[0] + p[2] && nx + 60 > p[0] && ny < p[1] + p[3] && ny + LINE > p[1]) ny = p[1] + p[3] + 2;
+      const bottom = y1 * k + ty - 2, rows = Math.floor((bottom - ny) / LINE);
+      if (rows < 1) continue;
+      const sizeText = sizeLabel(i);
+      ctx.font = nameFont;
+      const lines = wrapName(names[i], w - 8, sizeText && rows > 1 ? rows - 1 : rows);
       ctx.save();
       ctx.beginPath(); ctx.rect(x0 * k + tx, y0 * k + ty, w - 2, h); ctx.clip();
       ctx.fillStyle = paletteInk[cidx[i]];
-      ctx.fillText(names[i], nx, ny);
+      lines.forEach((line, j) => ctx.fillText(line, nx, ny + j * LINE));
+      if (sizeText && lines.length < rows) {
+        ctx.font = sizeFont; ctx.globalAlpha = 0.8;
+        ctx.fillText(sizeText, nx, ny + lines.length * LINE + 1);
+      }
       ctx.restore();
     }
   }
@@ -404,11 +416,32 @@ export function segmented(el, modes, current, onPick) {
 }
 segmented($("size-by"), SIZE_MODES, () => state.size, (m) => { state.size = m; layout(); renderLegend(); requestDraw(); refreshMini(); });
 segmented($("colour-by"), COLOUR_MODES, () => state.colour, (m) => { state.colour = m; recolour(); renderLegend(); requestDraw(); refreshMini(); });
+// the rewrite's map can show New or Lib alone
+if (PARTS.length > 1) {
+  const parts = [{ label: PARTS.length === 2 ? "Both" : "All", part: -1 }, ...PARTS.map((d, p) => ({ label: d.name, part: p }))];
+  $("show-part").hidden = false;
+  segmented($("show-part-seg"), parts, () => parts.find((m) => m.part === state.showPart), (m) => { state.showPart = m.part; layout(); renderLegend(); requestDraw(); refreshMini(); });
+}
+// Full screen shows the whole map section: controls, key and map. Where the browser refuses full screen
+// (inside some embedded browsers), the section fills the browser window instead.
+const fullLabel = () => { $("full-screen").textContent = document.fullscreenElement || document.body.classList.contains("map-full") ? "Exit full screen" : "Full screen"; };
+const fillWindow = (on) => { document.body.classList.toggle("map-full", on); fullLabel(); resize(); };
+$("full-screen").onclick = () => {
+  if (document.fullscreenElement) document.exitFullscreen();
+  else if (document.body.classList.contains("map-full")) fillWindow(false);
+  else if ($("map").requestFullscreen) {
+    $("map").requestFullscreen().catch(() => fillWindow(true));
+    // some embedded browsers neither enter full screen nor refuse it
+    setTimeout(() => { if (!document.fullscreenElement && !document.body.classList.contains("map-full")) fillWindow(true); }, 500);
+  } else fillWindow(true);
+};
+addEventListener("fullscreenchange", () => { fullLabel(); resize(); });
+addEventListener("keydown", (e) => { if (e.key === "Escape" && document.body.classList.contains("map-full")) fillWindow(false); });
 
 export function sharesBy(groupOf, groups) {
-  const totals = new Float64Array(groups), v = state.size.values;
+  const totals = new Float64Array(groups);
   let all = 0;
-  for (let i = 0; i < N; i++) { totals[groupOf(i)] += v[i]; all += v[i]; }
+  for (let i = 0; i < N; i++) { const v = visibleValue(i); totals[groupOf(i)] += v; all += v; }
   return [...totals].map((t) => t / all);
 }
 export function renderLegend() {
@@ -485,17 +518,54 @@ export const kindNote = ["", "Restates one theorem that is proved in another mod
 export const secondsFmt = (s) => (s >= 3600 ? `${(s / 3600).toFixed(1)} hours` : s >= 120 ? `${Math.round(s / 60)} minutes` : `${s >= 10 ? Math.round(s) : s.toFixed(1)} seconds`);
 export function moduleFacts(i) {
   const d = col.decls[i];
-  return `${bytesFmt(col.bytes[i])} · ${plural(col.lines[i], "line")} · ${plural(d, "declaration")}`;
+  return `${bytesFmt(col.bytes[i])} · ${linesText(col.lines[i], HAS_COMMENTS ? col.codeLines[i] : 0)} · ${plural(d, "declaration")}`;
 }
 /** The module's field with the colour square of its family, and the family's name when it differs from the field's. */
 function fieldLine(i) {
   const g = fieldFamily[col.field[i]], field = meta.fields[col.field[i]].name, family = FAMILIES[g].name;
   return `<span class="sw" style="background:${isDark() ? FAMILIES[g].dark : FAMILIES[g].light}"></span>${esc(field)}${family === field ? "" : `<span class="family"> · ${esc(family)}</span>`}`;
 }
+/** The module's size in the measure the map is drawn by, for the line under its name on the map. */
+function sizeLabel(i) {
+  switch (state.size.id) {
+    case "bytes": return bytesFmt(col.bytes[i]);
+    case "zbytes": return `${bytesFmt(col.zbytes[i])} compressed`;
+    case "lines": return plural(col.lines[i], "line");
+    case "codeLines": return `${plural(col.codeLines[i], "line")} of code`;
+    case "decls": return plural(col.decls[i], "declaration");
+    case "build": return secondsFmt(col.build[i] / 10);
+    default: return "";
+  }
+}
+
+/** A module name broken at its word boundaries (capitals, digits, underscores) into lines that fit `width`. */
+function wrapName(name, width, maxLines) {
+  const parts = name.split(/(?<=[a-z0-9'_])(?=[A-Z])|(?<=_)/);
+  const lines = [];
+  let line = "";
+  for (const part of parts) {
+    if (line && ctx.measureText(line + part).width > width) { lines.push(line); line = part; } else line += part;
+  }
+  if (line) lines.push(line);
+  if (lines.length > maxLines) {
+    lines.length = maxLines;
+    lines[maxLines - 1] += "…";
+  }
+  // a single word wider than the rectangle is cut, with an ellipsis
+  return lines.map((l) => {
+    if (ctx.measureText(l).width <= width) return l;
+    while (l.length > 2 && ctx.measureText(l + "…").width > width) l = l.slice(0, -1);
+    return l.endsWith("…") ? l : l + "…";
+  });
+}
+
+/** Lines in a module or directory: all of them, and those holding code when the version has comments. */
+const linesText = (all, code) => `${plural(all, "line")}${HAS_COMMENTS ? ` (${fmt(code)} of code)` : ""}`;
+
 export function tipHtml(hit) {
   if (hit.leaf < 0) {
     const d = hit.dir;
-    return `<b>${esc(d.name)}</b><span class="path">${esc(d.path)}/</span>${plural(d.end - d.start, "module")} · ${fmt(dirSum(d, "lines"))} lines · ${bytesFmt(dirSum(d, "bytes"))}${hit.plate ? "<br>Click to list what is in it" : ""}`;
+    return `<b>${esc(d.name)}</b><span class="path">${esc(d.path)}/</span>${plural(d.end - d.start, "module")} · ${linesText(dirSum(d, "lines"), dirSum(d, "codeLines"))} · ${bytesFmt(dirSum(d, "bytes"))}${hit.plate ? "<br>Click to list what is in it" : ""}`;
   }
   const i = hit.leaf, g = group(i), mode = state.colour;
   let extra = "";
@@ -506,7 +576,10 @@ export function tipHtml(hit) {
   else if (mode.id === "literals") extra = `<br>${plural(col.literals[i], "numeric literal")} (${col.literalRate[i]} per 100 lines)`;
   else if (mode.id === "mathlib") extra = `<br>Its declarations mention ${plural(col.mathlibRefs[i], "Mathlib declaration")}`;
   else if (mode.id === "digits") extra = `<br>${col.digits[i]}% of its characters are the digits 0–9`;
-  return `<b>${esc(labelOf(i))}</b><span class="path">${esc(pathOf(i))}</span>${moduleFacts(i)}<br>${fieldLine(i)}`
+  // the title is the first sentence of the module's own comment when it has one; otherwise the label of
+  // its directory, which a language model wrote (see the details panel)
+  const title = docs && docs[i] ? docs[i] : labelOf(i);
+  return `<b>${esc(title)}</b><span class="path">${esc(pathOf(i))}</span>${moduleFacts(i)}<br>${fieldLine(i)}`
     + (col.kind[i] ? `<br>${kindNote[col.kind[i]]}` : "") + extra;
 }
 export const tip = $("tip");
@@ -531,7 +604,11 @@ canvas.addEventListener("click", (e) => {
   if (downAt && Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) > 5) return; // it was a drag
   const r = canvas.getBoundingClientRect();
   const hit = leafAt(e.clientX - r.left, e.clientY - r.top);
-  if (hit.leaf >= 0) openModule(hit.leaf); else if (hit.dir) openDirectory(hit.dir);
+  // clicking the module or directory whose details are open closes them; clicking another opens that one
+  const drawer = $("drawer");
+  const showing = !drawer.hidden && (hit.leaf >= 0 ? state.pinned === hit.leaf : hit.dir && drawer.dataset.dir === String(hit.dir.i));
+  if (showing) closeDrawer();
+  else if (hit.leaf >= 0) openModule(hit.leaf); else if (hit.dir) openDirectory(hit.dir);
 });
 
 export const famOf = (i) => fieldFamily[col.field[i]];

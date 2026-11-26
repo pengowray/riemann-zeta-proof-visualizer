@@ -8,17 +8,31 @@ import { maskWhere, setPreview, luminance, setMask, labelOf, famOf, famColour, s
 // ---------------------------------------------------------------- sections below the map
 export const plotStyle = () => ({ background: "transparent", color: cssVar("--ink"), fontFamily: cssVar("--serif"), fontSize: "13px", overflow: "visible" });
 export function mount(id, plot) { const el = $(id); el.innerHTML = ""; el.append(plot); return plot; }
-/** While the pointer is over a mark of the chart, highlight on the map the modules that mark stands for. */
-function previewOnHover(plot, describe) {
-  plot.addEventListener("input", () => {
-    const d = plot.value;
-    if (!d) { if (state.preview) setPreview(null); return; }
+/** While the pointer is over a mark of the chart, highlight on the map the modules that mark stands for.
+ * `byX` (for bar charts with a band x scale) maps the x value under the pointer to a datum, so every
+ * part of a stacked bar counts, not only the points near Plot's own tip anchor. */
+function previewOnHover(plot, describe, byX) {
+  const show = (d) => {
+    if (!d) { plot.dataset.key = ""; if (state.preview) setPreview(null); return; }
     const { key, test, label, tint } = describe(d);
     if (plot.dataset.key === key && state.preview) return;
     plot.dataset.key = key;
     setPreview(maskWhere(test), label, { tint });
-  });
-  plot.addEventListener("pointerleave", () => { plot.dataset.key = ""; if (state.preview) setPreview(null); });
+  };
+  if (byX) {
+    plot.addEventListener("pointermove", (e) => {
+      // with a legend, Plot returns a figure whose last svg is the chart (the legend's swatches are svgs too)
+      const x = plot.scale("x"), svg = plot.tagName === "svg" ? plot : [...plot.querySelectorAll("svg")].pop();
+      const box = svg.getBoundingClientRect(), width = svg.viewBox.baseVal.width || box.width;
+      const px = ((e.clientX - box.left) * width) / box.width;
+      // the nearest bar, so the gaps between bars count too; nothing beyond half a bar past either end
+      const centre = (value) => x.apply(value) + x.bandwidth / 2;
+      const step = x.domain.length > 1 ? centre(x.domain[1]) - centre(x.domain[0]) : x.bandwidth;
+      const v = x.domain.reduce((best, value) => (Math.abs(centre(value) - px) < Math.abs(centre(best) - px) ? value : best), x.domain[0]);
+      show(Math.abs(centre(v) - px) <= step / 2 ? byX(v) : null);
+    });
+  } else plot.addEventListener("input", () => show(plot.value));
+  plot.addEventListener("pointerleave", () => show(null));
 }
 
 /** Cleanup page only: the original release beside this version, in total and by directory. */
@@ -180,14 +194,16 @@ export function renderCharts() {
     style: plotStyle(), width: 520, height: 300, marginLeft: 60, marginBottom: 46,
     x: { label: "Lines in the module", labelAnchor: "center", labelArrow: "none", domain: d3.range(edges.length - 1).map(binLabel) }, y: { label: "Modules", grid: true, tickFormat: "~s" }, color: kindScale,
     marks: [Plot.barY(lengthRows, { x: "bin", y: "n", fill: "kind", order: kindScale.domain, insetLeft: 1, insetRight: 1, tip: tipOpts, title: (d) => `${fmt(d.n)} modules with ${d.bin} lines\n${d.kind}` }), Plot.ruleY([0])],
-  })), (d) => ({ key: `lines${d.b}`, label: `${fmt(binTotal(lengthRows, d.b))} modules with ${d.bin} lines`, test: (i) => lineBin(i) === d.b, tint: kindTint }));
+  })), (d) => ({ key: `lines${d.b}`, label: `${fmt(binTotal(lengthRows, d.b))} modules with ${d.bin} lines`, test: (i) => lineBin(i) === d.b, tint: kindTint }),
+  (bin) => lengthRows.find((r) => r.bin === bin));
   const repRows = d3.rollups(d3.range(N).filter((i) => col.repeat[i] !== 255), (v) => v.length, (i) => Math.min(9, Math.floor(col.repeat[i] / 10)), groupOf)
     .flatMap(([b, ks]) => ks.map(([g, n]) => ({ bin: `${b * 10}–${b * 10 + 10}`, b, kind: groupNames[g], n })));
   previewOnHover(mount("repeat-chart", Plot.plot({
     style: plotStyle(), width: 520, height: 300, marginLeft: 60, marginBottom: 46,
     x: { label: "Share of the module that repeats its neighbour (%)", labelAnchor: "center", labelArrow: "none", domain: d3.range(10).map((b) => `${b * 10}–${b * 10 + 10}`) }, y: { label: "Modules", grid: true, tickFormat: "~s" }, color: kindScale,
     marks: [Plot.barY(repRows, { x: "bin", y: "n", fill: "kind", order: kindScale.domain, insetLeft: 1, insetRight: 1, tip: tipOpts, title: (d) => `${fmt(d.n)} modules\n${d.bin}% repeated\n${d.kind}` }), Plot.ruleY([0])],
-  })), (d) => ({ key: `repeat${d.b}`, label: `${fmt(binTotal(repRows, d.b))} modules that repeat ${d.bin}% of their neighbour`, test: (i) => repBin(i) === d.b, tint: kindTint }));
+  })), (d) => ({ key: `repeat${d.b}`, label: `${fmt(binTotal(repRows, d.b))} modules that repeat ${d.bin}% of their neighbour`, test: (i) => repBin(i) === d.b, tint: kindTint }),
+  (bin) => repRows.find((r) => r.bin === bin));
   const medianRep = (kind) => d3.median(d3.range(N).filter((i) => col.repeat[i] !== 255 && (col.kind[i] === 1) === kind), (i) => col.repeat[i]);
   $("repeat-text").textContent = `Repetition is measured by compressing each module after the compressor has read the module before it in the same directory. For a typical module that states and proves mathematics, ${medianRep(false)}% of the text is repeated from its neighbour. ${kindCount[1] ? `For a typical restating module it is ${medianRep(true)}%. Apart from the restating modules, exact` : "Exact"} copies are rare: ${shapeDup ? `${fmt(shapeDup)} modules belong to a group of ten or more that are identical once names and numbers are ignored` : "no group of ten or more modules is identical once names and numbers are ignored"}.`;
 

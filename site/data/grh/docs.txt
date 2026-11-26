@@ -1,0 +1,803 @@
+
+
+The adjoint of a matrix for the Hermitian dot product
+Speed settings
+Sums of two squares, Landherr's theorem and the Hasse principle for unitary cocycles
+The additive character, Haar measures and the rational lattice in the adeles
+Finite adeles of number fields: topology, idempotents, functoriality and base change
+The module of an idele, Haar measure scaling and the norm map on finite adeles
+Idelic generators of ideals, semilocal fields and tame local characters
+Products of completions at finite sets of places and approximation of adeles by elements of E
+Standard character, self-duality, strong approximation and one-sided Poisson summation
+Automorphic forms on standard definite spaces as algebraic forms
+Automorphic forms on adelic unitary groups, the Petersson product and rapid decay
+Periods of algebraic forms over a block subgroup as class sums via branching
+Cuspidality bounds, unipotent reduction, rapid decay and finite dimension of forms
+Algebraic modular forms: delta forms, unitary translation and spanning by Hecke eigenforms
+The p-adic gauge of algebraic forms, class sums, and integral forms of a level
+Convolution over real points, cusp kernels, the Petersson product and Poincaré series
+Algebraic forms on definite unitary groups, their pairing and Harish-Chandra parameters
+The mean along a unipotent radical vanishes; reduction in the radical
+Level spaces, Hecke operators, stabilisers and class sums
+Class sums as integrals over Γ\G, orbit unfolding and means over compact subgroups
+Quotient measures via cutoffs: unfolding, covolume, unimodularity, periodic means
+Unfolding over orbits and integration in Iwasawa coordinates
+Moving a quotient from one variable to another
+Pushing forward quotient measures, unfolding in stages and vanishing criteria
+Mahler's criterion for hermitian spaces and class sums for definite spaces
+Adelic reduction theory, Mahler's criterion and finite volume of the arithmetic quotient
+Transference, first minima and short bases of lattices of hermitian spaces
+Adelic Minkowski theorems and counts of rational points in boxes
+Types of frames with a similitude, and the permutation of orbits that changes signs
+Convergence of the geometric side
+Coprime factors
+Comparison of traces for a cuspidal test function
+An irreducible label in a tuple gives a cuspidal test function
+Integration over the fibres of a conjugation map
+The stabiliser of an isotropic subspace
+The sum of a majorant over the rational points
+The elements of a group algebra that keep a level
+Passage to the stabiliser of a line at an auxiliary place
+Lines and hyperplanes over a field
+Traces on the range of an idempotent from traces of a raising operator
+The stabiliser of a line at a finite place
+Test functions with a deeper level at an auxiliary place
+Kernels of levels as forms, and unfolding of orbital integrals
+The geometric side, polynomial by polynomial
+Rational points that pair short lattice vectors non-trivially
+Test functions and the two local conditions of the comparison of traces
+Comparison of traces of operators on forms for different spaces and signs
+Components of unitary adelic points at places; sums and moves of hermitian spaces
+Principal levels and levels defined by reductions in the finite adelic unitary group
+Adelic unitary groups over a CM field: levels, hermitian spaces, lattices and mass
+The Gram matrix of a space is invertible and hermitian; group elements from isometries
+Rational points and vectors of spaces under sums, moves and block embeddings
+Closed matrix embedding of adelic unitary groups, discrete rational points, weak approximation
+Maximal compact subgroup, splittings of isotropic frames and the Iwasawa decomposition
+Smooth families of isometries that carry an isotropic vector to its neighbours
+Witt's theorem over fields and over Ô; quasi-reflections, Eichler maps, frames
+Theta series of Dirichlet characters, Poisson summation, and L(s, χ) as a Mellin transform
+Quadratic twists, polar functions and logarithmic derivatives of Dirichlet L-functions
+Landau's lemma
+Gauss sums of primitive characters and the Pólya–Vinogradov bound
+Primes congruent to 1 modulo M ^ k with logarithm in a prescribed window
+A prime d in a class whose quadratic twists have no zero in a box
+Zeros of L(s, χ) and of L(1 − s, χ⁻¹)
+Growth of Dirichlet L-functions near the line re s = 1
+A Tauberian theorem with a power of the logarithm
+A zero-free region for Dirichlet L-functions
+Odd class number, ζ_K = ζ·L(s, χ), theta functions with CM and Chowla–Selberg
+Galois conjugates of CM curves: conjugate sections, isogenies and translates of θ
+Finitely many CM lattices
+CM lattices as multiples of fractional ideals, and good reduction of CM curves
+Kronecker's first limit formula
+The formal parameter
+The inseparable degree
+Integral series rings 𝔬[[T]], congruence parts of power series, a functional equation
+Notation at a prime, and elements of prime-power norm at split primes
+Doubling formulas for θ and σ and the quartic forms of doubling
+The integrality principle in one variable
+Isogenies and translates act integrally on expansions
+The logarithm of the theta function of a CM lattice and the integral group law
+Integrality of values of sections at torsion points
+Sigma and Weierstrass functions, lattice invariants and lattices with complex multiplication
+Theta functions of a CM elliptic curve: Weierstrass equation and spanning monomials
+Grunwald's theorem in prime degree and CM steps with prescribed local behaviour
+Base change of U(1) and Hecke characters, their L-functions and parallel twists
+Local-global compatibility for the ℓ-adic avatar of an algebraic Hecke character
+Continuous cohomology of discrete modules: cocycles, H², cyclic classes, local Artin map
+Cup products, Hilbert 90, Kummer cocycles and cyclic symbols in Galois cohomology
+Shapiro's lemma, corestriction and reduction of H² statements to steps of prime index
+Selmer groups unramified outside a set and cocycles of tamely ramified actions
+Coker/ker indices and Tate's index formula for cyclic actions of prime order
+Real place symbols, the second inequality and Albert–Brauer–Hasse–Noether
+The global Artin map: product of local symbols, continuity, splitting and norms
+Artin's reciprocity law and the sign law
+CM fields: complex conjugation, invariant ideles and splitting characters
+Chebotarev: Frobenii at primes of degree one in every nonempty open set
+Kummer characters, power indices and the existence theorem for totally complex fields
+Surjectivity of the Artin map, Hasse's norm theorem and norm groups of cyclic extensions
+Counts of trivialised Galois cocycles for projective modules and central scalars
+Relations at split primes
+Relations modulo ℓ
+Selmer cocycles, N-units, split places and the equivariant S-unit theorem
+Relations at split primes and their number (Greenberg–Wiles)
+Trivialised cocycles and power residue relations at split primes
+Values of algebraic Hecke characters
+Characters of U(1) of a CM field: existence, weights and conjugates
+Splitting character on U(1), characters tamely ramified at split places, theta integrals
+Splitting characters
+Characters on determinants, local values and characters tame for a modulus
+Analyticity at 1 of L-functions of nontrivial Hecke characters
+Euler products over primes of a number field and densities at primes of degree one
+Idelic theta sums over principal ideles as Riemann sums
+Local and global Artin maps, algebraic Hecke characters and tame inertia
+The local invariant Br(k) ≅ Q/Z and its behaviour under restriction and maps of local fields
+Classes of Galois lattices, pairings and local duality for crystalline cocycles
+The inequality of local Tate duality for orthogonal groups of cocycles
+Index of l-th powers in a local field and finiteness of Kummer 1-cocycles
+Decomposition groups of places above p as Galois groups of local fields in ℚ̄_p
+Decomposition and inertia groups, and cyclotomic characters at Frobenii and inertia
+Vocabulary of Galois theory: places, decomposition, Frobenius elements and inertia
+Finite ideles, principal ideles and the class group; finite index of open subgroups
+Local fields: Frobenius, uniformisers, normalised valuation, extensions, unramified characters
+Profinite Galois groups: continuity, restriction maps and the Galois correspondence
+Tame inertia, Frobenius on roots of unity over ℚ_p, the cyclotomic character, Weil pairs
+Valuation subrings over primes, primes from p-adic embeddings, and the efg formula
+The Leray–Hirsch map as a map of δ-functors, and dévissage from representable functors
+Charted varieties, and smooth base change from a valuation ring to its fraction field
+Tensoring degree-two classes; cohomology theories with ℓ-torsion coefficients
+Woods Hole (half of Atiyah–Bott): maps killed under λ_h on Hodge classes are h-null
+Cohomology of functors as Ext: test rings, points, functoriality, coefficients
+Criteria for comparison maps of Ext cohomology of functors of points to be bijective
+Dense subfunctors, Mayer–Vietoris and partitions along idempotents
+ℓ-adic cohomology with its Galois action; finiteness and bijectivity from coefficients mod ℓ
+Continuity of cohomology along filtered limits, via test rings and relatively affine maps
+Local-to-global principle, density criteria and proper functors for cohomology on test rings
+Relative chains ℤ[V]/ℤ[U]: local isomorphisms, transfer, excision and gluing
+Pointwise tensor product of functors, total Ext with Yoneda composition, external products
+Vanishing of Hodge cohomology with supports below the depth, and Zariski descent
+The Hodge class of the diagonal of a variety with an atlas, with its local description
+Reduced coincidences and the fixed point formula in Hodge cohomology
+Grothendieck's symbol [dT/T], cut-out loci and Hodge classes of points
+Künneth formula: Hodge classes on X × X are sums of external products
+Hodge cohomology on algebras with free modules; universal points of charts
+The Hodge–Tate map keeps classes of points on a projective variety linearly independent
+Projective Noether normalisation and homogeneous coordinates of embedded points
+The Hodge–Tate map does not kill point classes of the projective line and space
+Projective space as a functor, and injective pull-back along Noether normalisation
+Tate module, Kummer sequence and the first Chern class of O(1) on the projective line
+The projective line formula for locally constant ℤ/ℓ coefficients
+The perfect projective line glued from two perfect discs has the cohomology of a point
+Leray–Hirsch bases and the projective line formula for the tilted theory
+Mayer–Vietoris for two charts of a line modulo an ideal
+The space of places of residue fields and its properness over the base
+Splitting absolutely integrally closed subrings with a Mayer–Vietoris sequence
+Proper base change over AIC valuation rings and its consequences for ℤ/ℓ-cohomology
+Detecting unramified cocycles and a uniform bound for a model of the odd part of Ш
+A weak form of Stickelberger's theorem for Gauss sums, and a family of Jacobi-type quotients
+A small nonzero integer in all Stickelberger ideals via Voronoi's congruence
+Kolyvagin's derivative cocycles from Gauss sums, for one set of primes
+Reciprocity laws and Stickelberger and Kolyvagin bounds for odd-part cocycles
+Kernels kill bounded radical-invariant functions; dilations along isotropic subspaces
+The real unitary group G₁, unipotent coordinates and Bessel functions
+Haar measure of G₁ and the fibre measure on frames
+Traces and L² bounds for Bessel functions
+Haar measures on the Bessel unipotent groups 𝖴⁰ ⊆ 𝖴 and σ-finiteness on G₁
+The big cell: Bruhat decomposition of terms with non-zero leading minors, and its freeness
+The place ℂ: polar coordinates, Cartan decomposition and the measure of the hyperboloid
+Measures of a floor below fibre measures, at the place ℂ
+Floor groups, Weyl elements and the Bessel subgroup of a split unitary group
+Heisenberg elements, measures of the floors, hyperbolic bases and Plancherel at a place
+Fourier kernels between solved measures
+Solving the equation of a quadric in a block of coordinates
+The spheres of ℂ^κ as fibres of the standard form
+Harish-Chandra's formula for formal degrees and stable orbital integrals
+K-type multiplicities of the discrete series and orbital integrals as Laurent polynomials
+Orbital integrals of discrete series coefficients and Weyl characters of U(n)
+Laurent polynomials on the torus and Weyl's character and dimension formulas
+Flensted-Jensen's integral, analyticity of c_λ and its Casimir eigenvalue
+Harish-Chandra parameters, c_λ, deg_λ, e_λ and holomorphic discrete series
+Integrals of densities over unitary groups and over the flag variety of K_ℂ
+First properties of c_λ and its K-types
+Right derivatives and bump convolution for smooth functions on U(p,q)
+Decay, tail bounds and the L² model of the discrete series coefficient c_λ
+Cayley chart and an explicit Haar measure on the unitary group U(J)
+Coordinates for the Gram map
+The fibre measure of the Gram map
+The polar formula for the Gram map on bases
+Haar measure on U(J): U(n) has mass one, covering bounds for norm balls
+Exponentials in U(diag ε) and holomorphic extension of coefficients of highest vectors
+Maximal compact subgroup, block diagonal matrices and equivariance of minors
+The holomorphic model function and discrete series coefficients in the holomorphic chamber
+The peaks of a bounded holomorphic form lie away from the cusps
+K-highest vectors, norm bounds, Casimir growth on the filtration, and analytic vectors
+The idempotent e_λ, the operator π(e_λ), and rigidity of highest vectors of type Λ
+gl_n-modules, unitary representations of U(J) and a Casimir bound on K-highest vectors
+The block rule for corresponding parameters
+The Casimir elements of an oscillator pair
+Fock space oscillator actions, joint harmonics and Fischer decomposition
+Weights of matched pairs and uniqueness of joint harmonics in Fock space
+Existence of joint harmonics, Howe's argument and the local theta correspondence
+Duality of integral GL(n) representations, mixed weights and the Cartan product
+Branching from GL(n+1) to GL(n) × GL(1): integral equivariant branching maps
+Branching from GL(n+1) to GL(n) × GL(1): the branching vector and the norm bound
+Schur modules: semi-invariants, minors, Fock pairing, Schur and Gram matrices
+Fock pairing, Hermitian norm and Cartan products for the Gram matrix of the Weyl kernel
+Fillings whose columns begin with the leading rows
+A basis of minor products for Borel semi-invariants over any ring, by induction on rows
+Irreducibility under U(n)^Φ, polarisation and averaging of determinant polynomials
+Schur matrices, the standard basis of ∇, its weights and the highest vector
+Norm bound for Schur matrices and basic facts on the weight representations
+Algebraic representations of GL(n) on unitary groups: Schur orthogonality
+The Weyl module inside the tensors of its diagram
+The Weyl kernel and its Gram matrix: the hook number bound, positivity, Schur's lemma
+Free cocharacter weights force rank n and identify killing polynomials
+Auxiliary places, base level, integral Hecke algebra and operators at the auxiliary places
+ℓ-adic models of algebraic forms and congruences that change the weight
+Steps E'/E of base change and commuting families of Hecke operators
+Matching unit pairs at congruence levels and at unramified places of a step
+Twisted norms, matching pairs and base change maps for unitary groups
+Idele Hasse principle, unitary roots and rationality of adelic roots up to coboundary
+Hilbert 90 for the pro-p Iwahori group and base change of Iwahori eigenforms
+Base change in prime degree for definite U(n): a weak base change eigenform
+Base change at an inert place carries a label to its Shintani lift
+Hecke-stable matching pairs for a step E'/E at split matched places
+Twisted trace identity for a step E'/E of CM fields of prime degree
+Hilbert 90 for GL_n and units under tame actions on Artinian, finite or profinite rings
+Hilbert 90 for unitary groups over profinite rings and for finite ideles
+Local-global compatibility at split places for Iwahori eigencharacters and parahoric types
+Tame exponents of inertia and local-global compatibility for labelled forms
+Local GL_N(E_w)-action on forms, parahoric types and labels at a split place
+Isotypic spaces of eigenforms and attached Galois representations in every positive rank
+Attached Galois representations: traces, characteristic polynomials and rank one
+Cuspidal types, multiplicity-free sums and the Hodge–Tate cocharacter
+Weights, Hecke polynomials, eigenforms and the filter of most Frobenii
+Selmer modules with divisible coefficients
+Local conditions on ℓ-adic Galois representations and their passage to retracts
+Attached Galois representations in odd rank and their descent along weak base change
+Split places over ℚ(√−d) and quadratic steps with prescribed splitting
+Seed representations: odd rank, a cuspidal type and free jumps
+Selmer modules, Tate twists, components of cocycles and places above a prime
+Attached Galois representations in odd rank: the split case
+Theta lift of an algebraic form to a larger definite unitary group and its Hecke polynomials
+Spanning criteria, limits of traces and pseudorepresentations
+Semisimple representations: conjugacy, continuity, cancellation and stable lattices
+The q-binomial theorem, fibre sums, and Schur polynomials in the coefficients
+Open subgroups, a tube lemma, and procyclic images of ℓ-adic characters
+Absolutely integrally closed rings and their stability properties; Frobenius powers
+Adic completeness: p-adic tools, extension by continuity, topological bases
+A matrix of relations with small block determinant valuation
+Higman's criterion, dévissage and multiplicative functions on finite modules (Cartan map)
+Flat base change in functor cohomology, and the base change adjunction for algebras
+Relations, relative lengths and Fitting ideals for Selmer group estimates
+Integral power series over ℂ_p: jets, the chain rule and the exponential
+Level moduli, residue data as Schwartz–Bruhat functions, and descent in positive degree
+Long exact sequences, four and five lemmas, and Ext with disjoint unions and products
+Multivariate polynomials: cost of vanishing, homogenization, Nullstellensatz, Hensel
+Perfect algebras, étale algebras over perfect rings, and constant Laurent polynomials
+Sums of residues at simple real poles
+Integrality of exponentials, logarithms and roots of power series
+Power series with prime power exponents, congruences and convergent sums
+Maximal minors and lengths
+Orthogonality, Fourier inversion and matrix Gauss sums over a finite ring
+Fourier inversion for periodic functions and decay of Fourier transforms
+Matrix norm estimates, the Ostrowski–Taussky inequality, and the complex Gaussian integral
+Strong operator integrals, analyticity of parameter integrals, and Hua's integral bound
+Circle means, Taylor series at zero, a power bound, and smooth matrix operations
+Packing bounds for separated points and Sobolev trace inequalities
+Dense families of complex points: reduced closures, separation of maps, and arcs
+Functors of points on algebras: open subfunctors, étale charts, atlases, charted schemes
+Complex points over countable rings, Zariski generic members and Galois coverings
+Geometric points, specialisation, separating products and integral abelian varieties
+Line bundles on schemes via ring-valued points: descent and the Picard group
+Functors of points of proper schemes: closed loci, atlases and descent of relations
+Projective space, linear systems and projective embeddings, with Segre and Veronese
+Absolute Frobenius, Serre's theorem on sections of powers, and projective embeddings
+Smoothness near an arc from an immersive generic family and a bound on the tangent space
+Block triangular groups, unipotent Bessel groups, Levi and parahoric subgroups
+Characters of finite groups: averages, virtual characters and central projections
+Integral, congruence and unitary matrix groups over a ring, with their topology
+The index of a product of subgroups is the product of the indices
+ℚ/ℤ, characters of profinite groups, and extension of homomorphisms
+Extending columns, block matrices and block embeddings
+Eigenvalues: traces of powers, common eigenvectors, Amitsur's theorem, Sylvester's law
+Gram determinants
+Hermite forms over valuation pairs and integral matrices over valued fields
+Determinants of positive semidefinite matrices, principal minors and hermitian involutions
+The unipotent radical attached to an idempotent matrix
+Integral matrices over subrings: Smith normal form, Gelfand's condition and lattices
+Matrices near the identity: Jacobi's formula and norm estimates
+Auerbach's lemma, ultrametric matrix bounds and Gram norms
+Minors, polynomials of matrices and twisted norms
+Products of principal minors, Fischer's inequality and the Cauchy–Binet formula
+Rows and columns of integral matrices, primitive matrices and the law of partners
+Gram–Schmidt, tight frames, polar decomposition in U(p,q), forms representing one
+Chains of linear maps, tensor products of their data, and separation by forms
+Measures below a fibre measure
+Pushforward of Haar measures, the modulus of GL_n and the generalised index
+Uniqueness of Haar measure, integrals over subgroups and Gaussian normalisation of volumes
+Fubini and convolution lemmas; idempotent kernels
+Product measures, layer cake bounds, cocompact subgroups and L² bounds of integral operators
+Measures on hermitian quadrics: existence and uniqueness of disintegrations
+Criteria for CM fields
+Coefficient rings inside the ring of all integral elements
+Coefficient rings of ℓ-adic lattices, and length versus cardinality of modules
+Embeddings, differents and the maximal real subfield of a CM field
+Frobenius orbits of roots over finite fields and residue fields at self-conjugate places
+The Gauss valuation of a polynomial over the ring of integers of ℚ̄_ℓ
+The imaginary quadratic field ℚ(√−d): characters, Frobenius and splitting of primes
+Coefficient rings with a large residue field
+Lattice indices, primitive matrices, Jacobi's identity and covolumes of fundamental domains
+Algebraicity from ℓ-adic bounds, roots of unity as limits, and the ℓ-adic valuation
+Principal ideal powers, S-units and a class number bound
+Chains of roots of the Hecke polynomial of a spherical vector
+Cuspidal class functions on GL_n over a finite field: μ, supports, values, inner products
+Hall algebra of class functions: induction product, Mackey formula, Frobenius reciprocity
+Label characters Ξ_c: orthonormality, central idempotents and twisting by χ∘det
+Green's characters of GL_n over a finite field: θ_x, τ_P, labels and their degrees
+Iwahori degrees, partial Hecke sums and Satake's formula
+Parahoric and pro-p Iwahori subgroups of GL_n over a local field and U_t operators
+Quadratic relation and injectivity of U_t at pro-p Iwahori level
+Sorted exponents at pro-p Iwahori level
+Exponents that survive on spherical vectors, and a Hecke operator on parahoric eigenvectors
+Descent of class functions along a coset and lifts from GL_n(k') ⋊ Gal(k'/k)
+Root choices in a coset, induction, and extension of invariant characters
+Shintani lifting of Green's characters along extensions of prime degree
+Derived completeness, adic approximation of comparisons and completed base change
+Crystallinity of p-adic cohomology of charted proper schemes and Frobenius congruences
+Wang sequence on C × Bℕ, lines, and root systems of units via periodic sequences
+Crystalline comparison: bijectivity on étale charts and spanning of period cohomology
+Divided power envelopes, lifts modulo divided powers, and one divided power variable
+Almost coefficients, v-descent for perfect algebras and acyclicity of tilt points
+Divided power ideal, p-adic test rings, tilt, Witt vectors and reduction modulo p
+p-adic tests: tilts, Fontaine's map, covers by tests and flat base change
+Good pairs: excision, Thom retraction and Alexander duality for principal opens
+Integration over ℙ¹, compared cohomology theories, and moving kernel classes in (ℙ¹)^d
+Ext¹ classes of cocycles of functors, and contraction on exterior algebras
+Galois twists and the weight of the Hodge–Tate map
+The ring R[1/p] of a p-adic test and the square-zero extension W(R♭)[1/p]/(ker θ)²
+The Hodge–Tate maps λ_h on pairs (S, M): construction, properties and restriction
+The period map for ℓ-adic cohomology on p-adic tests, and Hodge–Tate weights
+The primitive comparison theorem and finiteness of p-adic cohomology
+Tilts and period coefficients of p-adic tests: products, comparisons, theories
+The primitive comparison with period coefficients
+W(𝔪^♭), the diagonal tensor module W(C^♭) ⊗ T and the Artin–Schreier sequence
+Bloch–Kato crystalline cocycles: reduction modulo p^m, rank and vanishing
+p-adic avatars of Hecke characters and local conditions for twists and characters
+The radius lemma: after Frobenius a frame is a constant basis times a unit over A
+Tate's vanishing theorem, Hodge–Tate elimination and the filtration of B_dR
+Crystalline and potentially crystalline representations and admissibility
+Bounded poles, φ-fixed elements of B_max, and ratios of periods fixed near 1
+Semilinear forms of given weight: independence, finiteness, and jumps read off a basis
+Hodge frames and Hodge–Tate jumps under operations on representations
+Regularity of B_max, closure of admissibility, and crystalline descent from inertia
+The ring S_B of a chart and extension of S-linear maps of A_inf to B^+
+Power series charts Λ⟦z⟧ in A_inf: Weierstrass division and fixed elements
+The frame theorem for Kisin modules and stability under normalising Galois elements
+Kummer charts: the different, the primes φ^a E of A_inf and their images in B_dR
+Witt coefficients, the Frobenius group action and existence of Kummer charts
+Kisin modules of Kummer charts: lattices with jump sets, letter projectors, invariant forms
+Period matrices over a chart: lattice bases and existence for crystalline lattices
+The frame theorem for a period matrix, with Frobenius and Galois action on the frame
+Uniform period bounds and limits of crystalline lattices with bounded jumps
+Hodge–Tate jumps with bounded denominators and local conditions at limits of traces
+The ring A_inf, the elements ε, μ, τ, ξ, the kernel of θ and adic completeness
+Tilting, Fontaine's θ, the ring O_C and Ax's theorem on Galois invariants in ℂ_p
+The period rings A, B⁺, B and B_dR⁺: θ, Frobenius, domains and contraction
+The cyclotomic action on μ, the period t, and the de Rham field B_dR
+Uniformisations over an arc: theta coordinates, Weil pairing and extension of maps
+Eigenquotients for Hecke eigensystems and the Galois representations they cut out
+Lifts of morphisms to sections of line bundles, and theta structures on abelian schemes
+Abelian schemes: base change, finite kernels and constant functions
+Isogenies: factorisation of homomorphisms, finiteness and flatness
+Pairings of line bundle classes on abelian schemes and their fpqc descent
+Étale coordinates at zero, infinitesimal points and unramified torsion
+Theta functions on complex tori: Appell–Humbert data and factors of automorphy
+Theta functions on complex tori: dimension formula, base points, multipliers
+The congruence relation and the trivial action of inertia on ℓ-adic cohomology
+Hecke elements on adelic torsion and reductions of Frobenius twists of Hecke neighbours
+Reduction of isogeny kernels: Cartier density, the tangent line and torsion sections
+Drinfeld lifting over k[ε] and a bound on the tangent space of the moduli scheme
+Counting w-torsion points bounds a space of natural semilinear functions by n − 1
+Hermitian tori with multiplications, Gauss sums and unfolding of the Poincaré kernel
+Good reduction of theta tori from shift bounds on kernels of multiplications
+Sizes of theta functions at torsion points: products, bounds and shift bounds
+Hecke elements in group rings, marked triples, local terms and neat levels
+Properties of a Kuga–Sato tower, Hecke operators at split places, torsion counts and levels
+Balls immerse; holomorphy, arcs and complex points of the covers
+Existence of PEL data at levels good at all safe places, with the form ξ and a Lagrangian
+Existence of the model: the tower of Kuga–Sato covers with its congruence relation
+The universal family: models along arcs, rigid fibres and points of linear data
+Linear systems and theta families from dense complex points carrying theta tori
+Flat families of ideals cut out by points and the flat closure of theta points
+PEL data, the adelic Riemann form and theta coordinates of polarised period maps
+Theta objects of PEL moduli problems, their pull-backs, and rigidity over local rings
+Existence of the universal theta family over a smooth projective base
+Orthogonality of theta translates and balls of integral theta functions
+Riemann's theta relation and the reduction of theta functions at a valuation
+Trace formula for algebraic forms, finiteness of signed frame classes, the definite side
+For a function with a cuspidal type at one place, marked and definite orbit sums agree
+Test vectors, and the regular Hecke element that does not kill them
+h-null Hecke elements and the Lefschetz formula as a sum over marked pairs
+Eigenline reflections of a separable matrix, and the term of the count at a marked triple
+Coefficient systems from weights and the degrees where Hecke eigensystems occur
+Adelic frames over a CM field, torsion classes, period lattices and period maps
+Existence in Appell–Humbert: projective embeddings are given by theta functions
+Period signatures, analytic families of theta tori and the ball chart of moduli points
+Holomorphic families of complex points, jets, uniformisations and theta coordinates
+Exponential of compact commutative Lie groups and uniformisation of abelian varieties
+Every full complex object is modelled on a point (g, ℓ)
+Objects modelled on complex tori and their homomorphisms as rational matrices
+Masses of definite hermitian lattices and ideal zeta bounds for adelic Gauss sums
+Neighbours of the standard lattice
+Holomorphic Fock vectors and a reproducing formula by theta lifts
+Lagrangians, zero terms of the Weil representation and vanishing of dominated functionals
+Strong approximation and constancy of automorphic functions in equal rank
+Siegel sets and the Siegel–Weil formula in Weil's range
+Gauss sums of classes modulo a lattice at a finite place
+Local measure bounds and local densities at a finite place
+Classes modulo a lattice at a finite place
+Bounds for local densities at finitely many finite places
+Siegel–Weil for one vector, Siegel's class sum formula and the ratio of masses
+The quadrics of the standard form at a finite place
+Doubling: clean data, the doubling identity and the inner product formula
+Rallis' inner product formula for sharp data and injectivity of the theta lift
+Fourier coefficients along the centre of a unipotent radical and their partial means
+Singular forms governed by unimodular coefficients
+The constant term of a theta integral, unfolded along isotropic lines
+Products of L-values and Tate's integral at the finite places
+The functional equation of the L-function of a tamely ramified character
+Removing a plane: the constant term on the side of the large space
+Standard partners, shear invariance, Gauss sums along lines and coefficients of lifts
+Coordinates on a line parabolic and Poisson's formula for terms along lines
+Principal ideles and a majorant on the complex torus
+The real cone integral
+The test vector of the zeta integral
+The series of translates weighted by the coefficients of the vacuum
+Vacuum coefficients, coset representatives and the weight of steps through neighbours
+Theta lifts of forms: products of minors, edges, arrows between spaces of forms
+Theta lifts for families of characters over a real edge and the seesaw of periods
+Tame local characters, integral frames and the local Gauss sum
+Theta lifts between definite unitary groups and algebraic lifts by jets
+The jet matrix of a definite pair is a kernel for algebraic forms
+The adelic Weil representation on 𝒮(V) and its theta functional
+Independence of the theta functional of the chosen group element; transport and sums
+The finite cocycle as a finite Gauss sum, and its triviality
+Finite Heisenberg datum, its lattice vacuum and the finite multiplier
+Fourier inversion for theta functions
+Heisenberg cocycles, vacua, the reproducing model and Schur's lemma
+Products of data along a splitting of coordinates, and changes of coordinates
+The dictionary between vectors and theta functions
+Jet series of theta functions and translation by rational vectors
+Vacuum projections and the finite part of the Weil representation
+Splitting characters, Weil data, and the adelic Heisenberg cocycle and vacuum
+Weil operators, orthogonal sums and transport of the reproducing model
+Hom(S,T), the Weil representation and theta kernel of a pair, and data modulo an ideal
+Weil representation of unitary pairs: finite action, sums, negation and change of point
+Flipping a dual pair by adjoints: Weil actions and theta kernels modulo ideals
+Semilinear maps intertwining the Weil action up to σΔ/Δ
+Holomorphic data, functions of a level, and theta kernels modulo 𝔪 as level multipliers
+Rapid decay of theta kernels of unitary dual pairs under support conditions
+Theta kernels of unitary pairs modulo an ideal: formal laws and seesaw identities
+The action x ↦ hxg⁻¹ on matrices as a map of unitary groups
+Mixed models and zero terms of a pair with one split space: Levi and radical laws
+Short isotropic vectors and means of theta functionals over isotropic subspaces
+Terms of theta kernels at rational matrices and basic laws of theta integrals
+Growth of theta kernels and convergence of theta lifts
+Two edges V → V′ → V″ joined into one datum of the pair (V′, V⁻ ⊕ V″)
+Laws of the Weil action of a pair: translations, real points, levels, rational maps
+The Fock model of the Weil representation of U(ε) at a real place
+Harmonic matrix coefficients of the Weil representation and oscillator pairs on matrices
+Polynomial vectors in Fock space: inner product, density and Weil derivative
+Moments on Fock space, approximation by polynomial vectors, bounds for functionals
+Adapted splittings: hyperbolic polarisation, Hom spaces, composition and stages
+Mixed Schrödinger–Fock models and rapid sections with prescribed values
+Hyperbolic space and splittings of a hermitian space along isotropic subspaces
+Data named by Schwartz–Bruhat functions: Heisenberg laws, transport, Weil action
+Real data, the entire theta function, and the real vacuum in the mixed model
+Schwartz–Bruhat functions on a set of places and the Schrödinger model there
+Real, named and finite slices of data in the mixed model of an adapted splitting
+Zero terms of the mixed models of the Weil representation at the real places
+Mixed model of the Weil representation: Levi intertwining and invariance of θ
+Zero term and mixed model of the Weil representation: slices and θ as a sum of slices
+Integrals over the Bessel subgroup and the orbits surviving unipotent twists
+Constant terms of Weil functions along maps of positive degree
+Vanishing theta descents for unitary groups: Fourier coefficients and periods
+The character ψ_U and the function 𝒲_φ
+Iwasawa decomposition for the flag of the grades
+Graded hermitian spaces X ⊕ J_s, Bessel subgroups, the map T, and c_λ in a frame
+Finitely many orbits of lattices satisfy the bounds
+The lattice of a finite point of a graded space
+Real and finite points of the Bessel group
+The string of a graded space as the powers 𝔢 ^ i
+One step of the seesaw unfolding of the theta integral over the Bessel group
+Hecke operators of GL_n at a finite place and local criteria for principal level
+Hecke polynomials pass through a theta lift
+Hecke operators and Hecke polynomials at split places; spherical eigenvectors
+From non-vanishing in Re s > 1/2 to zeros on the critical line
+The Gaussian shape of the coefficient
+Localizing products of discrete series coefficients near the compact subgroups
+One minor of a product of three exponentials, to second order
+One minor near the identity
+Lower bounds for periods by Laplace's method
+The group of a position
+Positions of a smaller unitary group, and the two traces
+The stationary position
+Steep parameters and the setting of Laplace's method
+All data have regular families of m-fold twists
+The family of operators at the auxiliary places
+The bound for denominators
+Even classes and auxiliary places for Selmer cocycles
+Modules of functions, Fitting ideals and trace ideals for Ribet's method
+Chains of roots for weak lifts, and Hecke-stable subspaces of forms
+Kummer maps
+Norms, logarithms and first-order deformations of the norm
+Ribet's element for conjugate self-dual representations
+Ribet's method to first order over a discrete valuation ring
+Tied rows and the matrices of Ribet's method to first order
+Amitsur's formula and Ribet's method for matrices over an algebra
+Cocycles of Tate twists: the even part and the triangle cost
+Tied traces and the dictionary at one auxiliary place
+Constants, trace relations, lattices and local defects for Ribet's method
+Taylor–Wiles places in a triangle for the even classes, with prescribed Frobenii
+Lift settings and conjugate self-duality of attached Galois representations
+Base data whose forms contain those with given labels in a lift setting
+Main summands and conjugate self-dual representations from type polynomials
+Main summand conditions on Hodge–Tate jumps and existence of main summands for Hecke eigensystems
+Bad places, ℓ-adic avatars and hypotheses on conjugate self-dual representations
+From sides to lattices: few low jumps, b-letters and tame types
+Sides of a pairing, cokernel killers and the pairing lemma for cup products
+Exponent bounds by cuts for paired sides of a Kummer chart: sparse thick letters, two sizes
+Deep points and scaled cup coboundaries for a gap below zero or nonpositive jumps
+Lattices with prescribed orders, depth steps and the depth lemma
+Few low jumps: length lost to depth and a submodule cupping to zero
+Exponents of lattice elements in a Hodge basis and the length of one step on a line
+The long gap lemma for a side of a Kummer chart, by expansion in powers of E
+Safe moves and the walk for pairings of sides of a Kummer chart
+Jump windows, the gap condition and points of the sides of a Kummer chart
+Tame Kummer charts and the power of p that kills cokernels of Kisin modules
+Local loss above ℓ: main summand weights, b-places, crystalline relations and crystalline colength
+Crystalline cocycles and the defect of a crystalline lattice at a place above ℓ
+The defect of the dual of a summand at a place above ℓ
+Tame classes from roots of unity and lattices read at a place above ℓ
+A bound for non-crystalline cocycles modulo ℓ ^ m by the Tate dual lattice
+Auxiliary primes, anticyclotomic characters, slopes and ties
+L-values of a pair as integral measures, and avatars of tame characters
+The dual of a tied Selmer group and the count
+The descent
+Twisting, general form
+The Stickelberger systems of the L-values
+Restriction to a line
+Main summands are Selmer data
+Reciprocity at conjugate primes
+The universal twist and one system of equations for all twists
+Roots of unity ζ with polynomials hardly more divisible at ζ - 1 than at given points
+Selmer data, tied Selmer groups and classes as functions
+Stickelberger systems on a line
+Stickelberger systems
+The twisting theorem
+The failure to be tied
+Divisibility of the jets of a series with the normal form along products of minors
+Couplings and the normal form
+The change of directions
+Chosen places, characters of given weight, finiteness of pairs and sizes of the different
+Different and prime decomposition of the CM field E = K(ζ)
+Weil data of the CM field E = K(ζ) and the number s₀
+The exponent on one curve
+Frobenius congruence for θ and the coefficient of z ^ (p - 1) in x
+Resolutions of the identity and power series in the compositions y(μ_i z)
+The normal form of theta products at non-split primes
+Sharpness of the valuation bound
+The valuation bound v(l!) + val₁₂(l) ≤ S_p + 2 ∑ v(B_τ) for every prime
+Least valuations along couplings
+Least valuations of coefficients of theta products
+Near pairs of b-places and the losses in the sharpness bound
+Derivatives of integral expansions
+Integrality and divisibility of the derivatives of standard data
+The integral vacuum θ°: integrality and bounds of its values, standard data at p
+Integrality of jets of theta products and stability of standard data
+The scale of the Taylor series of a vector
+Tight frames in 𝔞₀
+Standard data as products of theta functions of the curve
+Scale of theta Taylor series, tight frames, jet series along lines
+Steep parameters of Y₀ and Ỹ^0_0; periods of Poincaré series of deep level
+Vanishing of forms on Y₀ orthogonal to the deep level on Ỹ^0_0
+Turns on the diagonal, and the transfer of periods from the first path to the last
+The maps Θ^♭ and res^♭, and the first path
+Periods on the diagonal and path data on the first path
+Monotone paths through two square grids, and their turns
+The branching pairing and the periods on the last path
+Moduli, spaces, moves, path data and periods on the two grids
+Weights of regular parameters and bounds on boxes
+Denominators and sizes on the last path, and the auxiliary forms
+Turning path data, and turns off the diagonal
+Norms along the chain of theta lifts and injectivity of ι_ϑ
+Ratios of Hecke values and heights of functions of the twist
+The volume of ι on the target forms as a product of volumes of theta lifts
+The finite square law for theta lifts: special data, matched functions and Fourier form
+Theta lifts as a triangle of arrows: spaces, lifts, descents and the first lift
+Orders of block triangular groups and Gram forms of chains in triangles
+The image of the cone integral
+The difference in the exchange identity as an equivariant lift
+Explicit real data: the exchange identity for a definite space with determinant data
+Parabolic theta terms, equal ranks, and the exchange identity for the large triple
+Matched functions, sections over GL cosets and same-section pairs of matrix functions
+Theta coefficients vanish off negative forms
+One square: up then down against down then up
+Smooth local Witt theorem and the exchange identity for V' ⊕ W₁ and V'
+Change of point and sign, and descent of the exchange identity by removing hyperbolic planes
+Criteria for a function with a matched function to lie in a stable space; vanishing of lifts
+Exchange of theta integrals for matched functions and for data modulo an ideal
+Vanishing of theta integrals descends along hyperbolic planes
+The lift Θ_W, its adjoint and its norm
+The theta kernel of a descent pair with values in the weight representation
+The ratio of twisted to untwisted Hecke L-values, main pairs and regular families of twists
+Theorem C: integral forms are long
+The cost of one lift: a height bound for Z_j(1)/Z_j(ξ^j)
+Point forms, Hecke adjoints and false lifts on the definite space of a descent pair
+Products of determinants and first-column coordinates under substitution
+Data of the three exchanges: the carrier, the choices and the functions 𝖥_i
+The first factors: P_V along W_j and W^add, integrality and size
+Gluing: the descent of product forms and the denominators
+Gluing: residue rings, divided lattices, the congruence group and glued lattices
+The first factors and the gluing maps
+The polynomial map ζ, the datum Ψ^add and the series Υ; norm, degree and denominator of ζ
+One exchange, and class sums at the level of a row stabilizer
+Products span
+Decay of Fock matrix coefficients, sparse theta sums and the isolation estimate
+Three exchanges: the carrier, the third exchange and its left side as a theta series
+The bottom of the tower: from the block datum to all data
+Vanishing of theta descents from W to W plus hyperbolic planes
+The tower of descents and the periods of false lifts
+The lift of a character: denominators, and one group ring element for all twists
+Archimedean bounds and heights of squared norms of rank-one theta lifts
+Central action on lifts from U(1) and a rank-one denominator bound
+The lift of a character from U(1): kernel, descent and Galois conjugates
+The lift of a character and its squared norm as a Hecke L-value
+The period of a determinant theta kernel (used in rank two for the L-value at z = 1)
+The algebraic part as a Hecke L-value, and products of L-values of twists
+Heights of ratios of twisted to untwisted Hecke values via rank-one theta lifts
+The target forms as a twisted lattice
+The main inequality
+The one-sided bound, and the theorem in half-plane form
+Prime sums: main amount, expected value and total remainder
+Theorem A (short forms) and Theorem B (enough forms)
+Admissible data
+Admissible data exist at every large x
+The parameters q₀ and d, the field E = K(ζ), its infinite places and its roots of unity
+Weight bounds, the level N, and twists and m-fold twists for chains of lifts
+Logarithmic bounds for the sizes of the data
+Sizes of the data
+Colength of modules, and endomorphisms surjective up to a bounded colength
+The height of a family over all places: products, monotonicity and the product formula
+Twisted lattices
+The one-sided criterion for a zero-free half-plane
+A weighted prime-counting error term and its poles at zeros of L-functions
+The prime number theorem for the remainders R_q
+The group of the Bessel period at a real place
+Bessel systems at a real place: length and norm bounds, lattice basis, discriminant
+The Bessel function at a real place: decay and cut
+Filling data from admissible data, with Bessel systems at the real places
+The Gram section γ_Z of the frame Gram matrix map on the unitary group G₁
+Bessel systems of discrete series type and a Bessel function large at a point
+The mean value inequality over the Gram matrix of two frames
+Bounds near a point of Ω and the open cell bound for a Bessel system
+One pairing on the open cell, at all places together
+Normalisation of a Bessel function and of its cut
+Schur's bound for a Bessel function and its derivatives
+Unfolding bounds over G₁ and the L² bound at the section γ_Z via Sobolev
+The Bessel vector at the finite places
+The scale, near points and partial correlations
+The densities as integrals over pairs of frames
+Depth
+Fiber measures of the standard form, and the top quadric by its last entry
+Depth, heads and far positions at the finite places
+Shells, decay and mass at the finite places
+Groups that fix given vectors at chosen places have a small mass integral
+Two frames: separation and the gains at one position
+Sizes, lengths and balanced frames
+Place data, floor measures and depth
+One frame
+Plancherel's formula on quadrics
+Volumes on quadrics and on sections
+The normalized cell integral Ξ and the local bounds at ℂ for cut Bessel functions
+Floor measures at the complex place: Haar measure, place datum and gauge
+Cut Bessel functions at ℂ: integration of the local estimates over shells
+The sum over the shells
+Place data and gauges at a finite place from the lattice of integral vectors
+Scaled orbital integrals of the finite Bessel vector on the floor group
+The density at the last entry
+Comparing the lengths at two points; minors and heads
+The share of non-allowed polynomials and the bad share
+Main-term bound for the second moment over open reductions fixing given vectors
+The place and level of a set of primes, orbit sums and the set of entries
+The sieve system at the finite places
+Sums over frequencies
+One-sided Poisson summation, sums over frequencies, and the sieve over all places
+Class sums as orbit sums, and unfolding at a set of primes
+The orbital integral at the finite places is a Kloosterman sum
+Siegel's formula as an upper bound, and domination of class sums by the density at the last entry
+Sieve systems over places: products, positivity and lower semicontinuity
+Equality of multiplicities
+Spherical Hecke operators away from the level, and eigensystems
+Links, lifts and gauges of a term
+The box
+The covolume of the lattice of columns
+The sum over pairs of near terms
+The cut: from the lattice of a link to the vectors common to two links
+The data of a term and of a pair of terms
+Denominators: bases of A⁺ / I_γ and γ A⁺ / I_γ
+Discriminants of lattices and sums over sublattices
+Frames of near terms: short shared vectors and moves between frames
+The part in X₀ of a frame, moves, and lifts of a lattice
+Counting frames over a lattice of small discriminant
+The gain: a discriminant bound for the common lattice of two terms over one block
+Sums over lattices of given corank and small discriminant
+The lattice of a link
+The vectors z⁺ and Υ_γ⁻¹ z⁺
+The weight of Schur's test at one real place
+Near terms in the filling theorem: the bound for an orbit, the tail and the open-cell term
+Orthogonal lifts and the two isotropic lists of a link
+Schur's test for one orbit
+Schur's test: Cauchy–Schwarz and integration in stages
+Discriminants of sublattices, Siegel's lemma and a height zeta function of subspaces
+The orbit bound: a bound for a block of amplitudes; the second moment of a set of terms
+The remaining terms: a bound for their sum
+Few translates fill
+Functions of positive type and singular minors
+The dimension of the target and one good translate of the Poincaré map
+Sums of amplitudes over blocks
+The Bessel function as an integral over R(F_∞)
+Bessel data: level subgroup, Eichler maps and strong approximation for the unipotent group
+Residue lifts, lattice charts and common flag vectors: which filling terms contribute
+The Bessel kernel and the integral of a class cutoff over the real unipotent group
+Filling data for admissible data: fit to Y₀, Bessel bounds, standing hypotheses
+Masses of spheres and of frames
+Links of isometries, the link isometry Υ_γ, and invariance under besselU
+The second moment over the whole group
+The second moments of the operators P* s P, and good forms
+Class cutoffs and counting frames in boxes
+Poincaré series of fitting spaces, unfolding, Petersson products and source form coordinates
+The finite groups Ū, H̄ and R̄
+Eichler-type unipotent elements, colouring bounds and reduced points
+The Poincaré map as a Poincaré series of the Bessel function
+The data, standing hypotheses and amplitudes of the filling theorem
+The expansion of the squares and the second moment near the Bessel subgroup
+The structure of a term
+Near terms in the filling theorem: frames, cell ranks, nearness and integrality
+Two invariant sums of translates attached to a chain datum
+p-adic gauge bounds for chains of theta lifts and restrictions to Y_m
+The colength of source forms at p = N
+Elementary divisor bound for the scaled Hecke operator via edges
+A lower bound for the divisibility bound by the gain
+The divisibility of the composite lift at each prime
+Elementary divisors of one scaled Hecke operator on the integral source forms
+Marked primes above p, full marks and the scaled Hecke operator
+The places Σ_N above N and the set-up at p = N
+N-adic valuation of the lifts between the X_j at the level prime N
+Valuations of lifts at non-split primes
+Averaging: removing the terms of large defect in all Levi translates at once
+The dimension of the forms of bounded defect
+Few forms have only deep translates
+Edges, halfway lattices and duality
+Elementary divisors of the edge Hecke operator
+The substitution by Frobenius powers of generic matrices; weight and defect
+An average on polynomials in the entries of a matrix
+The Pieri cone, the step map and the slab: interlacing and volume of the cone
+Gauss filtrations, Stepanov's count and the root lemma
+Frobenius cycles, the twisted action of GL_k(W), depth and defect
+Rational equivariance, integrality and size of definite theta kernels
+Galois conjugates of jets of theta functions and archimedean bounds for jets
+p-adic gauge bounds for one theta lift and data from functions modulo an ideal
+Descent pairs: descent data for theta lifts to definite unitary groups
+Characters of the lifts of the chain above the level N
+Levels of the chain, chain data, and the composite lift
+Inserting a block into a parameter
+Good labels, index types of hermitian spaces, the group 𝖦 and idempotent e₀
+Chains of theta lifts, jointly invariant combinations, and free levels
+Direct and mirror data modulo N, and the operator Up
+Index sets, signs and parameters of the grids; the parameters of every step correspond
+The Poincaré map
+The chain of theta lifts ι_μ along the spaces Y_j: level, character and 𝖦-equivariance
+Spaces Y_j and W_j, the forms on them, and the target parameter
+Harish-Chandra parameters, weights and lift diagrams of the definite spaces
+Graded lattices, integrality away from q and admissible combinations of translates
+Finite evaluation of edge pairs takes translates of the vacuum to admissible combinations
+The outer variables: finitely many classes, with weights
+Finite zero terms and the evaluation of pairs of edges in the tower of spaces Y_k
+The shift at a nonzero constant term maps lattices into lattices
+Congruence levels inside the stabilizer of a glued lattice
+Evaluated data as admissible combinations of glued translates of the vacuum
+Integrals over a quotient as finite sums over cosets with controlled multiplicity
+Valuations of the chosen ideles, and lattices and levels at the chosen places
+The neighbour lattice of a pair of edges
+The vacuum of the neighbour lattice
+Bounds for the lattices of points on graded spaces
+The seesaw identity and the top of the chain
+The standard lattice of a graded space, line by line
+Unfolding the chain of lifts: double lifts and the functions of the unfolding
+Archimedean size of the composite lift, and passage to target forms by the good projection
+Explicit bound for the number of classes in the genus
+Numerical inequalities between the parameters of the data
+Prime-by-prime divisibility measures; short forms span the ramified source forms

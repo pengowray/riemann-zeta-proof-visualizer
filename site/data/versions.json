@@ -41,10 +41,10 @@
    "steps",
    "changes"
   ],
+  "compare": false,
   "prefix": "src/",
   "sha": "756a70250dcba9162b99d4ea35c186558434c17e",
   "date": "2026-11-26",
-  "compare": false,
   "data": "data/cleanup/",
   "modules": 58947,
   "lines": 13710054,

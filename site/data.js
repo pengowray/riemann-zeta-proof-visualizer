@@ -76,14 +76,18 @@ export const darkQuery = matchMedia("(prefers-color-scheme: dark)");
 export const isDark = () => darkQuery.matches;
 export const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
+// "Lines of code" (not blank, not only a comment) appears only for versions that have comments; the
+// original release has none, so its lines are counted as they are
+export const HAS_COMMENTS = meta.totals.commentBytes > 0 && col.codeLines !== undefined;
 export const SIZE_MODES = [
   { id: "bytes", label: "Bytes", values: col.bytes, unit: "of the bytes" },
   { id: "lines", label: "Lines", values: col.lines, unit: "of the lines" },
+  { id: "codeLines", label: "Lines of code", values: col.codeLines, unit: "of the lines of code" },
   { id: "zbytes", label: "Compressed bytes", values: col.zbytes, unit: "of the compressed bytes" },
   { id: "modules", label: "Modules", values: ones, unit: "of the modules" },
   { id: "decls", label: "Declarations", values: col.decls, unit: "of the declarations" },
   { id: "build", label: "Build time", values: col.build, unit: "of the build time" },
-].filter((m) => m.id !== "build" || meta.totals.buildMeasured); // build times exist only for the original release
+].filter((m) => (m.id !== "build" || meta.totals.buildMeasured) && (m.id !== "codeLines" || HAS_COMMENTS)); // build times exist only for the original release
 export const COLOUR_MODES = [
   { id: "field", label: "Field of each module", kind: "cat" },
   { id: "dirfield", label: "Field of its directory", kind: "cat" },
@@ -96,17 +100,22 @@ export const COLOUR_MODES = [
   { id: "mathlib", label: "Mathlib declarations used", kind: "seq", values: col.mathlibRefs, scale: "sqrt", max: 1000, low: "none", high: "1,000 or more", noun: "Mathlib declarations used" },
   { id: "digits", label: "Digit characters 0–9", kind: "seq", values: col.digits, scale: "sqrt", max: 12, low: "0% of characters are digits", high: "12% or more", noun: "digits" }, // almost every module is under 12%, so the scale stops there
 ].filter((m) => (m.id !== "build" || meta.totals.buildMeasured) && (m.id !== "mathlib" || meta.mathlibUsed)); // build times exist only for the original release
-export const state = { size: SIZE_MODES[0], colour: COLOUR_MODES[0], mask: null, maskLabel: "", maskKey: "", preview: null, previewLabel: "", previewTint: null, chain: false, previewChain: false, marker: -1, bend: 0, hover: -1, pinned: -1 };
+// the map is sized by lines without comments when the version has comments, otherwise by lines
+export const state = { size: SIZE_MODES.find((m) => m.id === (HAS_COMMENTS ? "codeLines" : "lines")), colour: COLOUR_MODES[0], mask: null, maskLabel: "", maskKey: "", preview: null, previewLabel: "", previewTint: null, chain: false, previewChain: false, marker: -1, bend: 0, hover: -1, pinned: -1,
+  showPart: -1 }; // which part the map shows (the rewrite's New or Lib), or -1 for all of it
 
 export let names = null; // loaded after first paint
 export const namesReady = fetch(DATA + "names.txt").then((r) => r.text()).then((t) => { names = t.split("\n"); return names; });
 export const pathOf = (i) => { const d = dirs[leafDir[i]]; return (d.path ? d.path + "/" : "") + (names ? names[i] : "…") + ".lean"; };
+// first sentence of each module's own comment, for versions that have them (loaded after first paint)
+export let docs = null;
+export const docsReady = meta.totals.docs ? fetch(DATA + "docs.txt").then((r) => r.text()).then((t) => { docs = t.split("\n"); return docs; }) : Promise.resolve(null);
 export let termBits = null;
 export const termsReady = () => (termBits ||= fetch(DATA + "terms.bin").then((r) => r.arrayBuffer()).then((b) => new Uint8Array(b)));
 
 // prefix sums give any directory's total in constant time (a subtree is a contiguous range of files)
 export const prefix = {};
-for (const [key, arr] of [["bytes", col.bytes], ["lines", col.lines], ["zbytes", col.zbytes], ["decls", col.decls]]) {
+for (const [key, arr] of [["bytes", col.bytes], ["lines", col.lines], ["codeLines", col.codeLines || col.lines], ["zbytes", col.zbytes], ["decls", col.decls]]) {
   const p = new Float64Array(N + 1);
   for (let i = 0; i < N; i++) p[i + 1] = p[i] + arr[i];
   prefix[key] = p;

@@ -576,6 +576,8 @@ def main():
     columns = [
         ("bytes", "I", [r["b"] for r in rows]),
         ("lines", "I", [r["l"] for r in rows]),
+        # lines that hold code: not blank and not only a comment
+        ("codeLines", "I", [r.get("lc", r["l"]) for r in rows]),
         ("zbytes", "I", [r["z"] for r in rows]),
         ("dependents", "I", dependents),
         ("tactics", "I", tactic_mask),
@@ -617,6 +619,13 @@ def main():
             offset += arr.itemsize * n
     with open(os.path.join(out, "names.txt"), "w") as fh:
         fh.write("\n".join(r["p"].split("/")[-1][:-5] for r in rows))
+    # first sentence of each module's own comment (/-! ... -/), when the version has any
+    docs_path = os.path.join(out, "docs.txt")
+    if any(r.get("doc") for r in rows):
+        with open(docs_path, "w", encoding="utf-8") as fh:
+            fh.write("\n".join(r.get("doc", "") for r in rows))
+    elif os.path.exists(docs_path):
+        os.remove(docs_path)
 
     # ---- term bitsets (the scanner matched each term against the text without import lines)
     terms = []
@@ -678,6 +687,8 @@ def main():
         "totals": {
             "bytes": sum(r["b"] for r in rows),
             "lines": sum(r["l"] for r in rows),
+            "codeLines": sum(r.get("lc", r["l"]) for r in rows),
+            "docs": sum(1 for r in rows if r.get("doc")),
             "zbytes": sum(r["z"] for r in rows),
             "commentBytes": sum(r["cb"] for r in rows),
             "mergeRecordBytes": sum(r.get("cl", 0) for r in rows),
@@ -710,7 +721,7 @@ def main():
     with open(os.path.join(out, "meta.json"), "w") as fh:
         json.dump(meta, fh, ensure_ascii=False, separators=(",", ":"))
     print(n, "files,", len(dirs), "directories,", len(group_list), "groups,", len(labels), "labels")
-    for name in ("meta.json", "cols.bin", "names.txt", "terms.bin"):
+    for name in ("meta.json", "cols.bin", "names.txt", "docs.txt", "terms.bin"):
         path = os.path.join(out, name)
         if os.path.exists(path):
             print(f"{os.path.getsize(path):10d}  {name}")
