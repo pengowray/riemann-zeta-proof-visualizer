@@ -29,6 +29,7 @@ const LEDES = {
   compact: `${grhLink} is a shorter rewrite of Levent Alpöge's Lean 4 formalization of the Riemann Hypothesis, made by lsernau with colleagues at Anthropic and with Claude, and published on 25 November 2026. It has a readable edition and a compact edition. This page shows the compact edition at commit ${commitLink} of ${dateFmt(SOURCE.date)}: ${sizeNow}, compared with ${sizeBefore} in the original release. A module is one <code>.lean</code> file. The rewrite's README says that no mathematician has read it through.`,
 };
 if (LEDES[VERSION]) $("version-lede").innerHTML = LEDES[VERSION];
+if ($("labelled-groups")) $("labelled-groups").textContent = fmt(meta.totals.labelledGroups);
 const STORED = "This site stores module names and counts, and loads a module's code from GitHub when you open that module.";
 const LINES_NOTE = (readme) => `Line counts include blank lines and comments; the README's figure of about ${readme} lines of code leaves them out.`;
 const SOURCE_NOTES = {

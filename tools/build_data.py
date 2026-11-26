@@ -619,6 +619,7 @@ def main():
         "groups": group_list,
         "columns": layout,
         "regions": regions,
+        "splitRegions": sorted(SPLIT_REGIONS),
         "regionMatrix": region_matrix,
         "fieldMatrix": field_matrix,
         "chain": chain,

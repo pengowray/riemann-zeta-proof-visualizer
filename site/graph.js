@@ -10,7 +10,7 @@ export async function renderGraph() {
     import("https://cdn.jsdelivr.net/npm/cytoscape-fcose@2.2.0/+esm"),
   ]);
   cytoscape.use(fcose);
-  const SPLIT = new Set(["Development", "GroundTheory", "CompanionTheory"]);
+  const SPLIT = new Set(meta.splitRegions); // top-level directories shown one level further down, as in the region tables
   const regionIdx = new Map(meta.regions.map((r, i) => [r, i]));
   const regionOfDir = dirs.map((d) => {
     const parts = d.path ? d.path.split("/") : [];
@@ -27,8 +27,13 @@ export async function renderGraph() {
   const M = meta.regionMatrix;
   // The top level holds Main.lean and Statements.lean; it and Supplements are tiny but are where the proof ends, so they are always shown.
   const mainRegion = regionIdx.get("(top level)"), finalRegion = regionIdx.get("Supplements");
-  const shown = d3.range(R).filter((r) => stats[r].modules >= 5 || r === mainRegion || r === finalRegion);
+  // the top level, Supplements and a small region the top level imports (in the rewrite, New/Main.lean sits alone
+  // in the region "New") are where the proof ends: always shown, with every link they have
+  const ends = new Set([mainRegion, finalRegion, ...d3.range(R).filter((r) => mainRegion !== undefined && M[mainRegion][r] > 0 && stats[r].modules < 5)]);
+  const shown = d3.range(R).filter((r) => stats[r].modules >= 5 || ends.has(r));
   const elements = shown.map((r) => ({ data: { id: "r" + r, r, main: r === mainRegion ? 1 : 0, label: r === mainRegion ? "Main.lean" : meta.regions[r].split("/").pop().replace(/([a-z])([A-Z])/g, "$1 $2"), size: 18 + Math.sqrt(stats[r].bytes / 1e6) * 7, colour: famColour(d3.maxIndex(stats[r].fam)) } }));
+  // an edge needs at least 20 imports in the original; the rewrite has about 1% as many imports, so fewer will do
+  const minEdge = Math.max(3, Math.min(20, Math.round(meta.totals.importEdges / 2000)));
   let drawn = 0, crossTotal = 0;
   for (const a of shown) {
     const out = d3.sum(shown, (b) => (b === a ? 0 : M[a][b]));
@@ -36,7 +41,7 @@ export async function renderGraph() {
       if (a === b) continue;
       crossTotal += M[a][b];
       // keep an edge when it carries at least 4% of the importing directory's outside imports
-      if ((M[a][b] >= 20 && M[a][b] >= 0.04 * out) || (M[a][b] > 0 && (a === mainRegion || a === finalRegion))) { elements.push({ data: { id: `e${a}_${b}`, source: "r" + a, target: "r" + b, n: M[a][b], w: 0.6 + Math.log10(M[a][b]) * 1.1 } }); drawn += M[a][b]; }
+      if ((M[a][b] >= minEdge && M[a][b] >= 0.04 * out) || (M[a][b] > 0 && ends.has(a))) { elements.push({ data: { id: `e${a}_${b}`, source: "r" + a, target: "r" + b, n: M[a][b], w: 0.6 + Math.log10(M[a][b]) * 1.1 } }); drawn += M[a][b]; }
     }
   }
   $("graph-text").textContent = `Each circle is a directory, sized by its bytes and coloured by its most common field. An arrow from A to B means modules in A import modules in B. The ${fmt(elements.length - shown.length)} arrows drawn carry ${pct(drawn / crossTotal)} of the imports between these directories; weaker links are left out. The ringed circle is Main.lean, where the final theorems are stated. Point at a circle to see that directory on the map. Circles can be dragged.`;
@@ -61,7 +66,7 @@ export async function renderGraph() {
     // at most five to a row, so each name has room at the size it is drawn on screen
     const box = linked.boundingBox(), perRow = Math.min(5, strays.length), stepX = box.w / perRow, stepY = 150;
     const top = box.y2 + 120;
-    cy.add({ group: "nodes", data: { id: "caption", colour: "#000", size: 1, label: `${strays.length} directories with no link strong enough to draw` }, classes: "caption", position: { x: box.x1 + box.w / 2, y: top - 70 } });
+    cy.add({ group: "nodes", data: { id: "caption", colour: "#000", size: 1, label: `${plural(strays.length, "directory", "directories")} with no link strong enough to draw` }, classes: "caption", position: { x: box.x1 + box.w / 2, y: top - 70 } });
     strays.sort((a, b) => b.data("size") - a.data("size")).forEach((n, i) => n.position({ x: box.x1 + ((i % perRow) + 0.5) * stepX, y: top + Math.floor(i / perRow) * stepY }));
   }
   // Fitting the graph to its box scales everything, so label sizes are set afterwards to stay readable on screen.
