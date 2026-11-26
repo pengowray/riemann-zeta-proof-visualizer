@@ -176,7 +176,7 @@ export function draw() {
     // every directory name is a plate in its top-left corner; the top-level ones are bold and appear first
     const top = d.depth === 1;
     if (top ? w < 60 || h < 24 : d.depth === 2 ? w < 90 || h < 40 : w < 150 || h < 60) continue;
-    const size = top ? (FEW_TOP ? 18 : 14) : 12;
+    const size = top ? (FEW_TOP ? 20 : 16) : 14;
     ctx.font = `${d.depth === 1 ? 600 : 400} ${size}px "STIX Two Text", serif`;
     const x = Math.max(n.x0 * k + tx, 0) + 4;
     const room = Math.min(n.x1 * k + tx - x - 4, 260);
@@ -187,34 +187,34 @@ export function draw() {
       text += "…";
     }
     const y = Math.max(n.y0 * k + ty, 0);
-    const pw = ctx.measureText(text).width + 8, ph = top ? 20 : 17;
+    const pw = ctx.measureText(text).width + 8, ph = top ? 24 : 20;
     if (plates.some((p) => x - 4 < p[0] + p[2] && p[0] < x - 4 + pw && y < p[1] + p[3] && p[1] < y + ph)) continue;
     plates.push([x - 4, y, pw, ph, d]);
     ctx.fillStyle = paper; ctx.fillRect(x - 4, y, pw, ph);
     ctx.fillStyle = top ? ink : ink2; ctx.fillText(text, x, y + ph / 2 + 0.5);
   }
 
-  // module names, once the rectangles are large enough to hold them
   // module names, once the rectangles are large enough to hold them: the name wraps at its word
   // boundaries, and the size the map is drawn by goes on the line below when there is room
   if (names && k > 6 && !quads) {
-    const LINE = 14, nameFont = '12px "JuliaMono", monospace', sizeFont = '11.5px "STIX Two Text", serif';
+    const LINE = 17, nameFont = '14px "JuliaMono", monospace', sizeFont = '13px "STIX Two Text", serif';
     ctx.textBaseline = "top";
     for (let i = 0; i < N; i++) {
       const x0 = LX0[i], x1 = LX1[i], y0 = LY0[i], y1 = LY1[i];
       if (x1 < vx0 || x0 > vx1 || y1 < vy0 || y0 > vy1) continue;
       const w = (x1 - x0) * k, h = (y1 - y0) * k;
-      if (w < 60 || h < 17) continue;
+      if (w < 70 || h < 20) continue;
       if (mask && !mask[i]) continue;
+      // a module that starts above or left of the view has its name at the view's edge, as directory names do;
       // a directory's name plate sits in the same corner as its first module's name: move the module name below it
-      const nx = x0 * k + tx + 3;
-      let ny = y0 * k + ty + 3;
+      const nx = Math.max(x0 * k + tx, 0) + 3;
+      let ny = Math.max(y0 * k + ty, 0) + 3;
       for (const p of plates) if (nx < p[0] + p[2] && nx + 60 > p[0] && ny < p[1] + p[3] && ny + LINE > p[1]) ny = p[1] + p[3] + 2;
       const bottom = y1 * k + ty - 2, rows = Math.floor((bottom - ny) / LINE);
       if (rows < 1) continue;
       const sizeText = sizeLabel(i);
       ctx.font = nameFont;
-      const lines = wrapName(names[i], w - 8, sizeText && rows > 1 ? rows - 1 : rows);
+      const lines = wrapName(names[i], x1 * k + tx - nx - 5, sizeText && rows > 1 ? rows - 1 : rows);
       ctx.save();
       ctx.beginPath(); ctx.rect(x0 * k + tx, y0 * k + ty, w - 2, h); ctx.clip();
       ctx.fillStyle = paletteInk[cidx[i]];
