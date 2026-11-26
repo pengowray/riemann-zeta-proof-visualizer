@@ -32,19 +32,18 @@
  {
   "id": "cleanup",
   "label": "Original, community cleanup",
-  "repo": "leanprover-community/riemann-hypothesis",
-  "prefix": "src/",
-  "sha": "756a70250dcba9162b99d4ea35c186558434c17e",
-  "date": "2026-11-26",
   "family": "Original",
   "short": "Community cleanup",
+  "repo": "leanprover-community/riemann-hypothesis",
   "statements": "Statements.lean",
   "main": "Main.lean",
   "features": [
    "steps",
    "changes"
   ],
-  "usageFrom": "an earlier commit of the same branch, when it had 59,806 modules",
+  "prefix": "src/",
+  "sha": "756a70250dcba9162b99d4ea35c186558434c17e",
+  "date": "2026-11-26",
   "data": "data/cleanup/",
   "modules": 58947,
   "lines": 13710054,
@@ -56,8 +55,8 @@
    "text": 282897,
    "xzBytes": 112611552,
    "xzPages": 31281,
-   "compiledBytes": 64656000000,
-   "compiledPages": 17960000
+   "compiledBytes": 9235609776,
+   "compiledPages": 2565448
   }
  },
  {

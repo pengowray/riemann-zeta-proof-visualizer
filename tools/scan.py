@@ -213,7 +213,9 @@ def main():
             tasks.append((root, group, rels[start:start + 2000]))
     summaries = defaultdict(lambda: {"opens": Counter(), "idents": Counter(), "namespaces": Counter()})
     count = 0
-    with Pool() as pool, open(os.path.join(out, "files.jsonl"), "w") as fh:
+    # half the cores by default, so the machine stays usable; SCAN_WORKERS overrides it
+    workers = int(os.environ.get("SCAN_WORKERS") or max(1, (os.cpu_count() or 2) // 2))
+    with Pool(workers) as pool, open(os.path.join(out, "files.jsonl"), "w") as fh:
         for group, rows, summary in pool.imap_unordered(scan_group, tasks):
             for row in rows:
                 fh.write(json.dumps(row, ensure_ascii=False, separators=(",", ":")) + "\n")

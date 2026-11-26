@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Rebuild the site's data for one version of the proof, or for all of them.
 
+    python3 tools/update.py grh         # the readable edition of lsernau/grh-lean, site/data/grh
     python3 tools/update.py main        # fetch the community's main branch, scan it, rebuild site/data/main
     python3 tools/update.py cleanup     # the community's cleanup of the original (alpoge branch), site/data/cleanup
     python3 tools/update.py compact     # the compact edition of lsernau/grh-lean, site/data/compact
@@ -118,7 +119,7 @@ def build(version, src, source, extra=()):
 
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
-    which = args[0] if args else "main"
+    which = args[0] if args else "grh"
     if which != "all" and which not in [v["id"] for v in VERSIONS]:
         sys.exit(f"unknown version {which!r}: use one of {', '.join(v['id'] for v in VERSIONS)} or all")
     local = json.load(open(os.path.join(ROOT, "tools", "local.json")))
