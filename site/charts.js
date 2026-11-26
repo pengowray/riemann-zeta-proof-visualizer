@@ -77,9 +77,19 @@ function renderConstProps() {
     : "Counts are estimated from the Lean text. A module is counted as using a definition when its text contains a name that could refer to that definition. The text alone cannot show whether the five theorems depend on a definition.";
   if (!c.defs.length) { $("always-none").hidden = false; $("always-table")?.remove(); return; }
   const dash = `<span class="none">–</span>`;
-  $("always-table").innerHTML = `<tr><th>Definition</th><th>Value</th><th class="num">Used in other modules</th><th class="num">${exact ? "Assumed by declarations" : "Assumed in modules"}</th>${exact ? "<th>Any of the five theorems depends on it</th>" : ""}</tr>`
+  // the "assumed" column applies only to always-False definitions; leave it out when there are none
+  const anyFalse = c.defs.some((d) => d.value === "False");
+  const assumed = exact ? "Assumed by declarations" : "Assumed in modules";
+  $("always-table").innerHTML = `<tr><th>Definition</th><th>Value</th><th class="num">Used in other modules</th>${anyFalse ? `<th class="num">${assumed}</th>` : ""}${exact ? "<th>In the theorems' proofs</th>" : ""}</tr>`
     // data-label names each cell where a phone stacks the cells; "na" cells are hidden there
-    + c.defs.map((d, k) => `<tr class="hoverable" data-preview-const="${k}"><td><code>${breakable(d.name, ".")}</code><br><span class="note mono">${breakable(d.file, "/")}</span></td><td data-label="Value"><code>${d.value}</code></td><td class="num" data-label="Used in other modules">${fmt(d.modules.length)}</td>${d.value === "False" ? `<td class="num" data-label="${exact ? "Assumed by declarations" : "Assumed in modules"}">${fmt(d.hyp)}</td>` : `<td class="num na">${dash}</td>`}${exact ? `<td data-label="Any of the five theorems depends on it">${d.used ? "Yes" : "No"}</td>` : ""}</tr>`).join("");
+    + c.defs.map((d, k) => `<tr class="hoverable" data-preview-const="${k}"><td><code>${breakable(d.name, ".")}</code><br><span class="note mono">${breakable(d.file, "/")}</span></td><td data-label="Value"><code${d.value === "False" ? ' class="exception"' : ""}>${d.value}</code></td><td class="num" data-label="Used in other modules">${d.modules.length ? `<button type="button" class="link" data-const-show="${k}" title="Show these modules on the map">${fmt(d.modules.length)}</button>` : "0"}</td>${!anyFalse ? "" : d.value === "False" ? `<td class="num" data-label="${assumed}">${fmt(d.hyp)}</td>` : `<td class="num na">${dash}</td>`}${exact ? `<td data-label="In the theorems' proofs">${d.used ? "Yes" : "No"}</td>` : ""}</tr>`).join("");
+  $("always-table").onclick = (e) => {
+    const b = e.target.closest("[data-const-show]");
+    if (!b) return;
+    const d = c.defs[+b.dataset.constShow], set = new Set(d.modules);
+    setMask(`const:${b.dataset.constShow}`, maskWhere((i) => set.has(i)), `${d.name.split(".").pop()}: used in ${fmt(d.modules.length)} other ${d.modules.length === 1 ? "module" : "modules"}`);
+    $("map").scrollIntoView();
+  };
 }
 
 export function renderCharts() {

@@ -11,8 +11,9 @@ export const ctx = canvas.getContext("2d");
 // Gaps or name strips built into the layout grow with the zoom and become thick bands
 // once you zoom into a small directory.
 // With only two or three top-level directories (the rewrite has New and Lib), the line between them is
-// drawn wider so the map reads as separate parts.
-export const OUTLINE = [0, dirs.filter((d) => d.depth === 1).length <= 3 ? 8 : 3, 2, 1];
+// drawn much wider and their names larger, so the map reads as separate parts.
+const FEW_TOP = dirs.filter((d) => d.depth === 1).length <= 3;
+export const OUTLINE = [0, FEW_TOP ? 16 : 3, 2, 1];
 export let W = 0, H = 0, root = null;
 export const LX0 = new Float32Array(N), LY0 = new Float32Array(N), LX1 = new Float32Array(N), LY1 = new Float32Array(N);
 
@@ -173,7 +174,7 @@ export function draw() {
     // every directory name is a plate in its top-left corner; the top-level ones are bold and appear first
     const top = d.depth === 1;
     if (top ? w < 60 || h < 24 : d.depth === 2 ? w < 90 || h < 40 : w < 150 || h < 60) continue;
-    const size = top ? 13 : 11;
+    const size = top ? (FEW_TOP ? 17 : 13) : 11;
     ctx.font = `${d.depth === 1 ? 600 : 400} ${size}px "STIX Two Text", serif`;
     const x = Math.max(n.x0 * k + tx, 0) + 4;
     const room = Math.min(n.x1 * k + tx - x - 4, 260);
