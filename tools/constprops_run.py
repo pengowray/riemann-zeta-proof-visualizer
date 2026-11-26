@@ -4,6 +4,8 @@
     python3 tools/constprops_run.py CLONE OUT_DIR [--reuse]
 
 --reuse skips reading the compiled files again and only redoes the counting from the files in OUT_DIR.
+--sha SHA records SHA as the commit measured, for a clone of another repository that holds the same
+source (the original release's compiled files come from homeowmorphism/riemann-hypothesis-original).
 
 CLONE is a checkout after `lake exe cache get`. Each chunk runs in its own process (WORKERS at a
 time), so no process holds every compiled file at once. Writes OUT_DIR/constprops.json:
@@ -110,7 +112,8 @@ def main():
             "usedByTheorems": bool(seen[i]),
             "mentionsInProof": int(np.count_nonzero(seen[users])),
         })
-    sha = subprocess.run(["git", "-C", clone, "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
+    sha = (sys.argv[sys.argv.index("--sha") + 1] if "--sha" in sys.argv
+           else subprocess.run(["git", "-C", clone, "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip())
     json.dump({"sha": sha, "declarations": len(index), "reachedByTheorems": int(seen.sum()), "defs": result},
               open(os.path.join(out, "constprops.json"), "w"), ensure_ascii=False, indent=1)
     for d in result:

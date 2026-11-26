@@ -8,19 +8,22 @@
     python3 tools/update.py original    # rescan the original release, rebuild site/data
     python3 tools/update.py all
 
-Add --no-fetch to rebuild from the commit already checked out.
+Add --no-fetch to rebuild from the commit already checked out, and --no-compiled-check to skip reading
+which definitions are always True or False from a clone's compiled files (see from_compiled).
 
 Where the checkouts are on this machine is read from tools/local.json (not committed):
 
     {"original_src": "/path/to/original/src",
      "cleanup_clone": "/path/to/clone of riemann-hypothesis, alpoge branch",
      "main_clone": "/path/to/clone of riemann-hypothesis, main branch",
-     "grh_clone": "/path/to/clone of grh-lean"}
+     "grh_clone": "/path/to/clone of grh-lean",
+     "original_compiled_clone": "/path/to/clone of homeowmorphism/riemann-hypothesis-original (optional)"}
 
 The clones are of https://github.com/leanprover-community/riemann-hypothesis and https://github.com/lsernau/grh-lean.
 """
 import json
 import os
+import shutil
 import subprocess
 import sys
 
@@ -77,18 +80,33 @@ def git(clone, *args):
     return subprocess.run(["git", "-C", clone, *args], check=True, capture_output=True, text=True).stdout.strip()
 
 
-def record_compiled(clone, cache, sha):
-    """Write the size of the project's compiled files to compiled.json, for the printed-pages table.
-    Only when `lake exe cache get` (or a build) has left compiled files that match this commit."""
+def capped(*cmd):
+    """A heavy command at the lowest CPU and disk priority, with memory capped where systemd allows,
+    so the machine stays usable (reading every compiled file at once once froze the desktop)."""
+    low = ["nice", "-n", "19", "ionice", "-c3", *cmd]
+    if shutil.which("systemd-run"):
+        return ["systemd-run", "--user", "--scope", "-q", "-p", "MemoryMax=10G", *low]
+    return low
+
+
+def from_compiled(clone, cache, sha):
+    """When `lake exe cache get` (or a build) has left compiled files in the clone that match its
+    source, record their size for the printed-pages table, and read from them which definitions are
+    always True or always False (tools/constprops_run.py) unless that was already done for this commit.
+    `sha` is the commit shown on the page, which the clone's source must match."""
     lib = os.path.join(clone, ".lake", "build", "lib", "lean")
     if not os.path.isdir(lib):
         return
     if subprocess.run(["lake", "build", "--no-build"], cwd=clone, capture_output=True).returncode != 0:
-        print("compiled files do not match", sha[:7], "- run `lake exe cache get` in", clone, "to count them")
+        print("compiled files do not match", sha[:7], "- run `lake exe cache get` in", clone, "to use them")
         return
     sizes = [os.path.getsize(os.path.join(d, f)) for d, _, fs in os.walk(lib) for f in fs if f.endswith(".olean")]
     json.dump({"bytes": sum(sizes), "modules": len(sizes), "sha": sha}, open(os.path.join(cache, "compiled.json"), "w"))
     print("compiled files:", len(sizes), "modules,", sum(sizes), "bytes")
+    done = os.path.join(cache, "constprops", "constprops.json")
+    if "--no-compiled-check" in sys.argv or (os.path.exists(done) and json.load(open(done)).get("sha") == sha):
+        return
+    run(*capped(sys.executable, os.path.join(ROOT, "tools", "constprops_run.py"), clone, os.path.join(cache, "constprops"), "--sha", sha))
 
 
 def folder(version):
@@ -132,6 +150,10 @@ def main():
             continue
         source = {**{k: v[k] for k in PAGE_KEYS if k in v}, "prefix": v["src"]}
         if v["id"] == "original":
+            # compiled files of the original come from a separate clone of the same source, if configured
+            if local.get("original_compiled_clone"):
+                os.makedirs(os.path.join(ROOT, "data", "cache"), exist_ok=True)
+                from_compiled(local["original_compiled_clone"], os.path.join(ROOT, "data", "cache"), ORIGINAL_SHA)
             build("original", local["original_src"], {**source, "sha": ORIGINAL_SHA, "date": "2026-11-20"})
             continue
         clone = local[v["clone"]]
@@ -145,7 +167,7 @@ def main():
             extra += ("--labels", labels)
         sha = git(clone, "rev-parse", "HEAD")
         os.makedirs(os.path.join(ROOT, "data", "cache", *folder(v["id"])), exist_ok=True)
-        record_compiled(clone, os.path.join(ROOT, "data", "cache", *folder(v["id"])), sha)
+        from_compiled(clone, os.path.join(ROOT, "data", "cache", *folder(v["id"])), sha)
         build(v["id"], os.path.join(clone, v["src"]), {
             **source, "sha": sha, "date": git(clone, "log", "-1", "--format=%cI")[:10],
         }, extra)

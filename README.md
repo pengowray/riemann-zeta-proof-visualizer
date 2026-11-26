@@ -57,9 +57,16 @@ such as `data/cache/main/usage`. `usage_run.py` records the commit it measured, 
 when that is not the commit shown. When a clone holds compiled files that match its commit
 (`lake build --no-build` succeeds), `update.py` records their size for the printed-pages table.
 
-`tools/constprops.lean` lists definitions that are always `True` or always `False` (such as
-`def anyGeometry : GeoP := fun _ _ _ => True`), what mentions them, and whether the five theorems
-depend on them, from the same compiled files. `tools/usage.lean` reads which library
+Definitions that are always `True` or always `False` (such as `def anyGeometry : GeoP := fun _ _ _ => True`)
+are listed in their own section. `update.py` estimates them from the text for every version
+(`tools/constprops_text.py`). When a clone holds compiled files that match its commit, it also reads
+them exactly with `tools/constprops_run.py` (which runs `tools/constprops.lean` on chunks of modules,
+each in its own process), at the lowest priority and with memory capped at 10 GB; that also says
+whether the five theorems depend on each definition. `--no-compiled-check` skips it. The original
+release's compiled files come from a clone of
+[homeowmorphism/riemann-hypothesis-original](https://github.com/homeowmorphism/riemann-hypothesis-original)
+(the same source plus `Challenge.lean`), set as `original_compiled_clone` in `tools/local.json`;
+its `lake exe cache get` needs about 105 GB. `tools/usage.lean` reads which library
 declarations each module's declarations mention; it took about six minutes for 59,806 modules.
 
 - `tools/scan.py` reads every `.lean` file once and writes one row per file to `data/cache/` (not committed;

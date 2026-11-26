@@ -26,7 +26,10 @@ def oleans(root):
 
 def main():
     clone, out = os.path.abspath(sys.argv[1]), os.path.abspath(sys.argv[2])
-    limit = int(sys.argv[3]) if len(sys.argv) > 3 else None
+    args = [a for a in sys.argv[3:] if not a.startswith("--")]
+    limit = int(args[0]) if args and "--sha" not in sys.argv[3:4] else None
+    # --sha SHA: the commit whose source the compiled files were built from (see constprops_run.py)
+    given_sha = sys.argv[sys.argv.index("--sha") + 1] if "--sha" in sys.argv else None
     os.makedirs(out, exist_ok=True)
     toolchain = open(os.path.join(clone, "lean-toolchain")).read().strip()
     prefix = subprocess.run(["lean", "+" + toolchain, "--print-prefix"], capture_output=True, text=True, check=True).stdout.strip()
@@ -50,7 +53,7 @@ def main():
     with ThreadPoolExecutor(WORKERS) as pool:
         for done in pool.map(run, jobs):
             print("wrote", done, flush=True)
-    sha = subprocess.run(["git", "-C", clone, "rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
+    sha = given_sha or subprocess.run(["git", "-C", clone, "rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
     json.dump({"sha": sha, "modules": len(project)}, open(os.path.join(out, "source.json"), "w"))
 
 
