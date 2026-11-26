@@ -506,6 +506,31 @@ def main():
     else:
         used_area_bits = [0] * n
 
+    # ---- definitions that are always True or always False: exact from the compiled files
+    # (tools/constprops_run.py) when they are of this commit, otherwise estimated from the text
+    # (tools/constprops_text.py, run by update.py)
+    const_props = None
+    cp_compiled = os.path.join(cache, "constprops", "constprops.json")
+    cp_text = os.path.join(cache, "constprops-text.json")
+    compiled_cp = json.load(open(cp_compiled)) if os.path.exists(cp_compiled) else {}
+    if compiled_cp and compiled_cp.get("sha") == source.get("sha"):
+        defs = []
+        for d in compiled_cp["defs"]:
+            own = module.get(d["module"])
+            defs.append({"name": d["name"], "value": d["value"], "file": rows[own]["p"] if own is not None else "",
+                         "modules": sorted({module[m] for m in d["mentionModules"] if m in module} - {own}),
+                         "hyp": d["hypDecls"], "used": d["usedByTheorems"], "inProof": d["mentionsInProof"]})
+        const_props = {"method": "compiled", "declarations": compiled_cp["declarations"],
+                       "reached": compiled_cp["reachedByTheorems"], "defs": defs}
+    elif os.path.exists(cp_text):
+        text_cp = json.load(open(cp_text))
+        const_props = {"method": "text", "defs": [
+            {"name": d["name"], "value": d["value"], "file": d["file"],
+             "modules": sorted(index[f] for f in d["mentionModules"] if f in index),
+             "hyp": d["hypModules"], "used": None, "inProof": None} for d in text_cp["defs"]]}
+    if const_props:
+        const_props["defs"].sort(key=lambda d: (-len(d["modules"]), d["name"]))
+
     # ---- page counts if the source were printed (see the "If it were printed" section of the page)
     def pages_of(per_page, key):
         return -(-sum(r["wr"][key] for r in rows) // per_page)
@@ -640,6 +665,7 @@ def main():
         "printed": printed,
         "mathlib": mathlib,
         "mathlibUsed": mathlib_used,
+        "constProps": const_props,
         "notReached": not_reached[:5000],
         "notImported": not_imported[:50],
         "sorryModules": [[r["p"], r["t"]["sorry"]] for r in rows if r["t"].get("sorry")][:50],

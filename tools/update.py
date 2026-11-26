@@ -103,6 +103,10 @@ def build(version, src, source, extra=()):
     source_path = os.path.join(cache, "source.json")
     json.dump(source, open(source_path, "w"))
     run(sys.executable, "-I", os.path.join(ROOT, "tools", "scan.py"), src, cache)
+    # definitions that are always True or False, estimated from the text (build_data prefers the
+    # exact count from compiled files when tools/constprops_run.py has been run for this commit)
+    run(sys.executable, "-I", os.path.join(ROOT, "tools", "constprops_text.py"), src, os.path.join(cache, "constprops-text.json"),
+        stdout=subprocess.DEVNULL)
     # size of the whole source as one xz archive, for the page count of the compressed form
     files = subprocess.run(["find", ".", "-name", "*.lean"], cwd=src, capture_output=True, text=True, check=True).stdout
     tar = subprocess.Popen(["tar", "-cf", "-", "--sort=name", "--mtime=2026-11-20", "--owner=0", "--group=0", "-T", "-"],

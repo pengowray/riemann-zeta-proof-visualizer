@@ -1,21 +1,22 @@
 /-
-Which definitions of a project are always `True` or always `False`, and what uses them?
+Definitions that are always `True` or always `False`, and the dependency edges needed to see
+what uses them. Reads compiled `.olean` files directly; nothing is elaborated or re-checked.
+Run through tools/constprops_run.py, which splits the modules into chunks so that no process
+holds every compiled file at once.
 
-Reads compiled `.olean` files directly; nothing is elaborated or re-checked.
+    lean --run tools/constprops.lean names LIST OUT
+        OUT: one line per declaration of the listed modules, `<name>\t<module>`.
 
-    lean --run tools/constprops.lean LIST OUT ROOT...
+    lean --run tools/constprops.lean edges LIST NAMES OUT
+        NAMES: every project declaration, one per line (the concatenated `names` output, names only);
+        a declaration's id is its line number, from 0.
+        OUT.edges: pairs of little-endian UInt32 (declaration id, id of a project declaration it uses).
+        OUT.hyps:  the same pairs, for the declarations whose type takes an argument of that type,
+                   such as `(Ψ : Sw)`.
+        OUT.defs:  `<id>\t<True|False>` for each definition whose value, after any `fun x =>`
+                   binders, is the constant `True` or `False`.
 
-LIST has one line per compiled project module: `<olean path>\t<module name>` (library modules are not
-needed). ROOT names the declarations the proof ends at, such as `riemannHypothesis`.
-
-A definition counts when its value, after any `fun x =>` binders, is the constant `True` or `False`
-(for example `def anyGeometry : GeoP := fun _ _ _ => True`). OUT gets one line per such definition:
-
-    D  <name>  <module>  <True|False>  <declarations that mention it>  <modules that mention it>
-       <declarations with a hypothesis of that type>  <1 if a ROOT depends on it, else 0>
-
-A declaration "with a hypothesis of that type" takes an argument whose type is the definition, such as
-`(Ψ : Sw)`. When the definition is `False`, such a declaration can never be applied.
+LIST has one line per compiled module: `<olean path>\t<module name>`.
 -/
 import Lean
 open Lean
@@ -27,66 +28,60 @@ def readParts (olean : System.FilePath) : IO (Array (ModuleData × CompactedRegi
     if ← f.pathExists then files := files.push f
   readModuleDataParts files
 
-/-- `True` or `False` when the value is that constant after stripping `fun` binders. -/
-def constProp? (e : Expr) : Option Name :=
-  match e with
+def constProp? : Expr → Option Name
   | .lam _ _ b _ => constProp? b
   | .mdata _ b => constProp? b
   | .const n _ => if n == ``True || n == ``False then some n else none
   | _ => none
 
-/-- Does some argument of this type have one of the given definitions as its type? -/
-partial def hasHypothesisOf (targets : Std.HashSet Name) : Expr → Bool
-  | .forallE _ t b _ => (match t.getAppFn.constName? with
-      | some n => targets.contains n
-      | none => false) || hasHypothesisOf targets b
-  | .mdata _ b => hasHypothesisOf targets b
-  | _ => false
+/-- The head constants of the types of a type's arguments. -/
+partial def binderHeads : Expr → Array Name → Array Name
+  | .forallE _ t b _, acc => binderHeads b (match t.getAppFn.constName? with
+      | some n => acc.push n
+      | none => acc)
+  | .mdata _ b, acc => binderHeads b acc
+  | _, acc => acc
 
-unsafe def run (list out : String) (roots : List Name) : IO Unit := do
-  let rows := ((← IO.FS.lines list).filter (· ≠ "")).map (·.splitOn "\t")
-  let mut info : Std.HashMap Name ConstantInfo := {}
-  let mut moduleOf : Std.HashMap Name String := {}
-  let mut found : Array (Name × String × Name) := #[]
-  for r in rows do
+def pushU32 (b : ByteArray) (v : UInt32) : ByteArray :=
+  b |>.push v.toUInt8 |>.push (v >>> 8).toUInt8 |>.push (v >>> 16).toUInt8 |>.push (v >>> 24).toUInt8
+
+unsafe def names (list out : String) : IO Unit := do
+  let h ← IO.FS.Handle.mk out .write
+  for l in (← IO.FS.lines list) do
+    let r := l.splitOn "\t"
+    if r.length < 2 then continue
+    for (data, _) in ← readParts r[0]! do
+      for c in data.constants do h.putStrLn s!"{c.name}\t{r[1]!}"
+  h.flush
+
+unsafe def edges (list namesFile out : String) : IO Unit := do
+  let mut id : Std.HashMap String UInt32 := {}
+  let mut k : UInt32 := 0
+  for l in (← IO.FS.lines namesFile) do
+    id := id.insert l k
+    k := k + 1
+  let mut e := ByteArray.empty
+  let mut hy := ByteArray.empty
+  let defs ← IO.FS.Handle.mk (out ++ ".defs") .write
+  for l in (← IO.FS.lines list) do
+    let r := l.splitOn "\t"
+    if r.length < 2 then continue
     for (data, _) in ← readParts r[0]! do
       for c in data.constants do
-        info := info.insert c.name c
-        moduleOf := moduleOf.insert c.name r[1]!
+        let some a := id[c.name.toString]? | continue
         if let .defnInfo d := c then
-          if let some v := constProp? d.value then found := found.push (c.name, r[1]!, v)
-  IO.eprintln s!"{info.size} declarations, {found.size} always True or False"
-  -- who mentions each one
-  let mut decls : Std.HashMap Name Nat := {}
-  let mut modules : Std.HashMap Name (Std.HashSet String) := {}
-  let mut hyps : Std.HashMap Name Nat := {}
-  for (name, c) in info do
-    let used := c.getUsedConstantsAsSet
-    for t in found do
-      let n := t.1
-      if name != n && used.contains n then
-        decls := decls.insert n (decls.getD n 0 + 1)
-        modules := modules.insert n ((modules.getD n {}).insert (moduleOf.getD name ""))
-        if hasHypothesisOf (({} : Std.HashSet Name).insert n) c.type then
-          hyps := hyps.insert n (hyps.getD n 0 + 1)
-  -- everything the roots depend on, through project declarations
-  let mut seen : Std.HashSet Name := {}
-  let mut stack := roots.toArray
-  while h : stack.size > 0 do
-    let n := stack.back
-    stack := stack.pop
-    if seen.contains n then continue
-    seen := seen.insert n
-    if let some c := info[n]? then
-      for m in c.getUsedConstantsAsSet do
-        if info.contains m && !seen.contains m then stack := stack.push m
-  IO.eprintln s!"the roots depend on {seen.size} project declarations"
-  let h ← IO.FS.Handle.mk out .write
-  for (n, m, v) in found do
-    h.putStrLn s!"D\t{n}\t{m}\t{v}\t{decls.getD n 0}\t{(modules.getD n {}).size}\t{hyps.getD n 0}\t{if seen.contains n then 1 else 0}"
-  h.flush
+          if let some v := constProp? d.value then defs.putStrLn s!"{a}\t{v}"
+        for n in c.getUsedConstantsAsSet do
+          if let some b := id[n.toString]? then
+            if a != b then e := pushU32 (pushU32 e a) b
+        for n in binderHeads c.type #[] do
+          if let some b := id[n.toString]? then hy := pushU32 (pushU32 hy a) b
+  defs.flush
+  IO.FS.writeBinFile (out ++ ".edges") e
+  IO.FS.writeBinFile (out ++ ".hyps") hy
 
 unsafe def main (args : List String) : IO Unit :=
   match args with
-  | list :: out :: roots => run list out (roots.map String.toName)
-  | _ => throw <| IO.userError "usage: lean --run constprops.lean LIST OUT ROOT..."
+  | ["names", list, out] => names list out
+  | ["edges", list, namesFile, out] => edges list namesFile out
+  | _ => throw <| IO.userError "usage: lean --run constprops.lean names LIST OUT | edges LIST NAMES OUT"

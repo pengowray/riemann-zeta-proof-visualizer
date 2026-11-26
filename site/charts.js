@@ -63,8 +63,24 @@ function renderPrinted() {
     [`<a href="${versionUrl(v.id)}#printed">${esc(v.label)}</a> of ${dateFmt(v.date)}: A4 listing, modules printed one after another`, v.printed.a4]));
 }
 
+/** Definitions that are always True or always False, from meta.constProps (see tools/constprops_run.py). */
+function renderConstProps() {
+  const c = meta.constProps;
+  if (!$("always-note")) return; // already drawn without a table, or removed
+  if (!c) { $("always").remove(); document.querySelector('#toc a[href="#always"]')?.remove(); return; }
+  const exact = c.method === "compiled";
+  $("always-note").textContent = exact
+    ? `Counts are exact, read from Lean's compiled files at commit ${SOURCE.sha.slice(0, 7)}. The five theorems depend on ${fmt(c.reached)} of the ${fmt(c.declarations)} declarations, directly or through other declarations.`
+    : "Counts are estimated from the Lean text. A module is counted as using a definition when its text contains a name that could refer to that definition. The text alone cannot show whether the five theorems depend on a definition.";
+  if (!c.defs.length) { $("always-none").hidden = false; $("always-table")?.remove(); return; }
+  const dash = `<span class="none">–</span>`;
+  $("always-table").innerHTML = `<tr><th>Definition</th><th>Value</th><th class="num">Used in other modules</th><th class="num">${exact ? "Assumed by declarations" : "Assumed in modules"}</th>${exact ? "<th>Any of the five theorems depends on it</th>" : ""}</tr>`
+    + c.defs.map((d, k) => `<tr class="hoverable" data-preview-const="${k}"><td><code>${esc(d.name)}</code><br><span class="note mono">${esc(d.file)}</span></td><td><code>${d.value}</code></td><td class="num">${fmt(d.modules.length)}</td><td class="num">${d.value === "False" ? fmt(d.hyp) : dash}</td>${exact ? `<td>${d.used ? "Yes" : "No"}</td>` : ""}</tr>`).join("");
+}
+
 export function renderCharts() {
   renderChanges();
+  renderConstProps();
   renderPrinted();
   // --- what takes up the space: share of each family under five measures
   const measures = [["Modules", ones], ["Lines", col.lines], ["Bytes", col.bytes], ["Compressed bytes", col.zbytes], ["Declarations", col.decls]];

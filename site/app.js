@@ -185,6 +185,12 @@ document.addEventListener("pointerover", (e) => {
     if (state.previewLabel !== label) setPreview(maskWhere((i) => moduleFamily(i) === g), label);
     return;
   }
+  const constRow = e.target.closest?.("[data-preview-const]");
+  if (constRow) {
+    const d = meta.constProps.defs[+constRow.dataset.previewConst], label = `${d.name.split(".").pop()}: used in ${plural(d.modules.length, "other module")}`;
+    if (state.previewLabel !== label) { const set = new Set(d.modules); setPreview(maskWhere((i) => set.has(i)), label); }
+    return;
+  }
   const usedRow = e.target.closest?.("[data-preview-used]");
   if (usedRow) {
     const bit = +usedRow.dataset.previewUsed, label = `Modules that mention declarations of Mathlib.${meta.mathlibUsed.areas[bit][0]}`;

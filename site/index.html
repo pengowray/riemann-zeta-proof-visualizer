@@ -24,6 +24,7 @@
     <a href="#printed">If it were printed</a>
     <a href="#fields">Areas of mathematics</a>
     <a href="#imports">Dependencies</a>
+    <a href="#always">Always True, always False</a>
     <a href="#numbers">Numbers and tactics</a>
     <a href="#checks" data-feature="checks">Who has checked the proof</a>
     <a href="#sources">Sources and method</a>
@@ -151,6 +152,15 @@
   <div id="chain-strip" class="chart"></div>
   <h3>Modules that the most other modules depend on</h3>
   <table id="hub-table" class="data"></table>
+</section>
+
+<section id="always">
+  <h2>Definitions that are always <code>True</code> or always <code>False</code></h2>
+  <p>In the original release, the definition <code>anyGeometry</code> was criticised. Every input satisfies it, so a lemma that takes <code>anyGeometry</code> as a condition requires nothing extra. Definitions like this cannot change what the five final theorems state, or whether their proofs are correct: the theorems are stated in <code>Statements.lean</code> using only Mathlib's definitions, and Lean's kernel checked every proof.</p>
+  <p>The table lists every definition in this version that is always <code>True</code> or always <code>False</code>, including functions that return <code>True</code> for every input or <code>False</code> for every input. An always-<code>True</code> condition adds nothing to a lemma; it is padding, or left over from earlier work. A lemma that assumes an always-<code>False</code> definition can only be applied with a proof of <code>False</code>, which is impossible, so the lemma can never be applied.</p>
+  <p id="always-none" hidden>This version has no definitions that are always <code>True</code> or always <code>False</code>.</p>
+  <table id="always-table" class="data"></table>
+  <p id="always-note" class="note"></p>
 </section>
 
 <section id="numbers">
