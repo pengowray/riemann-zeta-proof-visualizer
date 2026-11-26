@@ -196,14 +196,18 @@ export function draw() {
 
   // module names, once the rectangles are large enough to hold them: the name wraps at its word
   // boundaries, and the size the map is drawn by goes on the line below when there is room
-  if (names && k > 6 && !quads) {
-    const LINE = 17, nameFont = '14px "JuliaMono", monospace', sizeFont = '13px "STIX Two Text", serif';
+  // (no zoom threshold: each rectangle checks that it has room for its name)
+  if (names && !quads) {
+    // names are 14 px in rectangles 90 px wide or more, and 11 px in narrower ones, so labels appear early
+    const big = { line: 17, name: '14px "JuliaMono", monospace', size: '13px "STIX Two Text", serif' };
+    const small = { line: 13, name: '11px "JuliaMono", monospace', size: '10.5px "STIX Two Text", serif' };
     ctx.textBaseline = "top";
     for (let i = 0; i < N; i++) {
       const x0 = LX0[i], x1 = LX1[i], y0 = LY0[i], y1 = LY1[i];
       if (x1 < vx0 || x0 > vx1 || y1 < vy0 || y0 > vy1) continue;
       const w = (x1 - x0) * k, h = (y1 - y0) * k;
-      if (w < 70 || h < 20) continue;
+      if (w < 44 || h < 16) continue;
+      const f = w >= 90 && h >= 22 ? big : small, LINE = f.line;
       if (mask && !mask[i]) continue;
       // a module that starts above or left of the view has its name at the view's edge, as directory names do;
       // a directory's name plate sits in the same corner as its first module's name: move the module name below it
@@ -213,15 +217,16 @@ export function draw() {
       const bottom = y1 * k + ty - 2, rows = Math.floor((bottom - ny) / LINE);
       if (rows < 1) continue;
       const sizeText = sizeLabel(i);
-      ctx.font = nameFont;
+      ctx.font = f.name;
       const lines = wrapName(names[i], x1 * k + tx - nx - 5, sizeText && rows > 1 ? rows - 1 : rows);
+      if (lines[0].endsWith("…") && lines[0].length <= 6) continue; // a fragment such as "Mirr…" says nothing
       ctx.save();
       ctx.beginPath(); ctx.rect(x0 * k + tx, y0 * k + ty, w - 2, h); ctx.clip();
       ctx.fillStyle = paletteInk[cidx[i]];
       lines.forEach((line, j) => ctx.fillText(line, nx, ny + j * LINE));
       if (sizeText && lines.length < rows) {
         // the size line drops its words ("lines of code") when only the number fits
-        ctx.font = sizeFont; ctx.globalAlpha = 0.9;
+        ctx.font = f.size; ctx.globalAlpha = 0.9;
         const room = x1 * k + tx - nx - 5, short = sizeText.split(" ")[0];
         const text = ctx.measureText(sizeText).width <= room ? sizeText : ctx.measureText(short).width <= room ? short : "";
         if (text) ctx.fillText(text, nx, ny + lines.length * LINE + 1);
