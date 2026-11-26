@@ -52,7 +52,9 @@ FAMILIES = [
     ("glue", "Aggregators and build helpers"),
 ]
 KINDS = ["math", "restate", "imports", "setup"]
-SPLIT_REGIONS = {"Development", "GroundTheory", "CompanionTheory"}
+# top-level directories that the import graph and region tables split one level further
+# (the last two are the only two of the shorter rewrite)
+SPLIT_REGIONS = {"Development", "GroundTheory", "CompanionTheory", "Lib", "New"}
 
 from scan import TERMS  # noqa: E402  (same directory)
 
@@ -100,6 +102,8 @@ def main():
     # optional: --source FILE (JSON describing where the code is published, copied into meta.json)
     #           --train-cache DIR (scan of the source the reading model's samples came from, when it
     #           is not the one being built; the classifier is trained there and applied here)
+    #           --labels DIR (directory labels for this source, when its paths are not the original's;
+    #           the training samples and build times are still read next to <labels-dir>)
     opts = dict(zip(sys.argv[4::2], sys.argv[5::2]))
     source = json.load(open(opts["--source"])) if "--source" in opts else {}
     train_cache = opts.get("--train-cache")
@@ -149,7 +153,8 @@ def main():
     labels = {}
     # batch_*.json label directories three levels deep; sub_*.json label the larger
     # subdirectories of oversized ones, from a sample of their modules
-    for path in sorted(glob.glob(os.path.join(labels_dir, "batch_*.json")) + glob.glob(os.path.join(labels_dir, "sub_*.json"))):
+    own_labels = opts.get("--labels", labels_dir)
+    for path in sorted(glob.glob(os.path.join(own_labels, "batch_*.json")) + glob.glob(os.path.join(own_labels, "sub_*.json"))):
         try:
             for entry in json.load(open(path)):
                 labels[entry["id"]] = entry

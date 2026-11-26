@@ -1,7 +1,7 @@
 // The charts and tables in the sections below the map. Loaded after the map has painted.
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.16/+esm";
-import { REPO, VERSION, versionsReady, dateFmt, $, fmt, pct, bytesFmt, esc, meta, N, col, ones, dirs, FAMILIES, fieldFamily, KIND_COLOURS, isDark, cssVar, state, names, pathOf, dirSum } from "./data.js";
+import { REPO, VERSION, versions, versionUrl, dateFmt, $, fmt, pct, bytesFmt, esc, meta, N, col, ones, dirs, FAMILIES, fieldFamily, KIND_COLOURS, isDark, cssVar, state, names, pathOf, dirSum } from "./data.js";
 import { KEYWORDS } from "./speech.js";
 import { maskWhere, setPreview, luminance, setMask, labelOf, famOf, famColour } from "./map.js";
 
@@ -58,11 +58,9 @@ function renderPrinted() {
     $("printed-table").innerHTML = `<tr><th>Layout</th><th class="num">Pages</th><th class="num">Stack of paper</th></tr>`
       + [...rows, ...extra].map(([label, pages]) => `<tr><td>${label}</td><td class="num">${fmt(pages)}</td><td class="num">${stack(pages)}</td></tr>`).join("");
   };
-  draw();
-  versionsReady.then((versions) => {
-    const other = versions.find((v) => v.id !== VERSION);
-    if (other?.printed) draw([[`${esc(other.label)} of ${dateFmt(other.date)}: A4 listing, modules printed one after another`, other.printed.a4]]);
-  });
+  // the other versions in the same layout, for comparison
+  draw(versions.filter((v) => v.id !== VERSION && v.printed).map((v) =>
+    [`<a href="${versionUrl(v.id)}#printed">${esc(v.label)}</a> of ${dateFmt(v.date)}: A4 listing, modules printed one after another`, v.printed.a4]));
 }
 
 export function renderCharts() {
@@ -94,10 +92,14 @@ export function renderCharts() {
   }));
 
   // --- top-level libraries
-  const libs = dirs.filter((d) => d.depth === 1).map((d) => ({ d, modules: d.end - d.start, lines: dirSum(d, "lines"), bytes: dirSum(d, "bytes"), decls: dirSum(d, "decls") })).sort((a, b) => b.bytes - a.bytes);
+  // with only a few top-level directories (the rewrite has Lib and New), list the directories inside them
+  const topLevel = dirs.filter((d) => d.depth === 1);
+  const libDepth = topLevel.length < 4 ? 2 : 1;
+  if (libDepth === 2) $("lib-heading").innerHTML = `By directory, inside ${topLevel.map((d) => `<code>${esc(d.name)}</code>`).join(" and ")}`;
+  const libs = dirs.filter((d) => d.depth === libDepth).map((d) => ({ d, modules: d.end - d.start, lines: dirSum(d, "lines"), bytes: dirSum(d, "bytes"), decls: dirSum(d, "decls") })).sort((a, b) => b.bytes - a.bytes);
   const maxB = libs[0].bytes;
   $("lib-table").innerHTML = `<tr><th>Library</th><th class="num">Modules</th><th class="num">Lines</th><th class="num">Declarations</th><th>Size</th></tr>`
-    + libs.map((l) => `<tr class="hoverable" data-preview-dir="${l.d.i}"><td>${esc(l.d.name)}</td><td class="num">${fmt(l.modules)}</td><td class="num">${fmt(l.lines)}</td><td class="num">${fmt(l.decls)}</td><td><span class="bar" style="width:${(260 * l.bytes) / maxB}px;background:${cssVar("--ink-3")}"></span>${bytesFmt(l.bytes)} (${pct(l.bytes / meta.totals.bytes)})</td></tr>`).join("");
+    + libs.map((l) => `<tr class="hoverable" data-preview-dir="${l.d.i}"><td>${esc(libDepth === 2 ? l.d.path : l.d.name)}</td><td class="num">${fmt(l.modules)}</td><td class="num">${fmt(l.lines)}</td><td class="num">${fmt(l.decls)}</td><td><span class="bar" style="width:${(260 * l.bytes) / maxB}px;background:${cssVar("--ink-3")}"></span>${bytesFmt(l.bytes)} (${pct(l.bytes / meta.totals.bytes)})</td></tr>`).join("");
 
   // --- why so many modules
   const kindCount = [0, 0, 0, 0], one = [0, 0];
@@ -129,7 +131,7 @@ export function renderCharts() {
     marks: [Plot.barY(repRows, { x: "bin", y: "n", fill: "kind", order: kindScale.domain, insetLeft: 1, insetRight: 1, tip: tipOpts, title: (d) => `${fmt(d.n)} modules\n${d.bin}% repeated\n${d.kind}` }), Plot.ruleY([0])],
   })), (d) => ({ key: `repeat${d.b}`, label: `${fmt(binTotal(repRows, d.b))} modules that repeat ${d.bin}% of their neighbour`, test: (i) => repBin(i) === d.b, tint: kindTint }));
   const medianRep = (kind) => d3.median(d3.range(N).filter((i) => col.repeat[i] !== 255 && (col.kind[i] === 1) === kind), (i) => col.repeat[i]);
-  $("repeat-text").textContent = `Repetition is measured by compressing each module after the compressor has read the module before it in the same directory. For a typical module that states and proves mathematics, ${medianRep(false)}% of the text is repeated from its neighbour. For a typical restating module it is ${medianRep(true)}%. Apart from the restating modules, exact copies are rare: ${fmt(shapeDup)} modules belong to a group of ten or more that are identical once names and numbers are ignored.`;
+  $("repeat-text").textContent = `Repetition is measured by compressing each module after the compressor has read the module before it in the same directory. For a typical module that states and proves mathematics, ${medianRep(false)}% of the text is repeated from its neighbour. ${kindCount[1] ? `For a typical restating module it is ${medianRep(true)}%. Apart from the restating modules, exact` : "Exact"} copies are rare: ${shapeDup ? `${fmt(shapeDup)} modules belong to a group of ten or more that are identical once names and numbers are ignored` : "no group of ten or more modules is identical once names and numbers are ignored"}.`;
 
   // --- areas of mathematics
   const fieldTotals = meta.fields.map(() => ({ modules: 0, lines: 0, bytes: 0 }));
@@ -208,11 +210,11 @@ export function renderCharts() {
 function renderUsed() {
   const u = meta.mathlibUsed;
   if (!u) {
-    $("used-text").innerHTML = `This was measured on the community cleanup, whose compiled files are published: <a href="?v=cleanup#mathlib-use">see what the cleanup's modules use from Mathlib</a>.`;
+    $("used-text").innerHTML = `This was measured on the community cleanup of the original, whose compiled files are published: <a href="?v=cleanup#mathlib-use">see what its modules use from Mathlib</a>.`;
     for (const id of ["used-facts", "used-table", "used-top", "used-not"]) $(id).remove();
     return;
   }
-  $("used-text").textContent = "A program read Lean's compiled file for each module and listed the Mathlib declarations that the module's own declarations mention in their statements and proofs. Nothing was compiled or checked again.";
+  $("used-text").textContent = "A program read Lean's compiled file for each module and listed the Mathlib declarations that the module's own declarations mention in their statements and proofs. Nothing was compiled or checked again." + (VERSION === "cleanup" ? " The compiled files are from an earlier commit of the same branch, when it had 59,806 modules." : "");
   $("used-facts").innerHTML = [
     ["Modules measured", `<b>${fmt(u.measured)}</b> of ${fmt(N)}`],
     ["Modules that mention a Mathlib declaration", `<b>${fmt(u.modulesUsingMathlib)}</b>`],
@@ -229,13 +231,22 @@ function renderUsed() {
 /** Which parts of Mathlib the modules import by name. Only the cleanup names them; the original imports all of Mathlib. */
 function renderMathlib() {
   const m = meta.mathlib, whole = meta.totals.wholeMathlibImports;
+  if (whole < N / 2 && m.modulesNaming < N / 2) {
+    // the shorter rewrite: one module imports all of Mathlib and the others reach it through that module
+    const k = m.modulesNaming;
+    const hub = { main: "Lib/Speed.lean", compact: "Lib/General/LinearAlgebra/Base.lean" }[VERSION] || "one module";
+    $("mathlib-text").innerHTML = `In the rewrite, the imports do not show which parts of Mathlib each module needs. <code>Statements.lean</code> and <code>${hub}</code> import all of Mathlib, and every other module imports <code>${hub}</code>, directly or through other modules. `
+      + (k === 0 ? "No module imports a single Mathlib module by name." : k === 1 ? "Only 1 module imports a single Mathlib module by name." : `Only ${fmt(k)} modules import single Mathlib modules by name.`);
+    $("mathlib-facts").remove(); $("mathlib-note").remove();
+    return;
+  }
   if (m.modulesNaming < N / 2) {
-    $("mathlib-text").innerHTML = `${fmt(whole)} of the ${fmt(N)} modules import all of Mathlib with <code>import Mathlib</code>, so the imports do not show which parts each module needs. The community cleanup replaced that line with imports of single Mathlib modules: <a href="?v=cleanup#imports">see the cleanup's import counts</a>.`;
+    $("mathlib-text").innerHTML = `${fmt(whole)} of the ${fmt(N)} modules import all of Mathlib with <code>import Mathlib</code>, so the imports do not show which parts each module needs. The community cleanup replaced that line with imports of single Mathlib modules: <a href="?v=cleanup#imports">see its import counts</a>.`;
     $("mathlib-facts").remove(); $("mathlib-note").remove();
     return;
   }
   const sharedTactic = m.shared.filter((x) => x.startsWith("Mathlib.Tactic.")).length;
-  $("mathlib-text").innerHTML = `The cleanup replaced <code>import Mathlib</code> with imports of single Mathlib modules.`;
+  $("mathlib-text").innerHTML = `The community cleanup replaced <code>import Mathlib</code> with imports of single Mathlib modules.`;
   $("mathlib-facts").innerHTML = [
     ["Modules that name the Mathlib modules they import", `<b>${fmt(m.modulesNaming)}</b> of ${fmt(N)}`],
     ["Modules that still import all of Mathlib", `<b>${fmt(whole)}</b>`],

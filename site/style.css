@@ -228,12 +228,15 @@ button.link:hover { text-decoration: underline; }
 #field-table .objects-row td { padding: 2px 12px 9px 18px; }
 
 /* switch between the original release and the community cleanup */
-#versions { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-bottom: 18px; font-size: 0.9rem; }
-#versions a { padding: 5px 10px; border: 1px solid var(--rule); color: var(--ink-2); text-decoration: none; }
-#versions a b { color: var(--ink); font-weight: 600; margin-right: 4px; }
+/* phone version list: a heading for each family, then its versions side by side */
+#versions { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin-bottom: 18px; font-size: 0.9rem; }
+#versions .control-label { flex-basis: 100%; }
+#versions .family { flex-basis: 100%; color: var(--ink-2); font-size: 0.8rem; margin-top: 4px; }
+#versions a { padding: 4px 8px; border: 1px solid var(--rule); color: var(--ink); text-decoration: none; }
+#versions a .n { color: var(--ink-2); font-size: 0.8rem; font-variant-numeric: tabular-nums; }
 #versions a:hover { border-color: var(--ink-3); }
 #versions a[aria-current] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
-#versions a[aria-current] b { color: var(--paper); }
+#versions a[aria-current] .n { color: var(--paper); }
 td.mono { font-family: var(--mono); font-size: 0.85em; }
 
 /* lists of counts in the body of the page, laid out like the hero's facts */
@@ -245,8 +248,13 @@ td.pair { white-space: nowrap; line-height: 1.5; }
 .bar.before { background: var(--ink-3); }
 #change-table td:first-child { overflow-wrap: anywhere; }
 #change-table th { white-space: normal; }
-#version-pick-label { display: block; font-size: 0.8rem; color: var(--ink-2); margin-bottom: 10px; }
-#version-pick { display: block; width: 100%; margin-top: 3px; padding: 5px 6px; font: 600 0.9rem var(--serif); color: var(--ink); background: var(--paper); border: 1px solid var(--ink-3); }
+/* sidebar version list: every version shown, grouped under its family, styled like the table of contents below it */
+#version-pick { margin-bottom: 12px; }
+#version-pick .control-label { display: flex; justify-content: space-between; padding-right: 8px; font-size: 0.8rem; margin-bottom: 2px; }
+#version-pick .family { display: block; font-size: 0.8rem; color: var(--ink-2); margin: 6px 0 1px; }
+#version-pick a { display: flex; justify-content: space-between; gap: 8px; padding: 3px 8px; color: var(--ink-2); font-size: 0.92rem; }
+#version-pick a .n { font-size: 0.8rem; font-variant-numeric: tabular-nums; white-space: nowrap; align-self: center; }
+#version-pick a[aria-current] { background: var(--paper-3); color: var(--ink); }
 #versions.phone-only { display: none; }
 @media (max-width: 1000px) { #versions.phone-only { display: flex !important; } }
 #version-date { display: block; margin-top: 4px; }

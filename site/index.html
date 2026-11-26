@@ -12,7 +12,7 @@
 </head>
 <body>
 <aside id="rail" aria-label="Where you are">
-  <label id="version-pick-label">Version <select id="version-pick"></select><span id="version-date"></span></label>
+  <nav id="version-pick" aria-label="Version of the proof"></nav>
   <canvas id="minimap" width="200" height="125" aria-hidden="true"></canvas>
   <p id="rail-note"></p>
   <nav id="toc">
@@ -20,7 +20,7 @@
     <a href="#map">Map of every module</a>
     <a href="#changes" data-only="cleanup">What the cleanup changed</a>
     <a href="#space">What takes up the space</a>
-    <a href="#modules">Why so many modules</a>
+    <a href="#modules">How the proof is split into modules</a>
     <a href="#printed">If it were printed</a>
     <a href="#fields">Areas of mathematics</a>
     <a href="#imports">Dependencies</a>
@@ -35,7 +35,7 @@
 <header id="top">
   <div class="hero-text">
     <h1>The Lean proof of the Riemann Hypothesis, as a treemap</h1>
-    <p class="lede" data-only="cleanup" id="cleanup-lede"></p>
+    <p class="lede" data-only="cleanup main compact" id="version-lede"></p>
     <p class="lede" data-only="original">On 20 November 2026 Levent Alpöge released a Lean 4 formalization, written with Claude, that states and proves the Riemann Hypothesis and its generalization to Dirichlet <i>L</i>-functions. The source is 175,187 modules (a module is one <code>.lean</code> file). This page shows what is in them.</p>
     <dl id="facts"></dl>
   </div>
@@ -48,6 +48,7 @@
 <section id="statement">
   <h2>The statement</h2>
   <p data-only="cleanup"><code>Statements.lean</code> defines the propositions and <code>Main.lean</code> proves them, and Mathlib's own <code>RiemannHypothesis</code>, by citing theorems from the other modules. The cleanup also has <code>Challenge.lean</code>, which states the same theorems with <code>sorry</code> in place of each proof so that a checker can compare the two files. Point at a symbol to see how to say it and what type it has.</p>
+  <p data-only="main compact"><code>Main.lean</code> proves the Riemann Hypothesis and the Generalized Riemann Hypothesis for Dirichlet <i>L</i>-functions as five theorems, using only Lean's three standard axioms (<code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>). <code>Statements.lean</code> states the five theorems in Mathlib's terms. Both editions of the rewrite also have <code>Challenge.lean</code>, which states the same five theorems with <code>sorry</code> in place of each proof, so that a checker can compare the two files. Point at a symbol to see how to say it and what type it has.</p>
   <p data-only="original">These two files are the whole claim. <code>Statements.lean</code> defines four propositions. <code>Main.lean</code> proves them, and Mathlib's own <code>RiemannHypothesis</code>, by citing theorems from the other 175,185 modules. Point at a symbol to see how to say it and what type it has.</p>
   <div class="code-pair">
     <figure class="codebox"><figcaption>Statements.lean</figcaption><pre class="lean" id="code-statements"></pre></figure>
@@ -77,9 +78,9 @@
   <h3>Highlight modules that mention</h3>
   <div id="terms" class="chips"></div>
   <p class="note">Terms come from Alpöge's announcement and from standard number theory. A module is counted if the term's identifier appears in its text, not counting import lines.</p>
-  <h3>Highlight a step of Alpöge's timeline</h3>
-  <p class="note">Where each step appears to live in the Lean code, according to <a href="https://github.com/jae-63/rh-alpoge-blueprint/blob/main/BLUEPRINT.md">a blueprint of the proof by GitHub user jae-63</a>. ● found clearly &nbsp; ◐ names and position fit &nbsp; ○ weak evidence. The number is how many modules match. Point at a step to see it on the map; click to keep it highlighted.</p>
-  <ol id="steps" class="step-list"></ol>
+  <h3 data-only="original cleanup">Highlight a step of Alpöge's timeline</h3>
+  <p class="note" data-only="original cleanup">Where each step appears to live in the Lean code, according to <a href="https://github.com/jae-63/rh-alpoge-blueprint/blob/main/BLUEPRINT.md">a blueprint of the proof by GitHub user jae-63</a>. ● found clearly &nbsp; ◐ names and position fit &nbsp; ○ weak evidence. The number is how many modules match. Point at a step to see it on the map; click to keep it highlighted.</p>
+  <ol id="steps" class="step-list" data-only="original cleanup"></ol>
 </section>
 
 <section id="changes" data-only="cleanup">
@@ -95,12 +96,12 @@
   <p id="space-text"></p>
   <ul id="space-key" class="key"></ul>
   <div id="space-chart" class="chart"></div>
-  <h3>By top-level library</h3>
+  <h3 id="lib-heading">By top-level library</h3>
   <table id="lib-table" class="data"></table>
 </section>
 
 <section id="modules">
-  <h2>Why so many modules</h2>
+  <h2>How the proof is split into modules</h2>
   <p id="modules-text"></p>
   <div class="chart-pair">
     <figure><figcaption>Modules by length</figcaption><div id="length-chart" class="chart"></div></figure>
@@ -177,7 +178,7 @@
     <li>Declarations are counted by matching keywords such as <code>theorem</code> and <code>def</code> at the start of a line. <span data-only="original">Lean's kernel sees more declarations (1,484,729 in the <code>nanoda</code> runs) because Lean generates auxiliary ones.</span></li>
     <li id="agree-note"></li>
     <li id="build-note" data-only="original"></li>
-    <li>The proof steps on the map follow <a href="https://github.com/jae-63/rh-alpoge-blueprint/blob/main/BLUEPRINT.md">jae-63's blueprint</a>, which matched Alpöge's timeline to Lean names by search and partial reading. It is one reader's interpretation.</li>
+    <li data-only="original cleanup">The proof steps on the map follow <a href="https://github.com/jae-63/rh-alpoge-blueprint/blob/main/BLUEPRINT.md">jae-63's blueprint</a>, which matched Alpöge's timeline to Lean names by search and partial reading. It is one reader's interpretation.</li>
   </ul>
   <h3>Other maps and cleanups of the proof</h3>
   <ul>

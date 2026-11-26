@@ -13,32 +13,42 @@ Then open http://localhost:8737. The page is static: `site/` can be hosted anywh
 
 ## Rebuild the data
 
-The page shows two versions of the proof, both from
-[leanprover-community/riemann-hypothesis](https://github.com/leanprover-community/riemann-hypothesis):
-the original release (its `original` branch, data in `site/data/`) and the community cleanup
-(its `main` branch, data in `site/data/cleanup/`, shown at `?v=cleanup`).
+The page shows four versions of the proof. Each has its own data folder and is picked with `?v=<id>`:
 
-Put the paths of your two local checkouts in `tools/local.json` (see the top of `tools/update.py`), then:
+| Version | id | Source | Data |
+|---|---|---|---|
+| Original release | `original` | `original` branch of [leanprover-community/riemann-hypothesis](https://github.com/leanprover-community/riemann-hypothesis) | `site/data/` |
+| Original, community cleanup | `cleanup` | its `alpoge` branch, where the cleanup of the original stopped on 25 November 2026 | `site/data/cleanup/` |
+| Shorter rewrite, community cleanup | `main` | its `main` branch, a copy of the readable edition of [lsernau/grh-lean](https://github.com/lsernau/grh-lean) that the community is cleaning up | `site/data/main/` |
+| Shorter rewrite, compact edition | `compact` | `grh-compact/` in lsernau/grh-lean | `site/data/compact/` |
+
+The versions are listed in `VERSIONS` at the top of `tools/update.py`. Put the paths of your local
+checkouts in `tools/local.json` (see the top of `tools/update.py`), then:
 
 ```bash
-python3 tools/update.py cleanup
+python3 tools/update.py main
 ```
 
-This fetches the newest `main`, scans it and rebuilds `site/data/cleanup/`. It needs the original
+This fetches the newest `main`, scans it and rebuilds `site/data/main/`. It needs the original
 release's scan in `data/cache/` (run `python3 tools/update.py original` once), because the field
-classifier is trained on modules of the original release. The cleanup changes
-many times a day, so run it again whenever the numbers should be brought up to date, then commit
-`site/data/`. `python3 tools/update.py original` rebuilds the original release's data.
+classifier is trained on modules of the original release. `main` changes many times a day, so run it
+again whenever the numbers should be brought up to date, then commit `site/data/`. The other ids
+rebuild the other versions, and `all` rebuilds every one.
+
+The shorter rewrite has its own directory names, so its directory labels are in `data/labels-main/`
+and `data/labels-compact/`. A language model wrote them from the rewrite's `GUIDE.md`, `CONTENTS.md`
+and the head of each module, following `data/labels/PROMPT.md`.
 
 The "What the modules use from Mathlib" table comes from Lean's compiled files, which the scan
-does not read. To refresh it after an update, install Lean with `elan`, then in the cleanup clone run
+does not read. It has been measured only for the cleanup of the original, at an earlier commit of the
+`alpoge` branch, when it had 59,806 modules. To refresh it after an update, install Lean with `elan`, then in the cleanup clone run
 `lake exe cache get` (about 80 GB) and:
 
 ```bash
 python3 tools/usage_run.py /path/to/clone data/cache/cleanup/usage
 ```
 
-and run `python3 tools/update.py cleanup` again. `tools/usage.lean` reads which library
+and run `python3 tools/update.py cleanup` again (for another version, use its own cache folder). `tools/usage.lean` reads which library
 declarations each module's declarations mention; it took about six minutes for 59,806 modules.
 
 - `tools/scan.py` reads every `.lean` file once and writes one row per file to `data/cache/` (not committed;

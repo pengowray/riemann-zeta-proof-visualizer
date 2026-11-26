@@ -1,9 +1,14 @@
 // Loads the data files and defines the names, colours and shared state every other module uses.
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 
-// The page shows one version of the proof at a time: the original release, or the community cleanup (?v=cleanup).
-export const VERSION = new URLSearchParams(location.search).get("v") === "cleanup" ? "cleanup" : "original";
-export const DATA = VERSION === "cleanup" ? "data/cleanup/" : "data/";
+// The page shows one version of the proof at a time, chosen by ?v=<id> from the list in data/versions.json
+// (the original release when ?v is missing or unknown).
+export const versions = await fetch("data/versions.json").then((r) => r.json());
+const asked = versions.find((v) => v.id === new URLSearchParams(location.search).get("v"));
+export const VERSION = asked ? asked.id : "original";
+export const DATA = (asked || versions[0]).data;
+export const ORIGINAL = versions.find((v) => v.id === "original");
+export const versionUrl = (id) => (id === "original" ? "./" : "?v=" + id);
 
 export const $ = (id) => document.getElementById(id);
 export const fmt = d3.format(",");
@@ -24,7 +29,6 @@ export const REPO = `https://github.com/${SOURCE.repo}`;
 export const blobUrl = (path) => `${REPO}/blob/${SOURCE.sha}/${SOURCE.prefix}${encodeURI(path)}`;
 export const treeUrl = (path) => `${REPO}/tree/${SOURCE.sha}/${SOURCE.prefix}${encodeURI(path)}`;
 export const rawUrl = (path) => `https://raw.githubusercontent.com/${SOURCE.repo}/${SOURCE.sha}/${SOURCE.prefix}${encodeURI(path)}`;
-export const versionsReady = fetch("data/versions.json").then((r) => r.json());
 export const dateFmt = (iso) => new Date(iso + "T00:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 export const TYPES = { I: Uint32Array, H: Uint16Array, B: Uint8Array };
 export const col = {};

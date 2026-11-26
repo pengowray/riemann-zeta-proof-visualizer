@@ -19,28 +19,80 @@
    "xzPages": 40348,
    "compiledBytes": 0,
    "compiledPages": 0
-  }
+  },
+  "family": "Original",
+  "short": "Release"
  },
  {
   "id": "cleanup",
-  "label": "Community cleanup",
+  "label": "Original, community cleanup",
   "repo": "leanprover-community/riemann-hypothesis",
-  "sha": "4a5b4a2d2a5177a2b6cb876425f0cb4cb6b85061",
   "prefix": "src/",
-  "date": "2026-11-25",
+  "sha": "756a70250dcba9162b99d4ea35c186558434c17e",
+  "date": "2026-11-26",
   "data": "data/cleanup/",
-  "modules": 59807,
-  "lines": 15711430,
+  "modules": 58947,
+  "lines": 13710054,
   "printed": {
-   "a4NewPage": 391312,
-   "a4": 361557,
-   "a4Code": 288566,
-   "book": 489618,
-   "text": 322980,
-   "xzBytes": 117711420,
-   "xzPages": 32698,
+   "a4NewPage": 349002,
+   "a4": 320142,
+   "a4Code": 271986,
+   "book": 460983,
+   "text": 282897,
+   "xzBytes": 112611552,
+   "xzPages": 31281,
    "compiledBytes": 64656000000,
    "compiledPages": 17960000
-  }
+  },
+  "family": "Original",
+  "short": "Community cleanup"
+ },
+ {
+  "id": "main",
+  "label": "Shorter rewrite, community cleanup",
+  "repo": "leanprover-community/riemann-hypothesis",
+  "prefix": "src/",
+  "sha": "388ec4364376d78ea8d33c0f9e79a91e8b319f3a",
+  "date": "2026-11-26",
+  "data": "data/main/",
+  "modules": 802,
+  "lines": 476535,
+  "printed": {
+   "a4NewPage": 11047,
+   "a4": 10656,
+   "a4Code": 9885,
+   "book": 16653,
+   "text": 9130,
+   "xzBytes": 5853788,
+   "xzPages": 1627,
+   "compiledBytes": 0,
+   "compiledPages": 0
+  },
+  "family": "Shorter rewrite",
+  "short": "Community cleanup"
+ },
+ {
+  "id": "compact",
+  "label": "Shorter rewrite, compact edition",
+  "repo": "lsernau/grh-lean",
+  "prefix": "grh-compact/src/",
+  "sha": "72fead102f663d5c7a407964a13dc0cf9d977207",
+  "date": "2026-11-25",
+  "data": "data/compact/",
+  "modules": 794,
+  "lines": 112827,
+  "printed": {
+   "a4NewPage": 3103,
+   "a4": 2703,
+   "a4Code": 2383,
+   "book": 3954,
+   "text": 2279,
+   "xzBytes": 1924764,
+   "xzPages": 535,
+   "compiledBytes": 0,
+   "compiledPages": 0
+  },
+  "family": "Shorter rewrite",
+  "short": "Compact edition"
  }
 ]

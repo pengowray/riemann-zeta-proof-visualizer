@@ -2,29 +2,42 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import { renderLean } from "./speech.js";
 import { drawZeta } from "./zeta.js";
-import { VERSION, SOURCE, REPO, versionsReady, dateFmt, moduleFamily, rawUrl, $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, darkQuery, state, names, namesReady, termsReady } from "./data.js";
+import { VERSION, SOURCE, REPO, versions, ORIGINAL, versionUrl, dateFmt, moduleFamily, rawUrl, $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, darkQuery, state, names, namesReady, termsReady } from "./data.js";
 import { recolour, requestDraw, refreshMini, countMask, maskWhere, setMask, setPreview, renderLegend, chainMask, chainLabel } from "./map.js";
 import "./graph.js";
 
 // ---------------------------------------------------------------- which version of the proof this is
-// text that is true of only one version carries data-only="original" or data-only="cleanup"
-document.querySelectorAll("[data-only]").forEach((el) => { if (el.dataset.only !== VERSION) el.remove(); });
+// text that is true of only some versions carries data-only="<id> <id> …"
+document.querySelectorAll("[data-only]").forEach((el) => { if (!el.dataset.only.split(" ").includes(VERSION)) el.remove(); });
 const shortSha = SOURCE.sha.slice(0, 7);
-versionsReady.then((versions) => {
-  $("versions").innerHTML = `<span class="control-label">Version</span>` + versions.map((v) =>
-    `<a href="${v.id === "original" ? "./" : "?v=" + v.id}"${v.id === VERSION ? ' aria-current="page"' : ""}><b>${esc(v.label)}</b> ${dateFmt(v.date)} · ${fmt(v.modules)} modules</a>`).join("");
-  // the sidebar's picker: the same choice, kept in view while the page scrolls
-  $("version-pick").innerHTML = versions.map((v) => `<option value="${v.id}"${v.id === VERSION ? " selected" : ""}>${esc(v.label)}</option>`).join("");
-  $("version-pick").onchange = (e) => { location.href = e.target.value === "original" ? "./" : "?v=" + e.target.value; };
-  $("version-date").textContent = `${dateFmt(SOURCE.date)} · ${fmt(N)} modules`;
-  const original = versions.find((v) => v.id === "original");
-  if (VERSION === "cleanup" && original) {
-    $("cleanup-lede").innerHTML = `Members of the Lean community are cleaning up Levent Alpöge's Lean 4 formalization of the Riemann Hypothesis, released on 20 November 2026, in <a href="${REPO}">${esc(SOURCE.repo)}</a>. This page shows their <code>main</code> branch as it was on ${dateFmt(SOURCE.date)} (commit <code>${shortSha}</code>): ${fmt(N)} modules and ${fmt(meta.totals.lines)} lines, down from ${fmt(original.modules)} modules and ${fmt(original.lines)} lines in the original release. A module is one <code>.lean</code> file.`;
-  }
-});
-$("source-note").innerHTML = VERSION === "cleanup"
-  ? `The Lean source is the <code>main</code> branch of <a href="${REPO}">${esc(SOURCE.repo)}</a> at commit <a href="${REPO}/tree/${SOURCE.sha}"><code>${shortSha}</code></a> of ${dateFmt(SOURCE.date)}. That branch changes many times a day, so the numbers here are a snapshot. This site stores module names and counts, and loads code from GitHub when you open a module.`
-  : `The Lean source is from <a href="https://alpo.ge/remark.pdf">Alpöge's announcement</a>. The page reads it from the <code>original</code> branch of <a href="${REPO}">${esc(SOURCE.repo)}</a> at commit <a href="${REPO}/tree/${SOURCE.sha}"><code>${shortSha}</code></a>, which keeps the release unchanged. The archive declares no licence, so this site does not store the Lean files; it stores module names and counts, and loads code from GitHub when you open a module.`;
+const commitLink = `<a href="${REPO}/tree/${SOURCE.sha}"><code>${shortSha}</code></a>`;
+const families = () => [...new Set(versions.map((v) => v.family))];
+const repoLink = (repo) => `<a href="https://github.com/${repo}">${esc(repo)}</a>`;
+// above the title on a phone: the versions grouped by family, as in the sidebar
+const versionLink = (v, extra = "") => `<a href="${versionUrl(v.id)}"${v.id === VERSION ? ' aria-current="page"' : ""}>${esc(v.short)}${extra}</a>`;
+$("versions").innerHTML = `<span class="control-label">Version of the proof</span>` + families().map((f) => `<span class="family">${esc(f)}</span>`
+  + versions.filter((v) => v.family === f).map((v) => versionLink(v, ` <span class="n">${fmt(v.modules)} modules</span>`)).join("")).join("");
+// the sidebar's list: the same choice, kept in view while the page scrolls, grouped by family
+$("version-pick").innerHTML = `<span class="control-label"><span>Version</span><span>Modules</span></span>` + families().map((f) => `<span class="family">${esc(f)}</span>`
+  + versions.filter((v) => v.family === f).map((v) => versionLink(v, `<span class="n">${fmt(v.modules)}</span>`)).join("")).join("");
+const sizeNow = `${fmt(N)} modules and ${fmt(meta.totals.lines)} lines`;
+const sizeBefore = `${fmt(ORIGINAL.modules)} modules and ${fmt(ORIGINAL.lines)} lines`;
+const grhLink = repoLink("lsernau/grh-lean");
+const LEDES = {
+  cleanup: `This page shows the last version of the Lean community's cleanup of Levent Alpöge's Lean 4 formalization of the Riemann Hypothesis, released on 20 November 2026. The cleanup took place in ${repoLink(SOURCE.repo)} until the community moved the repository's <code>main</code> branch to a shorter rewrite of the proof. The cleanup of the original is kept on the <code>alpoge</code> branch, shown here at commit ${commitLink} of ${dateFmt(SOURCE.date)}: ${sizeNow}, down from ${sizeBefore} in the original release. A module is one <code>.lean</code> file.`,
+  main: `Members of the Lean community are cleaning up a shorter rewrite of Levent Alpöge's Lean 4 formalization of the Riemann Hypothesis, in ${repoLink(SOURCE.repo)}. Their <code>main</code> branch started from the readable edition of ${grhLink}, which lsernau made with colleagues at Anthropic and with Claude and published on 25 November 2026. This page shows that branch at commit ${commitLink} of ${dateFmt(SOURCE.date)}: ${sizeNow}, compared with ${sizeBefore} in the original release. A module is one <code>.lean</code> file. The rewrite's README says that no mathematician has read it through.`,
+  compact: `${grhLink} is a shorter rewrite of Levent Alpöge's Lean 4 formalization of the Riemann Hypothesis, made by lsernau with colleagues at Anthropic and with Claude, and published on 25 November 2026. It has a readable edition and a compact edition. This page shows the compact edition at commit ${commitLink} of ${dateFmt(SOURCE.date)}: ${sizeNow}, compared with ${sizeBefore} in the original release. A module is one <code>.lean</code> file. The rewrite's README says that no mathematician has read it through.`,
+};
+if (LEDES[VERSION]) $("version-lede").innerHTML = LEDES[VERSION];
+const STORED = "This site stores module names and counts, and loads a module's code from GitHub when you open that module.";
+const LINES_NOTE = (readme) => `Line counts include blank lines and comments; the README's figure of about ${readme} lines of code leaves them out.`;
+const SOURCE_NOTES = {
+  original: `The Lean source is from <a href="https://alpo.ge/remark.pdf">Alpöge's announcement</a>. The page reads it from the <code>original</code> branch of ${repoLink(SOURCE.repo)} at commit ${commitLink}, which keeps the release unchanged. The archive declares no licence, so this site does not store the Lean files; it stores module names and counts, and loads code from GitHub when you open a module.`,
+  cleanup: `The Lean source is the <code>alpoge</code> branch of ${repoLink(SOURCE.repo)} at commit ${commitLink} of ${dateFmt(SOURCE.date)}, the last commit of the cleanup of the original. ${STORED}`,
+  main: `The Lean source is the <code>main</code> branch of ${repoLink(SOURCE.repo)} at commit ${commitLink} of ${dateFmt(SOURCE.date)}, under the Apache 2.0 licence. This branch began as a copy of the readable edition of ${grhLink} (commit <code>72fead1</code>) and changes often, so the numbers here are a snapshot. ${STORED} ${LINES_NOTE("300,000")}`,
+  compact: `The Lean source is the compact edition of ${grhLink}, in its <code>grh-compact</code> folder, at commit ${commitLink} of ${dateFmt(SOURCE.date)}, under the Apache 2.0 licence. The README says the repository is not maintained. ${STORED} ${LINES_NOTE("76,000")}`,
+};
+$("source-note").innerHTML = SOURCE_NOTES[VERSION];
 
 // ---------------------------------------------------------------- hero
 const declTotal = d3.sum(meta.declKinds, (d) => d[1]);
@@ -66,7 +79,8 @@ if ($("build-note")) $("build-note").innerHTML = `Build times are wall-clock tim
 const stepMasks = new Map(); // step number -> { mask, label }, for previews while the pointer is over a step
 const DOTS = { clear: "●", partial: "◐", weak: "○" };
 const CONFIDENCE = { clear: "the blueprint found the object clearly", partial: "names and position fit, proofs not read", weak: "weak evidence" };
-Promise.all([fetch("data/steps.json").then((r) => r.json()), namesReady]).then(([data]) => {
+// the blueprint names paths of the original release, so the rewrite's pages leave the steps out
+if ($("steps")) Promise.all([fetch("data/steps.json").then((r) => r.json()), namesReady]).then(([data]) => {
   const paths = dirs.map((d) => d.path + "/");
   for (const step of data.steps) {
     // a pattern matches a directory path, a module name, or (when it ends in .lean) one exact file

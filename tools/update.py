@@ -1,15 +1,22 @@
 #!/usr/bin/env python3
-"""Rebuild the site's data for one version of the proof, or for both.
+"""Rebuild the site's data for one version of the proof, or for all of them.
 
-    python3 tools/update.py cleanup     # fetch the newest community cleanup, scan it, rebuild site/data/cleanup
+    python3 tools/update.py main        # fetch the community's main branch, scan it, rebuild site/data/main
+    python3 tools/update.py cleanup     # the community's cleanup of the original (alpoge branch), site/data/cleanup
+    python3 tools/update.py compact     # the compact edition of lsernau/grh-lean, site/data/compact
     python3 tools/update.py original    # rescan the original release, rebuild site/data
     python3 tools/update.py all
 
-Where the two checkouts are on this machine is read from tools/local.json (not committed):
+Add --no-fetch to rebuild from the commit already checked out.
 
-    {"original_src": "/path/to/original/src", "cleanup_clone": "/path/to/clone/of/riemann-hypothesis"}
+Where the checkouts are on this machine is read from tools/local.json (not committed):
 
-The cleanup clone is a checkout of https://github.com/leanprover-community/riemann-hypothesis.
+    {"original_src": "/path/to/original/src",
+     "cleanup_clone": "/path/to/clone of riemann-hypothesis, alpoge branch",
+     "main_clone": "/path/to/clone of riemann-hypothesis, main branch",
+     "grh_clone": "/path/to/clone of grh-lean"}
+
+The clones are of https://github.com/leanprover-community/riemann-hypothesis and https://github.com/lsernau/grh-lean.
 """
 import json
 import os
@@ -19,6 +26,19 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPO = "leanprover-community/riemann-hypothesis"
 ORIGINAL_SHA = "40e56bab026552e089d7afcfeff08d2defb9c005"  # tip of the repository's "original" branch
+
+# In the order the page lists them. "clone" names the key in tools/local.json; "src" is the Lean source
+# folder inside that clone, which is also the path prefix of every module on GitHub.
+VERSIONS = [
+    {"id": "original", "label": "Original release", "family": "Original", "short": "Release", "repo": REPO, "src": "src/"},
+    # The community cleaned up the original here until 25 November 2026, then moved main to the rewrite.
+    {"id": "cleanup", "label": "Original, community cleanup", "family": "Original", "short": "Community cleanup", "repo": REPO, "clone": "cleanup_clone", "branch": "alpoge", "src": "src/"},
+    # main is a copy of grh-lean's readable edition (grh/) at commit 72fead1, cleaned up by the community.
+    {"id": "main", "label": "Shorter rewrite, community cleanup", "family": "Shorter rewrite", "short": "Community cleanup", "repo": REPO, "clone": "main_clone", "branch": "main", "src": "src/"},
+    {"id": "compact", "label": "Shorter rewrite, compact edition", "family": "Shorter rewrite", "short": "Compact edition",
+     "repo": "lsernau/grh-lean", "clone": "grh_clone", "branch": "main",
+     "src": "grh-compact/src/"},
+]
 
 
 def run(*args, **kw):
@@ -30,9 +50,14 @@ def git(clone, *args):
     return subprocess.run(["git", "-C", clone, *args], check=True, capture_output=True, text=True).stdout.strip()
 
 
+def folder(version):
+    """The version's folder under data/cache and site/data: the original release is at the top."""
+    return [] if version == "original" else [version]
+
+
 def build(version, src, source, extra=()):
-    cache = os.path.join(ROOT, "data", "cache", *([version] if version != "original" else []))
-    out = os.path.join(ROOT, "site", "data", *([version] if version != "original" else []))
+    cache = os.path.join(ROOT, "data", "cache", *folder(version))
+    out = os.path.join(ROOT, "site", "data", *folder(version))
     os.makedirs(cache, exist_ok=True)
     source_path = os.path.join(cache, "source.json")
     json.dump(source, open(source_path, "w"))
@@ -52,32 +77,42 @@ def build(version, src, source, extra=()):
 
 
 def main():
-    which = sys.argv[1] if len(sys.argv) > 1 else "cleanup"
+    args = [a for a in sys.argv[1:] if not a.startswith("--")]
+    which = args[0] if args else "main"
+    if which != "all" and which not in [v["id"] for v in VERSIONS]:
+        sys.exit(f"unknown version {which!r}: use one of {', '.join(v['id'] for v in VERSIONS)} or all")
     local = json.load(open(os.path.join(ROOT, "tools", "local.json")))
-    if which in ("original", "all"):
-        build("original", local["original_src"], {
-            "id": "original", "label": "Original release", "repo": REPO, "sha": ORIGINAL_SHA, "prefix": "src/",
-            "date": "2026-11-20",
-        })
-    if which in ("cleanup", "all"):
-        clone = local["cleanup_clone"]
-        if "--no-fetch" not in sys.argv:  # --no-fetch rebuilds from the commit already checked out
-            run("git", "-C", clone, "fetch", "--depth", "1", "origin", "main")
+    for v in VERSIONS:
+        if which not in (v["id"], "all"):
+            continue
+        # "family" and "short" name the version in the sidebar's list, under a heading for each family
+        source = {"id": v["id"], "label": v["label"], "family": v["family"], "short": v["short"], "repo": v["repo"], "prefix": v["src"]}
+        if v["id"] == "original":
+            build("original", local["original_src"], {**source, "sha": ORIGINAL_SHA, "date": "2026-11-20"})
+            continue
+        clone = local[v["clone"]]
+        if "--no-fetch" not in sys.argv:
+            run("git", "-C", clone, "fetch", "--depth", "1", "origin", v["branch"])
             run("git", "-C", clone, "reset", "--hard", "FETCH_HEAD")
-        build("cleanup", os.path.join(clone, "src"), {
-            "id": "cleanup", "label": "Community cleanup", "repo": REPO, "sha": git(clone, "rev-parse", "HEAD"),
-            "prefix": "src/", "date": git(clone, "log", "-1", "--format=%cI")[:10],
-        }, ("--train-cache", os.path.join(ROOT, "data", "cache")))
+        # labels written for this version's directories, when its paths differ from the original's
+        labels = os.path.join(ROOT, "data", "labels-" + v["id"])
+        extra = ("--train-cache", os.path.join(ROOT, "data", "cache"))
+        if os.path.isdir(labels):
+            extra += ("--labels", labels)
+        build(v["id"], os.path.join(clone, v["src"]), {
+            **source, "sha": git(clone, "rev-parse", "HEAD"), "date": git(clone, "log", "-1", "--format=%cI")[:10],
+        }, extra)
     # the page's version switch reads this list
     versions = []
-    for version, folder in (("original", "data"), ("cleanup", "data/cleanup")):
-        path = os.path.join(ROOT, "site", folder, "meta.json")
+    for v in VERSIONS:
+        data = "/".join(["data", *folder(v["id"])]) + "/"
+        path = os.path.join(ROOT, "site", data, "meta.json")
         if os.path.exists(path):
             meta = json.load(open(path))
-            versions.append({**meta["source"], "data": folder + "/", "modules": meta["files"], "lines": meta["totals"]["lines"],
+            versions.append({**meta["source"], "data": data, "modules": meta["files"], "lines": meta["totals"]["lines"],
                              "printed": meta["printed"]})
     json.dump(versions, open(os.path.join(ROOT, "site", "data", "versions.json"), "w"), indent=1)
-    print(versions)
+    print([(v["id"], v["modules"]) for v in versions])
 
 
 if __name__ == "__main__":
