@@ -196,11 +196,14 @@ button.link:hover { text-decoration: underline; }
   .control { flex-wrap: nowrap; min-width: 0; max-width: 100%; }
   .control.bend { margin-left: 0; }
   /* the checks table becomes one block per source */
-  #checks-table, #checks-table tbody, #checks-table tr, #checks-table td { display: block; }
-  #checks-table tr:first-child { display: none; }
-  #checks-table tr { border-bottom: 1px solid var(--rule); padding: 8px 0; }
-  #checks-table td { border: 0; padding: 2px 0; }
-  #checks-table td[data-label]:not(:first-child)::before { content: attr(data-label) ": "; color: var(--ink-2); font-size: 0.84rem; }
+  #checks-table, #checks-table tbody, #checks-table tr, #checks-table td,
+  #always-table, #always-table tbody, #always-table tr, #always-table td { display: block; }
+  #checks-table tr:first-child, #always-table tr:first-child { display: none; }
+  #checks-table tr, #always-table tr { border-bottom: 1px solid var(--rule); padding: 8px 0; }
+  #checks-table td, #always-table td { border: 0; padding: 2px 0; text-align: left; }
+  #checks-table td[data-label]:not(:first-child)::before,
+  #always-table td[data-label]:not(:first-child)::before { content: attr(data-label) ": "; color: var(--ink-2); font-size: 0.84rem; }
+  #always-table td.na { display: none; }
 }
 
 /* timeline steps: a plain list in columns; each row lines up dot, number, title and module count */
