@@ -16,7 +16,7 @@ import sys
 from concurrent.futures import ThreadPoolExecutor
 
 CHUNK = 2000
-WORKERS = 4
+WORKERS = int(os.environ.get("USAGE_WORKERS") or 4)  # each worker maps every library file it reads
 
 
 def oleans(root):

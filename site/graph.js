@@ -66,13 +66,28 @@ export async function renderGraph() {
       { selector: "edge.lit", style: { opacity: 1, "line-color": ink, "target-arrow-color": ink } },
     ],
   });
+  // label size in graph units for a given zoom, so labels are the same size on screen at any zoom
+  const setLabelSize = (z) => cy.style().selector("node").style({ "font-size": 14 / z, "text-max-width": 150 / z, "text-margin-y": 4 / z })
+    .selector("node[?main]").style({ "font-size": 16 / z }).update();
   // Directories with no arrow are set out in a grid under the graph, so the layout only has to place the linked ones.
   const strays = cy.nodes().filter((n) => n.degree() === 0 && !n.isParent() && !n.hasClass("part"));
   const linked = cy.elements().not(strays);
   // a small graph (the rewrite) gets more room per circle, so labels and circles do not overlap
-  linked.layout({ name: "fcose", animate: false, randomize: true, quality: "proof", nodeSeparation: roomy ? 220 : 140, idealEdgeLength: roomy ? 260 : 170, nodeRepulsion: roomy ? 450000 : 60000, padding: 24, nodeDimensionsIncludeLabels: true,
+  const layoutOptions = { name: "fcose", animate: false, quality: "proof", nodeSeparation: roomy ? 160 : 140, idealEdgeLength: roomy ? 180 : 170, nodeRepulsion: roomy ? 150000 : 60000, padding: 24, nodeDimensionsIncludeLabels: true,
     // inside the New and Lib boxes, a weak pull to the box's centre so its circles spread out
-    nestingFactor: 1, gravityCompound: 0.05, gravityRangeCompound: 6 }).run();
+    nestingFactor: 1, gravityCompound: 0.05, gravityRangeCompound: 6 };
+  linked.layout({ ...layoutOptions, randomize: true }).run();
+  // Labels are drawn at a fixed size on screen, so once the zoom is known they are larger in graph units
+  // than the first layout assumed. Set them to that size and lay out again from the same positions, so
+  // the layout makes room for the labels as they will be drawn.
+  cy.resize();
+  if (cy.width() && cy.height()) {
+    cy.fit(linked, 24);
+    if (cy.zoom() > 0) {
+      setLabelSize(cy.zoom());
+      linked.layout({ ...layoutOptions, randomize: false }).run();
+    }
+  }
   if (strays.length) {
     // at most five to a row, so each name has room at the size it is drawn on screen
     const box = linked.boundingBox(), perRow = Math.min(5, strays.length), stepX = box.w / perRow, stepY = 150;
@@ -87,8 +102,7 @@ export async function renderGraph() {
     cy.fit(undefined, 24);
     const z = cy.zoom();
     if (!(z > 0)) return;
-    cy.style().selector("node").style({ "font-size": 14 / z, "text-max-width": 150 / z, "text-margin-y": 4 / z })
-      .selector("node[?main]").style({ "font-size": 16 / z }).update();
+    setLabelSize(z);
   };
   fit();
   $("graph").cy = cy; // lets the graph be inspected from the browser console
