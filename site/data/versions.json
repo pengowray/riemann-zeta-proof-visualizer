@@ -2,18 +2,18 @@
  {
   "id": "original",
   "label": "Original release",
-  "repo": "leanprover-community/riemann-hypothesis",
-  "sha": "40e56bab026552e089d7afcfeff08d2defb9c005",
-  "prefix": "src/",
-  "date": "2026-11-20",
   "family": "Original",
   "short": "Release",
+  "repo": "leanprover-community/riemann-hypothesis",
   "statements": "Statements.lean",
   "main": "Main.lean",
   "features": [
    "steps",
    "checks"
   ],
+  "prefix": "src/",
+  "sha": "40e56bab026552e089d7afcfeff08d2defb9c005",
+  "date": "2026-11-20",
   "data": "data/",
   "modules": 175187,
   "lines": 17374215,
@@ -25,8 +25,8 @@
    "text": 310073,
    "xzBytes": 145252336,
    "xzPages": 40348,
-   "compiledBytes": 0,
-   "compiledPages": 0
+   "compiledBytes": 94586330328,
+   "compiledPages": 26273981
   }
  },
  {
@@ -44,6 +44,7 @@
   "prefix": "src/",
   "sha": "756a70250dcba9162b99d4ea35c186558434c17e",
   "date": "2026-11-26",
+  "compare": false,
   "data": "data/cleanup/",
   "modules": 58947,
   "lines": 13710054,
@@ -57,8 +58,7 @@
    "xzPages": 31281,
    "compiledBytes": 9235609776,
    "compiledPages": 2565448
-  },
-  "compare": false
+  }
  },
  {
   "id": "main",
