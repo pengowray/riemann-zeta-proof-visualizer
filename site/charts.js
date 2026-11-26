@@ -1,9 +1,9 @@
 // The charts and tables in the sections below the map. Loaded after the map has painted.
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.16/+esm";
-import { REPO, SOURCE, VERSION, SETTINGS, listed, versionUrl, dateFmt, $, fmt, pct, bytesFmt, esc, meta, N, col, ones, dirs, FAMILIES, fieldFamily, KIND_COLOURS, isDark, cssVar, state, names, pathOf, dirSum } from "./data.js";
+import { REPO, SOURCE, VERSION, SETTINGS, PARTS, partOf, listed, versionUrl, dateFmt, $, fmt, pct, bytesFmt, plural, esc, meta, N, col, ones, dirs, FAMILIES, fieldFamily, KIND_COLOURS, isDark, cssVar, state, names, pathOf, dirSum } from "./data.js";
 import { KEYWORDS } from "./speech.js";
-import { maskWhere, setPreview, luminance, setMask, labelOf, famOf, famColour } from "./map.js";
+import { maskWhere, setPreview, luminance, setMask, labelOf, famOf, famColour, segmented } from "./map.js";
 
 // ---------------------------------------------------------------- sections below the map
 export const plotStyle = () => ({ background: "transparent", color: cssVar("--ink"), fontFamily: cssVar("--serif"), fontSize: "13px", overflow: "visible" });
@@ -59,7 +59,7 @@ function renderPrinted() {
       + [...rows, ...extra].map(([label, pages]) => `<tr><td>${label}</td><td class="num">${fmt(pages)}</td><td class="num">${stack(pages)}</td></tr>`).join("");
   };
   // the other versions in the same layout, for comparison
-  draw(listed.filter((v) => v.id !== VERSION && v.printed).map((v) =>
+  draw(listed.filter((v) => v.id !== VERSION && v.printed && v.compare !== false).map((v) =>
     [`<a href="${versionUrl(v.id)}#printed">${esc(v.label)}</a> of ${dateFmt(v.date)}: A4 listing, modules printed one after another`, v.printed.a4]));
 }
 
@@ -75,6 +75,11 @@ function renderConstProps() {
   $("always-note").textContent = exact
     ? `Counts are exact, read from Lean's compiled files at commit ${SOURCE.sha.slice(0, 7)}. The five theorems depend on ${fmt(c.reached)} of the ${fmt(c.declarations)} declarations, directly or through other declarations.`
     : "Counts are estimated from the Lean text. A module is counted as using a definition when its text contains a name that could refer to that definition. The text alone cannot show whether the five theorems depend on a definition.";
+  // other values that are the same for every input, from the text estimate
+  const numbers = c.numberFunctions || [];
+  $("always-more").innerHTML = (c.disguised !== undefined ? `<p>${c.disguised ? `${plural(c.disguised, "proposition or set is", "propositions or sets are")} defined as <code>⊤</code>, <code>⊥</code>, <code>Set.univ</code> or <code>∅</code>, which is <code>True</code> or <code>False</code> under another name.` : "No proposition or set is defined as <code>⊤</code>, <code>⊥</code>, <code>Set.univ</code> or <code>∅</code>, which would be <code>True</code> or <code>False</code> under another name."}</p>` : "")
+    + (numbers.length ? `<details><summary>${plural(numbers.length, "function returns", "functions return")} the same number for every input, such as a zero map. These are ordinary in mathematics and are listed for completeness.</summary>
+      <table class="data"><tr><th>Definition</th><th>Value</th><th>Type</th></tr>${numbers.map((d) => `<tr><td><code>${breakable(d.name, ".")}</code><br><span class="note mono">${breakable(d.file, "/")}</span></td><td><code>${esc(d.value)}</code></td><td><code>${breakable(d.type, " ")}</code></td></tr>`).join("")}</table></details>` : "");
   if (!c.defs.length) { $("always-none").hidden = false; $("always-table")?.remove(); return; }
   const dash = `<span class="none">–</span>`;
   // the "assumed" column applies only to always-False definitions; leave it out when there are none
@@ -122,14 +127,30 @@ export function renderCharts() {
   }));
 
   // --- top-level libraries
-  // with only a few top-level directories (the rewrite has Lib and New), list the directories inside them
-  const topLevel = dirs.filter((d) => d.depth === 1);
+  // with only a few top-level directories (the rewrite has Lib and New), list the directories inside them,
+  // under a heading row for each top-level directory unless the reader combines them into one list
+  const topLevel = PARTS.length ? [...PARTS, ...dirs.filter((d) => d.depth === 1 && !PARTS.includes(d))] : dirs.filter((d) => d.depth === 1);
   const libDepth = topLevel.length < 4 && dirs.some((d) => d.depth === 2) ? 2 : 1;
-  if (libDepth === 2) $("lib-heading").innerHTML = `By directory, inside ${topLevel.map((d) => `<code>${esc(d.name)}</code>`).join(" and ")}`;
   const libs = dirs.filter((d) => d.depth === libDepth).map((d) => ({ d, modules: d.end - d.start, lines: dirSum(d, "lines"), bytes: dirSum(d, "bytes"), decls: dirSum(d, "decls") })).sort((a, b) => b.bytes - a.bytes);
   const maxB = libs[0].bytes;
-  $("lib-table").innerHTML = `<tr><th>Library</th><th class="num">Modules</th><th class="num">Lines</th><th class="num">Declarations</th><th>Size</th></tr>`
-    + libs.map((l) => `<tr class="hoverable" data-preview-dir="${l.d.i}"><td>${esc(libDepth === 2 ? l.d.path : l.d.name)}</td><td class="num">${fmt(l.modules)}</td><td class="num">${fmt(l.lines)}</td><td class="num">${fmt(l.decls)}</td><td><span class="bar" style="width:${(260 * l.bytes) / maxB}px;background:${cssVar("--ink-3")}"></span>${bytesFmt(l.bytes)} (${pct(l.bytes / meta.totals.bytes)})</td></tr>`).join("");
+  const libRow = (l) => `<tr class="hoverable" data-preview-dir="${l.d.i}"><td>${esc(libDepth === 2 ? l.d.path : l.d.name)}</td><td class="num">${fmt(l.modules)}</td><td class="num">${fmt(l.lines)}</td><td class="num">${fmt(l.decls)}</td><td><span class="bar" style="width:${(260 * l.bytes) / maxB}px;background:${cssVar("--ink-3")}"></span>${bytesFmt(l.bytes)} (${pct(l.bytes / meta.totals.bytes)})</td></tr>`;
+  const libHead = `<tr><th>${libDepth === 2 ? "Directory" : "Library"}</th><th class="num">Modules</th><th class="num">Lines</th><th class="num">Declarations</th><th>Size</th></tr>`;
+  const drawLibs = (separate) => {
+    $("lib-table").innerHTML = libHead + (separate
+      ? topLevel.map((t) => `<tr class="group-row hoverable" data-preview-dir="${t.i}"><td colspan="5"><b>${esc(t.name)}</b> · ${plural(t.end - t.start, "module")} · ${bytesFmt(dirSum(t, "bytes"))}</td></tr>`
+          + libs.filter((l) => l.d.parent === t.i).map(libRow).join("")).join("")
+      : libs.map(libRow).join(""));
+  };
+  if (libDepth === 2) {
+    const names = topLevel.map((d) => `<code>${esc(d.name)}</code>`).join(" and ");
+    $("lib-heading").innerHTML = `By directory, inside ${names}`;
+    let separate = true;
+    $("lib-combine").hidden = false;
+    const label = () => { $("lib-combine").textContent = separate ? `Combine ${topLevel.map((d) => d.name).join(" and ")} into one list` : `List ${topLevel.map((d) => d.name).join(" and ")} separately`; };
+    $("lib-combine").onclick = () => { separate = !separate; label(); drawLibs(separate); };
+    label();
+    drawLibs(true);
+  } else drawLibs(false);
 
   // --- why so many modules
   const kindCount = [0, 0, 0, 0], one = [0, 0];
@@ -140,12 +161,19 @@ export function renderCharts() {
   const edges = [1, 4, 10, 32, 100, 316, 1000, 1e9];
   const binLabel = (b) => (b === edges.length - 2 ? `${fmt(edges[b])}+` : `${fmt(edges[b])}–${fmt(edges[b + 1] - 1)}`);
   const lineBin = (i) => d3.bisectRight(edges, Math.max(col.lines[i], 1)) - 1;
-  const lengthRows = d3.rollups(d3.range(N), (v) => v.length, lineBin, (i) => (col.kind[i] === 1 ? 1 : 0))
-    .flatMap(([b, ks]) => ks.map(([kind, n]) => ({ bin: binLabel(b), b, kind: kind ? "Restates a theorem" : "Other modules", n })));
-  const kindScale = { domain: ["Other modules", "Restates a theorem"], range: [KIND_COLOURS[0][isDark() ? 1 : 0], KIND_COLOURS[1][isDark() ? 1 : 0]], legend: true };
+  // Bars are split into modules that restate a theorem and the others; a version with no restating
+  // modules but separate parts (the rewrite's New and Lib) splits them by part instead.
+  const byPart = !kindCount[1] && PARTS.length > 1;
+  const groupOf = byPart ? (i) => (partOf[i] < 0 ? PARTS.length : partOf[i]) : (i) => (col.kind[i] === 1 ? 1 : 0);
+  const groupNames = byPart ? [...PARTS.map((d) => d.name), "Top level"] : ["Other modules", "Restates a theorem"];
+  const groupColours = (byPart ? [KIND_COLOURS[0], KIND_COLOURS[2], KIND_COLOURS[3]] : [KIND_COLOURS[0], KIND_COLOURS[1]]).map((c) => c[isDark() ? 1 : 0]);
+  const groupCount = groupNames.map((_, g) => d3.sum(d3.range(N), (i) => (groupOf(i) === g ? 1 : 0)));
+  const lengthRows = d3.rollups(d3.range(N), (v) => v.length, lineBin, groupOf)
+    .flatMap(([b, ks]) => ks.map(([g, n]) => ({ bin: binLabel(b), b, kind: groupNames[g], n })));
+  const kindScale = { domain: groupNames.filter((_, g) => groupCount[g]), range: groupColours.filter((_, g) => groupCount[g]), legend: true };
   const tipOpts = { fill: cssVar("--paper"), stroke: cssVar("--ink-3") };
-  // hovering a bar shows that bar's modules on the maps, in the bar's two colours
-  const kindTint = { colours: kindScale.range, index: Uint8Array.from(col.kind, (k) => (k === 1 ? 1 : 0)) };
+  // hovering a bar shows that bar's modules on the maps, in the bar's colours
+  const kindTint = { colours: groupColours, index: Uint8Array.from(d3.range(N), groupOf) };
   const repBin = (i) => (col.repeat[i] === 255 ? -1 : Math.min(9, Math.floor(col.repeat[i] / 10)));
   const binTotal = (rows, b) => d3.sum(rows, (r) => (r.b === b ? r.n : 0));
   previewOnHover(mount("length-chart", Plot.plot({
@@ -153,8 +181,8 @@ export function renderCharts() {
     x: { label: "Lines in the module", labelAnchor: "center", labelArrow: "none", domain: d3.range(edges.length - 1).map(binLabel) }, y: { label: "Modules", grid: true, tickFormat: "~s" }, color: kindScale,
     marks: [Plot.barY(lengthRows, { x: "bin", y: "n", fill: "kind", order: kindScale.domain, insetLeft: 1, insetRight: 1, tip: tipOpts, title: (d) => `${fmt(d.n)} modules with ${d.bin} lines\n${d.kind}` }), Plot.ruleY([0])],
   })), (d) => ({ key: `lines${d.b}`, label: `${fmt(binTotal(lengthRows, d.b))} modules with ${d.bin} lines`, test: (i) => lineBin(i) === d.b, tint: kindTint }));
-  const repRows = d3.rollups(d3.range(N).filter((i) => col.repeat[i] !== 255), (v) => v.length, (i) => Math.min(9, Math.floor(col.repeat[i] / 10)), (i) => (col.kind[i] === 1 ? 1 : 0))
-    .flatMap(([b, ks]) => ks.map(([kind, n]) => ({ bin: `${b * 10}–${b * 10 + 10}`, b, kind: kind ? "Restates a theorem" : "Other modules", n })));
+  const repRows = d3.rollups(d3.range(N).filter((i) => col.repeat[i] !== 255), (v) => v.length, (i) => Math.min(9, Math.floor(col.repeat[i] / 10)), groupOf)
+    .flatMap(([b, ks]) => ks.map(([g, n]) => ({ bin: `${b * 10}–${b * 10 + 10}`, b, kind: groupNames[g], n })));
   previewOnHover(mount("repeat-chart", Plot.plot({
     style: plotStyle(), width: 520, height: 300, marginLeft: 60, marginBottom: 46,
     x: { label: "Share of the module that repeats its neighbour (%)", labelAnchor: "center", labelArrow: "none", domain: d3.range(10).map((b) => `${b * 10}–${b * 10 + 10}`) }, y: { label: "Modules", grid: true, tickFormat: "~s" }, color: kindScale,
@@ -166,18 +194,37 @@ export function renderCharts() {
   // --- areas of mathematics
   const fieldTotals = meta.fields.map(() => ({ modules: 0, lines: 0, bytes: 0 }));
   for (let i = 0; i < N; i++) { const t = fieldTotals[col.field[i]]; t.modules++; t.lines += col.lines[i]; t.bytes += col.bytes[i]; }
-  const objects = meta.fields.map(() => new Map());
-  meta.groups.forEach((g, gi) => { for (const o of g.objects) objects[g.field].set(o, (objects[g.field].get(o) || 0) + 1); });
-  const maxLines = d3.max(fieldTotals, (t) => t.lines);
-  const hasRead = meta.totals.randomN > 0; // the reading model's sample is from the original release
-  $("field-table").innerHTML = `<tr><th>Field</th><th class="num">Share of modules</th>${hasRead ? `<th class="num" title="Share of the ${fmt(meta.totals.randomN)} randomly sampled modules that a language model assigned to this field after reading them">Share in ${fmt(meta.totals.randomN)} modules read by a model</th>` : ""}<th>Lines</th></tr>`
-    + meta.fields.map((f, fi) => ({ f, fi, t: fieldTotals[fi] })).filter((r) => r.t.modules).sort((a, b) => b.t.lines - a.t.lines).map(({ f, fi, t }) =>
-      `<tr class="hoverable field-row" data-preview-field="${fi}"><td style="white-space:nowrap"><span class="sw" style="background:${famColour(fieldFamily[fi])}"></span>${esc(f.name)}</td><td class="num">${pct(t.modules / N)}</td>${hasRead ? `<td class="num">${pct(meta.totals.randomCounts[fi] / meta.totals.randomN)}</td>` : ""}
-       <td style="white-space:nowrap"><span class="bar" style="width:${(150 * t.lines) / maxLines}px;background:${famColour(fieldFamily[fi])}"></span>${fmt(t.lines)}</td></tr>
-       <tr class="hoverable objects-row" data-preview-field="${fi}"><td colspan="${hasRead ? 4 : 3}" class="objects">${[...objects[fi]].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([o]) => esc(o)).join(" · ") || "No objects named"}</td></tr>`).join("");
+  // the table can show one part of the version (the rewrite's New or Lib) or all of it
+  const drawFields = (part) => {
+    const inPart = (i) => part < 0 || partOf[i] === part;
+    const totals = meta.fields.map(() => ({ modules: 0, lines: 0 }));
+    let n = 0;
+    for (let i = 0; i < N; i++) if (inPart(i)) { const t = totals[col.field[i]]; t.modules++; t.lines += col.lines[i]; n++; }
+    const objects = meta.fields.map(() => new Map());
+    meta.groups.forEach((g) => {
+      if (part >= 0 && g.id.split("/")[0] !== PARTS[part].name) return;
+      for (const o of g.objects) objects[g.field].set(o, (objects[g.field].get(o) || 0) + 1);
+    });
+    const maxLines = d3.max(totals, (t) => t.lines);
+    const hasRead = meta.totals.randomN > 0 && part < 0; // the reading model's sample is from the original release
+    const partAttr = part >= 0 ? ` data-preview-part="${part}"` : "";
+    $("field-table").innerHTML = `<tr><th>Field</th><th class="num">Share of modules</th>${hasRead ? `<th class="num" title="Share of the ${fmt(meta.totals.randomN)} randomly sampled modules that a language model assigned to this field after reading them">Share in ${fmt(meta.totals.randomN)} modules read by a model</th>` : ""}<th>Lines</th></tr>`
+      + meta.fields.map((f, fi) => ({ f, fi, t: totals[fi] })).filter((r) => r.t.modules).sort((a, b) => b.t.lines - a.t.lines).map(({ f, fi, t }) =>
+        `<tr class="hoverable field-row" data-preview-field="${fi}"${partAttr}><td style="white-space:nowrap"><span class="sw" style="background:${famColour(fieldFamily[fi])}"></span>${esc(f.name)}</td><td class="num">${pct(t.modules / n)}</td>${hasRead ? `<td class="num">${pct(meta.totals.randomCounts[fi] / meta.totals.randomN)}</td>` : ""}
+         <td style="white-space:nowrap"><span class="bar" style="width:${(150 * t.lines) / maxLines}px;background:${famColour(fieldFamily[fi])}"></span>${fmt(t.lines)}</td></tr>
+         <tr class="hoverable objects-row" data-preview-field="${fi}"${partAttr}><td colspan="${hasRead ? 4 : 3}" class="objects">${[...objects[fi]].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([o]) => esc(o)).join(" · ") || "No objects named"}</td></tr>`).join("");
+  };
+  const fieldParts = PARTS.length > 1 ? [{ label: PARTS.length === 2 ? "Both" : "All", part: -1 }, ...PARTS.map((d, p) => ({ label: d.name, part: p }))] : [];
+  let fieldPart = fieldParts[0];
+  if (fieldParts.length) {
+    $("field-part").hidden = false;
+    segmented($("field-part-seg"), fieldParts, () => fieldPart, (m) => { fieldPart = m; drawFields(m.part); });
+  }
+  drawFields(-1);
 
   // --- imports between fields
-  const used = meta.fields.map((f, fi) => fi).filter((fi) => fieldTotals[fi].modules > 100);
+  // fields with enough modules to show: 100 in the original release, 1% of the modules in a small version
+  const used = meta.fields.map((f, fi) => fi).filter((fi) => fieldTotals[fi].modules > Math.min(100, N / 100));
   const cells = [];
   let same = 0, total = 0;
   meta.fieldMatrix.forEach((row, a) => row.forEach((n, b) => { total += n; if (a === b) same += n; }));

@@ -47,6 +47,11 @@ for (const d of dirs) {
 }
 export const leafDir = new Uint16Array(N);
 for (const d of dirs) for (let i = d.start; i < d.start + d.count; i++) leafDir[i] = d.i;
+// Top-level directories that the version's settings treat as separate parts (the rewrite's New and Lib),
+// in map order, and which part each module is in (-1: a file at the top level, such as Main.lean).
+export const PARTS = (SETTINGS.mapOrder || []).map((name) => dirs.find((d) => d.depth === 1 && d.name === name)).filter(Boolean);
+export const partOf = new Int8Array(N).fill(-1);
+PARTS.forEach((d, p) => { for (let i = d.start; i < d.end; i++) partOf[i] = p; });
 
 // Fields are folded into eight colour families (a treemap cannot keep 17 hues apart).
 export const FAMILIES = [

@@ -278,3 +278,7 @@ table.data .none { color: var(--ink-3); }
 #always-table td:first-child .note { font-size: 0.78rem; }
 /* an always-False definition is the exception in the table */
 #always-table code.exception { font-weight: 700; }
+/* a top-level directory's heading row inside the directory table */
+table.data tr.group-row td { padding-top: 14px; border-bottom: 1px solid var(--ink-3); }
+#always-more summary { cursor: pointer; }
+#always-more table td:first-child { overflow-wrap: break-word; }

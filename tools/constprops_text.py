@@ -10,6 +10,10 @@ A definition counts when its value, after any `fun x =>` binders, is `True` or `
 names it by a dotted suffix of its full name (`M.Sw`), or names it bare (`Sw`) while it is inside
 or has opened the definition's namespace (or the definition has none). A hypothesis is an argument
 whose type starts with the definition's name, such as `(Ψ : Sw)`.
+
+It also lists functions that return the same number for every input (a value of 0 or 1 after
+`fun x =>` binders, or a definition with arguments whose value is 0 or 1), such as zero maps, and
+counts propositions or sets defined as ⊤, ⊥, Set.univ or ∅, which would be True or False in disguise.
 """
 import json
 import os
@@ -24,11 +28,14 @@ SCOPE = re.compile(r"^(namespace|section|end)\b[ \t]*([^\s-]*)", re.M)
 OPEN = re.compile(r"^\s*open\s+(?:scoped\s+)?([^\n(]+)", re.M)
 COMMENT = re.compile(r"/-.*?-/|--[^\n]*", re.S)
 BODY = re.compile(r"^(?:(?:fun|λ)\s[^=]*?(?:=>|↦)\s*)?\(?\s*(True|False)\s*\)?$", re.S)
+LAM = r"(?:(?:fun|λ)\s[^=]*?(?:=>|↦)\s*)"
+OTHER = re.compile(rf"^({LAM})?\(?\s*(⊤|⊥|Set\.univ|∅|0|1|\((?:0|1)\s*:\s*[^)]*\))\s*\)?$", re.S)
 IDENT = re.compile(r"[A-Za-z_Ͱ-Ͽἀ-῿][\w'!?₀-ₜͰ-Ͽ.]*")
 NEXT = re.compile(r"^\S", re.M)
 
 
-def value_of(block):
+def split(block):
+    """(signature, value) of a declaration, split at the first ":=" outside brackets."""
     depth = 0
     for j, ch in enumerate(block):
         if ch in "([{⟨":
@@ -36,8 +43,8 @@ def value_of(block):
         elif ch in ")]}⟩":
             depth -= 1
         elif ch == ":" and depth == 0 and block[j + 1:j + 2] == "=":
-            return block[j + 2:]
-    return None
+            return block[:j], block[j + 2:]
+    return None, None
 
 
 def namespaces_at(text):
@@ -59,18 +66,34 @@ def find(args):
     root, rel = args
     text = COMMENT.sub("", open(os.path.join(root, rel), encoding="utf-8", errors="replace").read())
     scopes = namespaces_at(text)
-    defs = []
+    defs, numbers, disguised = [], [], 0
     for m in DECL.finditer(text):
         nxt = NEXT.search(text, text.find("\n", m.end()) + 1 or len(text))
-        value = value_of(text[m.start():nxt.start() if nxt else len(text)])
-        c = BODY.match(" ".join(value.split())) if value else None
+        sig, value = split(text[m.start():nxt.start() if nxt else len(text)])
+        if value is None:
+            continue
+        value = " ".join(value.split())
+        ns = [s for p, s in scopes if p <= m.start()][-1]
+        name = m.group(2)[len("_root_."):] if m.group(2).startswith("_root_.") else (ns + "." + m.group(2) if ns else m.group(2))
+        line = text.count("\n", 0, m.start()) + 1
+        c = BODY.match(value)
         if c:
-            ns = [s for p, s in scopes if p <= m.start()][-1]
-            name = m.group(2).lstrip("_root_.") if m.group(2).startswith("_root_.") else (ns + "." + m.group(2) if ns else m.group(2))
-            defs.append({"name": name, "file": rel, "value": c.group(1), "line": text.count("\n", 0, m.start()) + 1})
+            defs.append({"name": name, "file": rel, "value": c.group(1), "line": line})
+            continue
+        o = OTHER.match(value)
+        if not o:
+            continue
+        sig = " ".join(sig.split())
+        typ = sig.rsplit(":", 1)[-1].strip() if ":" in sig else ""
+        const = o.group(2)
+        if const in ("⊤", "⊥", "Set.univ", "∅"):
+            # only a proposition or a set counts; ⊤ and ⊥ of a lattice (a topology, say) are ordinary values
+            disguised += bool(re.search(r"(\bProp|\bSet\b[^→]*)$", typ))
+        elif o.group(1) or re.search(r"\s[({\[]", sig[len(m.group(0)):]):
+            numbers.append({"name": name, "file": rel, "value": const.split(":")[0].strip("( "), "type": typ[:80], "line": line})
     opened = {o for line in OPEN.findall(text) for o in line.split()}
     inside = {s for _, s in scopes if s}
-    return defs, set(IDENT.findall(text)), opened | inside
+    return defs, numbers, disguised, set(IDENT.findall(text)), opened | inside
 
 
 def mentions(name, words, scopes):
@@ -91,10 +114,12 @@ def main():
     workers = max(1, (os.cpu_count() or 2) // 2)
     with Pool(workers) as pool:
         scanned = pool.map(find, [(root, f) for f in files], chunksize=200)
-    defs = [d for ds, _, _ in scanned for d in ds]
+    defs = [d for ds, _, _, _, _ in scanned for d in ds]
+    numbers = [d for _, ns, _, _, _ in scanned for d in ns]
+    disguised = sum(x for _, _, x, _, _ in scanned)
     hyp = {d["name"]: re.compile(r":\s*(?:[\w.]*\.)?" + re.escape(d["name"].split(".")[-1]) + r"\b") for d in defs if d["value"] == "False"}
     for d in defs:
-        d["mentionModules"] = [f for (ds, words, scopes), f in zip(scanned, files)
+        d["mentionModules"] = [f for (_, _, _, words, scopes), f in zip(scanned, files)
                                if f != d["file"] and mentions(d["name"], words, scopes)]
         d["hypModules"] = 0
     for d in defs:
@@ -102,7 +127,9 @@ def main():
             pat = hyp[d["name"]]
             d["hypModules"] = sum(1 for f in d["mentionModules"]
                                   if pat.search(open(os.path.join(root, f), encoding="utf-8", errors="replace").read()))
-    json.dump({"modules": len(files), "defs": defs}, open(out, "w"), ensure_ascii=False, indent=1)
+    json.dump({"modules": len(files), "defs": defs, "numberFunctions": numbers, "disguised": disguised},
+              open(out, "w"), ensure_ascii=False, indent=1)
+    print(len(numbers), "functions that return the same number;", disguised, "propositions or sets defined as ⊤, ⊥, Set.univ or ∅")
     for d in sorted(defs, key=lambda d: -len(d["mentionModules"])):
         print(d["value"], d["name"], len(d["mentionModules"]), d["hypModules"], d["file"])
 

@@ -57,7 +57,8 @@
    "xzPages": 31281,
    "compiledBytes": 9235609776,
    "compiledPages": 2565448
-  }
+  },
+  "compare": false
  },
  {
   "id": "main",

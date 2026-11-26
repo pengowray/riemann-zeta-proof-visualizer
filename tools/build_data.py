@@ -530,6 +530,12 @@ def main():
              "hyp": d["hypModules"], "used": None, "inProof": None} for d in text_cp["defs"]]}
     if const_props:
         const_props["defs"].sort(key=lambda d: (-len(d["modules"]), d["name"]))
+        # functions that return the same number for every input, and True or False spelled another way
+        # (⊤, ⊥, Set.univ, ∅), from the text estimate
+        if os.path.exists(cp_text):
+            text_cp = json.load(open(cp_text))
+            const_props["numberFunctions"] = [{k: d[k] for k in ("name", "file", "value", "type")} for d in text_cp.get("numberFunctions", [])]
+            const_props["disguised"] = text_cp.get("disguised", 0)
 
     # ---- page counts if the source were printed (see the "If it were printed" section of the page)
     def pages_of(per_page, key):

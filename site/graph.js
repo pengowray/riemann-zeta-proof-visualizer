@@ -1,6 +1,6 @@
 // The import graph of the main directories.
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
-import { SETTINGS, $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, FAMILIES, moduleFamily, cssVar, state } from "./data.js";
+import { SETTINGS, PARTS, $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, FAMILIES, moduleFamily, cssVar, state } from "./data.js";
 import { maskWhere, setPreview, famColour } from "./map.js";
 
 // ---------------------------------------------------------------- import graph of regions
@@ -31,7 +31,14 @@ export async function renderGraph() {
   // in the region "New") are where the proof ends: always shown, with every link they have
   const ends = new Set([mainRegion, finalRegion, ...d3.range(R).filter((r) => mainRegion !== undefined && M[mainRegion][r] > 0 && stats[r].modules < 5)]);
   const shown = d3.range(R).filter((r) => stats[r].modules >= 5 || ends.has(r));
-  const elements = shown.map((r) => ({ data: { id: "r" + r, r, main: r === mainRegion ? 1 : 0, label: r === mainRegion ? SETTINGS.main : meta.regions[r].split("/").pop().replace(/([a-z])([A-Z])/g, "$1 $2"), size: 18 + Math.sqrt(stats[r].bytes / 1e6) * 7, colour: famColour(d3.maxIndex(stats[r].fam)) } }));
+  // circles sized by bytes; a small version's directories are small in bytes, so its circles are sized
+  // relative to its largest directory instead
+  const roomy = shown.length < 60, maxBytes = d3.max(shown, (r) => stats[r].bytes);
+  const circleSize = (bytes) => (roomy ? 22 + Math.sqrt(bytes / maxBytes) * 46 : 18 + Math.sqrt(bytes / 1e6) * 7);
+  // With separate parts (the rewrite's New and Lib), each part's directories sit inside a box for that part.
+  const partOfRegion = (r) => PARTS.findIndex((d) => meta.regions[r].split("/")[0] === d.name);
+  const parents = PARTS.length > 1 ? PARTS.map((d, k) => ({ data: { id: "part" + k, label: d.name, size: 1, colour: "#000" }, classes: "part" })) : [];
+  const elements = [...parents, ...shown.map((r) => ({ data: { id: "r" + r, r, ...(parents.length && partOfRegion(r) >= 0 ? { parent: "part" + partOfRegion(r) } : {}), main: r === mainRegion ? 1 : 0, label: r === mainRegion ? SETTINGS.main : meta.regions[r].split("/").pop().replace(/([a-z])([A-Z])/g, "$1 $2"), size: circleSize(stats[r].bytes), colour: famColour(d3.maxIndex(stats[r].fam)) } }))];
   // an edge needs at least 20 imports in the original; the rewrite has about 1% as many imports, so fewer will do
   const minEdge = Math.max(3, Math.min(20, Math.round(meta.totals.importEdges / 2000)));
   let drawn = 0, crossTotal = 0;
@@ -44,7 +51,7 @@ export async function renderGraph() {
       if ((M[a][b] >= minEdge && M[a][b] >= 0.04 * out) || (M[a][b] > 0 && ends.has(a))) { elements.push({ data: { id: `e${a}_${b}`, source: "r" + a, target: "r" + b, n: M[a][b], w: 0.6 + Math.log10(M[a][b]) * 1.1 } }); drawn += M[a][b]; }
     }
   }
-  $("graph-text").textContent = `Each circle is a directory, sized by its bytes and coloured by its most common field. An arrow from A to B means modules in A import modules in B. The ${fmt(elements.length - shown.length)} arrows drawn carry ${pct(drawn / crossTotal)} of the imports between these directories; weaker links are left out. The ringed circle is ${SETTINGS.main}, where the final theorems are stated. Point at a circle to see that directory on the map. Circles can be dragged.`;
+  $("graph-text").textContent = `Each circle is a directory, sized by its bytes and coloured by its most common field.${parents.length ? ` The boxes hold the directories of ${PARTS.map((d) => d.name).join(" and ")}.` : ""} An arrow from A to B means modules in A import modules in B. The ${fmt(elements.length - shown.length - parents.length)} arrows drawn carry ${pct(drawn / crossTotal)} of the imports between these directories; weaker links are left out. The ringed circle is ${SETTINGS.main}, where the final theorems are stated. Point at a circle to see that directory on the map. Circles can be dragged.`;
   const ink = cssVar("--ink"), ink3 = cssVar("--ink-3");
   const cy = cytoscape({
     container: $("graph"), elements,
@@ -54,14 +61,18 @@ export async function renderGraph() {
       { selector: "edge", style: { width: "data(w)", "line-color": ink3, "target-arrow-color": ink3, "target-arrow-shape": "triangle", "arrow-scale": 1.5, "curve-style": "bezier", opacity: 0.45 } },
       { selector: "node[?main]", style: { "border-width": 4, "border-color": ink, "border-style": "double", "font-weight": 600, "font-size": 17, width: 34, height: 34 } },
       { selector: "node.caption", style: { "background-opacity": 0, width: 1, height: 1, "text-valign": "center", color: ink, "text-max-width": 400, events: "no" } },
+      { selector: "node.part", style: { shape: "round-rectangle", "background-color": cssVar("--paper-3"), "background-opacity": 0.5, "border-width": 1, "border-color": ink3, "text-valign": "top", "text-halign": "center", "font-weight": 600, padding: 28 } },
       { selector: ".dim", style: { opacity: 0.08 } },
       { selector: "edge.lit", style: { opacity: 1, "line-color": ink, "target-arrow-color": ink } },
     ],
   });
   // Directories with no arrow are set out in a grid under the graph, so the layout only has to place the linked ones.
-  const strays = cy.nodes().filter((n) => n.degree() === 0);
+  const strays = cy.nodes().filter((n) => n.degree() === 0 && !n.isParent() && !n.hasClass("part"));
   const linked = cy.elements().not(strays);
-  linked.layout({ name: "fcose", animate: false, randomize: true, quality: "proof", nodeSeparation: 140, idealEdgeLength: 170, nodeRepulsion: 60000, padding: 24, nodeDimensionsIncludeLabels: true }).run();
+  // a small graph (the rewrite) gets more room per circle, so labels and circles do not overlap
+  linked.layout({ name: "fcose", animate: false, randomize: true, quality: "proof", nodeSeparation: roomy ? 220 : 140, idealEdgeLength: roomy ? 260 : 170, nodeRepulsion: roomy ? 450000 : 60000, padding: 24, nodeDimensionsIncludeLabels: true,
+    // inside the New and Lib boxes, a weak pull to the box's centre so its circles spread out
+    nestingFactor: 1, gravityCompound: 0.05, gravityRangeCompound: 6 }).run();
   if (strays.length) {
     // at most five to a row, so each name has room at the size it is drawn on screen
     const box = linked.boundingBox(), perRow = Math.min(5, strays.length), stepX = box.w / perRow, stepY = 150;

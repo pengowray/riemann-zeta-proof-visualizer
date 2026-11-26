@@ -40,6 +40,7 @@ ORIGINAL_SHA = "40e56bab026552e089d7afcfeff08d2defb9c005"  # tip of the reposito
 #   features        optional sections: "steps" (jae-63's blueprint, which names the original's paths),
 #                   "checks" (independent checks of the original), "changes" (comparison with the original)
 #   hidden          left out of the version lists, but still shown at ?v=<id>
+#   compare         false: left out of the other versions' comparison rows (the printed-pages table)
 #   mapOrder        top-level directories to place first on the map, in this order (the rest follow)
 #   mathlibHub      the one module the others reach Mathlib through, when the imports do not name Mathlib modules
 VERSIONS = [
@@ -48,7 +49,7 @@ VERSIONS = [
     # The community cleaned up the original here until 25 November 2026, then moved main to the rewrite.
     {"id": "cleanup", "label": "Original, community cleanup", "family": "Original", "short": "Community cleanup", "repo": REPO,
      "clone": "cleanup_clone", "branch": "alpoge", "src": "src/", "statements": "Statements.lean", "main": "Main.lean",
-     "features": ["steps", "changes"]},
+     "features": ["steps", "changes"], "compare": False},
     # main is a copy of grh-lean's readable edition (grh/) at commit 72fead1, cleaned up by the community.
     {"id": "main", "label": "Shorter rewrite, community cleanup", "family": "Shorter rewrite", "short": "Community cleanup", "repo": REPO,
      "clone": "main_clone", "branch": "main", "src": "src/", "statements": "Statements.lean", "main": "Main.lean",
@@ -68,7 +69,7 @@ VERSIONS = [
 
 
 # the settings copied into the page's data
-PAGE_KEYS = ("id", "label", "family", "short", "repo", "statements", "main", "features", "mathlibHub", "hidden", "mapOrder")
+PAGE_KEYS = ("id", "label", "family", "short", "repo", "statements", "main", "features", "mathlibHub", "hidden", "mapOrder", "compare")
 
 
 def run(*args, **kw):

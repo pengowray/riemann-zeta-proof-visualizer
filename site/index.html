@@ -99,6 +99,7 @@
   <ul id="space-key" class="key"></ul>
   <div id="space-chart" class="chart"></div>
   <h3 id="lib-heading">By top-level library</h3>
+  <button type="button" class="link" id="lib-combine" hidden></button>
   <table id="lib-table" class="data"></table>
 </section>
 
@@ -122,6 +123,7 @@
 <section id="fields">
   <h2>Areas of mathematics</h2>
   <p>Each module's field is predicted by a classifier from the Mathlib and project identifiers it uses. <span data-only="original cleanup">The prediction agrees with a language model's reading of the module about half the time (details under Sources and method).</span><span data-only="main grh compact jamesyc">The classifier was trained and tested on modules of the original release; it was not tested on this version, whose names differ.</span> Point at a row to see where that field sits on the map.</p>
+  <div class="control" id="field-part" hidden><span class="control-label">Modules in</span><div class="seg" id="field-part-seg" role="radiogroup" aria-label="Modules in"></div></div>
   <table id="field-table" class="data"></table>
   <p class="note" data-only="original cleanup">The line under each field lists objects and theorems named in the labels that a language model gave to each of 746 directories after reading a digest of its identifiers. Treat them as a guide, not a census.</p>
   <p class="note" data-only="jamesyc">The line under each field lists objects and theorems named in the labels written for this version's two directories from the names of their modules. Treat them as a guide, not a census.</p>
@@ -161,6 +163,7 @@
   <p id="always-none" hidden>This version has no definitions that are always <code>True</code> or always <code>False</code>.</p>
   <table id="always-table" class="data"></table>
   <p id="always-note" class="note"></p>
+  <div id="always-more"></div>
 </section>
 
 <section id="numbers">

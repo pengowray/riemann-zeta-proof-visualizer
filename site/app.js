@@ -2,7 +2,7 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import { renderLean } from "./speech.js";
 import { drawZeta } from "./zeta.js";
-import { VERSION, SOURCE, REPO, listed, ORIGINAL, SETTINGS, hasFeature, versionUrl, dateFmt, moduleFamily, rawUrl, $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, darkQuery, state, names, namesReady, termsReady } from "./data.js";
+import { VERSION, SOURCE, REPO, listed, PARTS, partOf, ORIGINAL, SETTINGS, hasFeature, versionUrl, dateFmt, moduleFamily, rawUrl, $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, darkQuery, state, names, namesReady, termsReady } from "./data.js";
 import { recolour, requestDraw, refreshMini, countMask, maskWhere, setMask, setPreview, renderLegend, chainMask, chainLabel } from "./map.js";
 import "./graph.js";
 
@@ -200,8 +200,9 @@ document.addEventListener("pointerover", (e) => {
   const row = e.target.closest?.("[data-preview-field],[data-preview-dir]");
   if (!row) { if (state.preview) setPreview(null); return; }
   if (row.dataset.previewField !== undefined) {
-    const fi = +row.dataset.previewField;
-    if (state.previewLabel !== meta.fields[fi].name) setPreview(maskWhere((i) => col.field[i] === fi), meta.fields[fi].name);
+    const fi = +row.dataset.previewField, part = row.dataset.previewPart;
+    const label = part === undefined ? meta.fields[fi].name : `${meta.fields[fi].name} in ${PARTS[+part].name}`;
+    if (state.previewLabel !== label) setPreview(maskWhere((i) => col.field[i] === fi && (part === undefined || partOf[i] === +part)), label);
   } else {
     const d = dirs[+row.dataset.previewDir];
     if (state.previewLabel !== d.name) setPreview(maskWhere((i) => i >= d.start && i < d.end), d.name);
