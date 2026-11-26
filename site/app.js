@@ -90,7 +90,7 @@ meta.terms.forEach((term, t) => {
   const b = document.createElement("button");
   const key = `term:${t}`;
   b.type = "button"; b.dataset.maskKey = key; b.setAttribute("aria-pressed", "false");
-  b.innerHTML = `${esc(term.label)}<span class="n">${fmt(term.files)}</span>`;
+  b.innerHTML = `${esc(term.label)}<span class="n">${plural(term.files, "module")}</span>`;
   const bytesPer = (N + 7) >> 3;
   const load = async () => { const bits = (await termsReady()).subarray(t * bytesPer, (t + 1) * bytesPer); return maskWhere((i) => (bits[i >> 3] >> (i & 7)) & 1); };
   b.onclick = async () => setMask(key, await load(), `${fmt(term.files)} modules that mention “${term.label}”`);

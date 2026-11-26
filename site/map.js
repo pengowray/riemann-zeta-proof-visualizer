@@ -428,11 +428,14 @@ if (PARTS.length > 1) {
 // Full screen shows the whole map section: controls, key and map. Where the browser refuses full screen
 // (inside some embedded browsers), the section fills the browser window instead.
 const fullLabel = () => { $("full-screen").textContent = document.fullscreenElement || document.body.classList.contains("map-full") ? "Exit full screen" : "Full screen"; };
-const fillWindow = (on) => { document.body.classList.toggle("map-full", on); fullLabel(); resize(); };
+// remember the controls' width on the page, so full screen lays them out the same way
+const keepControlsWidth = () => $("map").style.setProperty("--map-controls-width", document.querySelector("#map .controls").getBoundingClientRect().width + "px");
+const fillWindow = (on) => { if (on) keepControlsWidth(); document.body.classList.toggle("map-full", on); fullLabel(); resize(); };
 $("full-screen").onclick = () => {
   if (document.fullscreenElement) document.exitFullscreen();
   else if (document.body.classList.contains("map-full")) fillWindow(false);
   else if ($("map").requestFullscreen) {
+    keepControlsWidth();
     $("map").requestFullscreen().catch(() => fillWindow(true));
     // some embedded browsers neither enter full screen nor refuse it
     setTimeout(() => { if (!document.fullscreenElement && !document.body.classList.contains("map-full")) fillWindow(true); }, 500);

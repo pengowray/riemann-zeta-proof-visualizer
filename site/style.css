@@ -294,3 +294,5 @@ table.data tr.group-row td { padding-top: 14px; border-bottom: 1px solid var(--i
 body.map-full #map { position: fixed; inset: 0; z-index: 50; margin: 0; max-width: none; }
 #full-screen { font: inherit; font-size: 0.9rem; color: var(--ink); background: none; border: 1px solid var(--rule); padding: 4px 10px; cursor: pointer; }
 #full-screen:hover { border-color: var(--ink-3); }
+/* full screen keeps the controls at the width they have on the page, so they stay where the reader saw them */
+#map:fullscreen .controls, body.map-full #map .controls, #map:fullscreen #legend, body.map-full #map #legend { width: min(100%, var(--map-controls-width, 100%)); }

@@ -104,12 +104,19 @@ def scan_file(root, rel, prev_raw=b""):
     code_lines = sum(1 for s in LINE_COMMENT_RE.sub("", code).split("\n") if s.strip())
     # what the module's own comment says it is: its Markdown heading if it starts with one, otherwise
     # the first sentence of its first paragraph, with line breaks turned into spaces and Markdown marks dropped
+    # (The compact edition starts with shared "Part of: ..." paragraphs and describes the file itself in a
+    # paragraph that starts "This file:", which is used when present.)
     doc = MODULE_DOC_RE.search(text)
     doc = doc.group(1).strip() if doc else ""
-    if doc.startswith("#"):
+    own = re.search(r"(?:^|\n\s*\n)\s*This file:\s*(.*?)(?:\n\s*\n|$)", doc, re.S)
+    if own:
+        doc = SENTENCE_END_RE.split(" ".join(own.group(1).split()), 1)[0]
+    elif doc.startswith("#"):
         doc = doc.split("\n", 1)[0].lstrip("#").strip()
     elif doc:
         doc = SENTENCE_END_RE.split(" ".join(doc.split("\n\n", 1)[0].split()), 1)[0]
+    doc = re.sub(r"^Part of:\s*", "", doc)
+    doc = re.sub(r"\s*\((?:known result|textbook)[^)]*\)\.?$", "", doc)
     doc = doc.replace("`", "").replace("**", "")[:240]
 
     stripped = nocomment.strip()

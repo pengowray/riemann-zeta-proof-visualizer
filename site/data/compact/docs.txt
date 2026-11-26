@@ -1,794 +1,794 @@
 
 
-Part of: Self-duality of a number field in its adeles; strong approximation; Poisson inequality (known result; see Lib.Adelic.Adeles.OneSidedPoisson).
-Part of: Self-duality of a number field in its adeles; strong approximation; Poisson inequality (known result; see Lib.Adelic.Adeles.OneSidedPoisson).
-Part of: Adeles of a number field: base change, discreteness and compact quotient, modulus (known result; see Lib.Adelic.Adeles.IdeleHilbert90).
-Part of: Self-duality of a number field in its adeles; strong approximation; Poisson inequality (known result; see Lib.Adelic.Adeles.OneSidedPoisson).
-Part of: Adeles of a number field: base change, discreteness and compact quotient, modulus (known result; see Lib.Adelic.Adeles.IdeleHilbert90).
-Part of: Adeles of a number field: base change, discreteness and compact quotient, modulus (known result; see Lib.Adelic.Adeles.IdeleHilbert90).
-Part of: Adeles of a number field: base change, discreteness and compact quotient, modulus (known result; see Lib.Adelic.Adeles.IdeleHilbert90).
-Part of: Adeles of a number field: base change, discreteness and compact quotient, modulus (known result; see Lib.Adelic.Adeles.IdeleHilbert90).
-General lemmas of algebraic number theory (textbook or folklore).
-Part of: Adeles of a number field: base change, discreteness and compact quotient, modulus (known result; see Lib.Adelic.Adeles.IdeleHilbert90).
-Known result: base change, discreteness and compact quotient, and the modulus for the adeles of a number field.
-Part of: Adeles of a number field: base change, discreteness and compact quotient, modulus (known result; see Lib.Adelic.Adeles.IdeleHilbert90).
-Part of: Self-duality of a number field in its adeles; strong approximation; Poisson inequality (known result; see Lib.Adelic.Adeles.OneSidedPoisson).
-Part of: Adeles of a number field: base change, discreteness and compact quotient, modulus (known result; see Lib.Adelic.Adeles.IdeleHilbert90).
+Standard additive character: conductor is the different, non-degeneracy, field is own annihilator.
+Standard additive character of the adeles; normalised Haar measures; topological instances.
+Idempotents of sets of places, reduction maps, conjugation on integral finite adeles.
+Rational scalars and matrices are their own annihilators in the adeles.
+Topology of completions and finite adeles: local compactness, density of field, conjugation.
+Modulus of an idele: multiplicativity, continuity, product formula, invariance under conjugation.
+Haar modulus of ideles and adelic matrices is the adelic absolute value.
+Places, completions, adeles, integral adeles, maps under field embeddings, CM conjugation.
+Projection of finite adeles to finitely many places has a continuous additive section.
+Product of completions at finite set S: projection, section, measure, modulus, product formula.
+A minor of a generic matrix is a non-zero polynomial.
+Principal congruence subgroups form a neighbourhood basis of 1 in finite adelic GL_n.
+Additive strong approximation omitting finite places; density at infinite places.
+The adelic norm preserves the modulus; valuation of the local norm.
 Known result: self-duality of a number field in its adeles, strong approximation, and the Poisson inequality.
-Part of: Adeles of a number field: base change, discreteness and compact quotient, modulus (known result; see Lib.Adelic.Adeles.IdeleHilbert90).
-Known result: Finiteness of the cokernel of the Cartan map, and Higman's criterion.
-Part of: Cusp forms: rapid decay, finite dimension, Poincaré series; algebraic modular forms (known result; see Lib.Adelic.CuspForms.Petersson).
-Part of: Cusp forms: rapid decay, finite dimension, Poincaré series; algebraic modular forms (known result; see Lib.Adelic.CuspForms.Petersson).
-Part of: Cusp forms: rapid decay, finite dimension, Poincaré series; algebraic modular forms (known result; see Lib.Adelic.CuspForms.Petersson).
-Part of: Cusp forms: rapid decay, finite dimension, Poincaré series; algebraic modular forms (known result; see Lib.Adelic.CuspForms.Petersson).
-Part of: Cusp forms: rapid decay, finite dimension, Poincaré series; algebraic modular forms (known result; see Lib.Adelic.CuspForms.Petersson).
-Known result: Contravariant form on Weyl's lattice, Fischer product, irreducibility under U(n).
-Part of: Cusp forms: rapid decay, finite dimension, Poincaré series; algebraic modular forms (known result; see Lib.Adelic.CuspForms.Petersson).
-Set-up used by: Cusp forms: rapid decay, finite dimension, Poincaré series; algebraic modular forms.
-Part of: Cusp forms: rapid decay, finite dimension, Poincaré series; algebraic modular forms (known result; see Lib.Adelic.CuspForms.Petersson).
-Known result: rapid decay, finite dimension and Poincaré series for cusp forms, and algebraic modular forms.
-Part of: Cusp forms: rapid decay, finite dimension, Poincaré series; algebraic modular forms (known result; see Lib.Adelic.CuspForms.Petersson).
-Part of: Cusp forms: rapid decay, finite dimension, Poincaré series; algebraic modular forms (known result; see Lib.Adelic.CuspForms.Petersson).
-Part of: Cusp forms: rapid decay, finite dimension, Poincaré series; algebraic modular forms (known result; see Lib.Adelic.CuspForms.Petersson).
-Part of: Cusp forms: rapid decay, finite dimension, Poincaré series; algebraic modular forms (known result; see Lib.Adelic.CuspForms.Petersson).
-Known result: Abstract Hecke operators of a pair (G,K), level eigenspaces and weighted class sums.
-Part of: Abstract Hecke operators of a pair (G,K), level eigenspaces, weighted class sums (known result; see Lib.Adelic.Hecke.ClassMean).
-Part of: Abstract Hecke operators of a pair (G,K), level eigenspaces, weighted class sums (known result; see Lib.Adelic.Hecke.ClassMean).
+Number field is a discrete cocompact lattice of covolume one in its adeles.
+Multiplicative function trivial on projective modules is trivial; Higman criterion, dévissage.
+Forms on a definite unitary group are algebraic modular forms; integrals become class sums.
+Isotypic spaces of Hecke eigenvalues at almost all places: independence, attached Galois representation.
+p-adic gauge on algebraic forms: invariance, ultrametric, integral module, weak approximation.
+Parametrisation and product rule of the unipotent radical; norm bounds for integral matrices.
+Cusp forms: rapid decay, finite dimension, Poincaré series; algebraic modular forms
+Smooth vector-valued forms for a group pair and their right translation.
+Algebraic modular forms: invariant inner product, finite dimension per level.
+Two normalisations of the Hecke polynomial are reciprocal to each other.
+Algebraic modular forms on definite unitary groups: inner product, conjugate norms, integral lattice.
+Every conjugate of a small ball in U(J) contains a dilation along an isotropic subspace.
+Adelic unitary groups unimodular; quotient integral on definite groups equals weighted class sum.
+Forms reproduced by a cusp kernel decay rapidly; finite dimension at fixed level.
+Integral elements supported off a modulus are congruent to one; block embedding.
+Harish-Chandra parameter versus highest weight; highest coefficient, degree and dimension on compact unitary groups.
+Integral over double cosets as automorphism-weighted class sum; level change; smooth vectors.
+Class sums stay integral after clearing automorphism orders; triangle inequality for their norms.
+Abstract Hecke operators of (G,K): coset sums, functoriality, composition as convolution.
 Known result: Landherr's Hasse principle for hermitian forms, and weak approximation for unitary groups.
-Part of: Landherr's Hasse principle for hermitian forms; weak approximation for unitary groups (known result; see Lib.Adelic.Landherr.Landherr).
-Part of: Landherr's Hasse principle for hermitian forms; weak approximation for unitary groups (known result; see Lib.Adelic.Landherr.Landherr).
-Known result: Poincaré series along a Bessel subgroup with unfolding, and unipotent strong approximation.
-Part of: Poincaré series along a Bessel subgroup, unfolding; unipotent strong approximation (known result; see Lib.Adelic.Poincare.BesselSubgroup).
-Part of: Invariant integration on a quotient (Weil's formula), unfolding, unimodularity (known result; see Lib.Adelic.QuotientMeasure.Unimodular).
-Part of: Invariant integration on a quotient (Weil's formula), unfolding, unimodularity (known result; see Lib.Adelic.QuotientMeasure.Unimodular).
-General lemmas of real and complex analysis (textbook or folklore).
-Part of: Invariant integration on a quotient (Weil's formula), unfolding, unimodularity (known result; see Lib.Adelic.QuotientMeasure.Unimodular).
-Known result: invariant integration on a quotient (Weil's formula), unfolding and unimodularity.
-Known result: reduction theory, namely Mahler-Godement compactness, finite covolume and adelic Minkowski theorems.
-Part of: Reduction theory: Mahler-Godement compactness, finite covolume, adelic Minkowski theorems (known result; see Lib.Adelic.Reduction.Defs).
-Part of: Reduction theory: Mahler-Godement compactness, finite covolume, adelic Minkowski theorems (known result; see Lib.Adelic.Reduction.Defs).
-Known result: adelic points of unitary groups, levels and Haar measures.
-Part of: Transference theorem: covering radius of a lattice against the first minimum of its dual (known result; see Lib.Adelic.QuotientMeasure.Unimodular).
-Known result: congruence subgroups and level structures of adelic groups.
-Supporting lemmas (textbook or folklore).
-Part of: Adelic points of unitary groups, levels and Haar measures (known result; see Lib.Adelic.Reduction.MinkowskiSecond).
-Part of: Adelic points of unitary groups, levels and Haar measures (known result; see Lib.Adelic.Reduction.MinkowskiSecond).
-General lemmas of linear algebra and matrices (textbook or folklore).
-General lemmas of group theory (textbook or folklore).
-Part of: Witt's extension theorem for hermitian forms; unimodular lattices; Iwasawa decomposition (known result; see Lib.SiegelWeil.SingularForms.AdaptedHom).
-Known result: the transformation formula and the Mellin transform of the theta series of a Dirichlet character.
-Known result: Landau's lemma on Dirichlet integrals of one sign.
-Known result: the Pólya–Vinogradov inequality for sums of a non-principal Dirichlet character.
-Known result: A prime in a long window (weak form of the Siegel-Walfisz theorem).
-Known result: Zero density for quadratic twists by mean values over real characters.
-Known result: Height of the formal group of a CM curve.
-Known result: the class number of an imaginary quadratic field of prime discriminant is odd.
-Known result: Kronecker's first limit formula.
-Part of: Local heights and Tate's trick; integrality of CM theta functions and torsion translates (known result; see Lib.CM.LocalHeight.IntegralParameter).
-Local heights and Tate's trick, and integrality of CM theta functions and torsion translates.
-Supporting lemmas (textbook or folklore).
-Part of: Main theorem of complex multiplication for elliptic curves, soft form (known result; see Lib.CM.FormalGroup.FormalHeight).
-Known result: the Galois action on CM theta functions and on the finite Weil representation.
-Known result: sigma and theta functions of a lattice, addition and doubling formulas, and uniformisation.
-Supporting lemmas (textbook or folklore).
-Part of: Sigma and theta functions of a lattice, addition and doubling formulas, uniformisation (known result; see Lib.CM.Sigma.CurveTheta).
-Known result: Chebotarev's density theorem, existence form.
-Part of: Galois cohomology in degrees ≤ 2: Shapiro, Hilbert 90, Kummer, symbols, Herbrand quotient (known result; see Lib.ClassField.GaloisCohomology.CyclicNorm).
-Part of: Galois cohomology in degrees ≤ 2: Shapiro, Hilbert 90, Kummer, symbols, Herbrand quotient (known result; see Lib.ClassField.GaloisCohomology.CyclicNorm).
-Part of: Galois cohomology in degrees ≤ 2: Shapiro, Hilbert 90, Kummer, symbols, Herbrand quotient (known result; see Lib.ClassField.GaloisCohomology.CyclicNorm).
-Known result: Galois cohomology in degrees ≤ 2, covering Shapiro, Hilbert 90, Kummer, symbols and the Herbrand quotient.
-Part of: Galois cohomology in degrees ≤ 2: Shapiro, Hilbert 90, Kummer, symbols, Herbrand quotient (known result; see Lib.ClassField.GaloisCohomology.CyclicNorm).
-Part of: Galois cohomology in degrees ≤ 2: Shapiro, Hilbert 90, Kummer, symbols, Herbrand quotient (known result; see Lib.ClassField.GaloisCohomology.CyclicNorm).
-Part of: Galois cohomology in degrees ≤ 2: Shapiro, Hilbert 90, Kummer, symbols, Herbrand quotient (known result; see Lib.ClassField.GaloisCohomology.CyclicNorm).
+A totally positive element is a sum of two squares in a quadratic algebra, via Hasse's norm theorem.
+Weak approximation for unitary groups over CM fields by a Cayley-type transform.
+Bessel subgroup S=UH of a unitary group: normality, factorisation, additive simple-root character.
+Block embedding of U(k) onto the reductive part H of the Bessel subgroup.
+Unfolding quotient integrals in stages; pushing quotient measures along surjections.
+Iwasawa integration formula; quotient integral of N-invariant functions in coordinates n m k.
+Quotient integral via weights: independence of the weight and Weil's unfolding formula.
+Haar mean of periodic functions on a compact quotient; invariance, iteration, change of group.
+Proper actions have cutoff weights; discrete subgroups; unfolding a sum over a lattice.
+Haar measure on the adelic unitary group and on its automorphic quotient.
+First minimum of hermitian lattices: positivity, comparison, short vectors are orthogonal.
+Field elements with bounded denominators and very small conjugates vanish.
+A nonzero algebraic integer has a conjugate of modulus at least one.
+Trace dual of a unimodular hermitian lattice; short bases by transference.
+Reduction maps, principal levels, levels cut out by reductions at split places; index.
+Basic API for rational points, block embeddings and vectors of framed hermitian spaces.
+Adelic unitary groups, split places, compact levels, framed hermitian spaces, lattices, masses.
+Gram matrix of an adelically framed hermitian space is invertible and hermitian.
+Left invertible and primitive matrices, hermitian symmetry, quasi-reflections.
+Block embedding of U(Y) into U(Y ⊕ Y').
+Witt's extension theorem for primitive frames over integral finite adeles, unramified CM case.
+Gaussian theta series of a character: Poisson symmetry, Mellin transform is Gamma times L.
+Landau's lemma for one-sided bounds; Laplace transforms of powers; logarithmic derivatives of L-functions.
+Pólya–Vinogradov inequality for non-principal characters; modulus of primitive Gauss sums.
+A prime 1 modulo M^k with logarithm in a long window; zero-free disc.
+Some prime in a class has quadratic twists zero-free on a half-strip; three lines.
+Chowla-Selberg area formula for conjugates; soft CM main theorem; sums over ideal classes.
+A complex number bounded under all 2-adic identifications is algebraic.
+Kronecker's first limit formula for any lattice, as a one-sided real limit.
+Integral series in the formal parameter along linear forms; Euler's addition formula.
+Exponential of formal series; Legendre bounds for valuations of factorials.
+Transport of sections and points to a Galois conjugate curve.
+Conjugate CM curve, conjugation of isogenies, theta function and its torsion translates.
+Semilinear map intertwining Heisenberg translations intertwines the finite Weil representation.
+Weierstrass functions cover the cubic; sigma doubling; zeros and derivative of ℘'.
+Sections of degree m on the curve: division and spanning monomials.
+From degree two on, theta functions have no common zero.
+Chebotarev, existence form: Frobenius elements at degree-one primes are dense.
+Continuous cocycles, coboundaries, H² and functoriality for discrete modules.
+Cup product on cocycles, Cartier dual module, annihilators and their orders.
+Discrete Q/Z, continuous characters and the cyclic symbol δχ ∪ w.
+Index of n-th powers in the multiplicative group of a local field.
+Module over Z/l^r with small l-torsion admits primitive relation with prescribed zeros.
+Shapiro's lemma in degrees 0–2, corestriction, cor∘res = index, projection formula for symbols.
+Tame cocycles are determined by a tame generator and Frobenius; local length bound.
 Known result: Global class field theory, covering Albert–Brauer–Hasse–Noether, reciprocity, existence and norms.
-Part of: Global class field theory: Albert–Brauer–Hasse–Noether, reciprocity, existence, norms (known result; see Lib.ClassField.Global.AlbertBrauerHasseNoether).
-Part of: Global class field theory: Albert–Brauer–Hasse–Noether, reciprocity, existence, norms (known result; see Lib.ClassField.Global.AlbertBrauerHasseNoether).
-Part of: Global class field theory: Albert–Brauer–Hasse–Noether, reciprocity, existence, norms (known result; see Lib.ClassField.Global.AlbertBrauerHasseNoether).
-Part of: Global class field theory: Albert–Brauer–Hasse–Noether, reciprocity, existence, norms (known result; see Lib.ClassField.Global.AlbertBrauerHasseNoether).
-General lemmas of algebraic number theory (textbook or folklore).
-Part of: Greenberg–Wiles formula, as a lower bound for the dual side (known result; see Lib.ClassField.GreenbergWiles.GreenbergWilesBound).
-Known result: Greenberg–Wiles formula, as a lower bound for the dual side.
-Part of: Greenberg–Wiles formula, as a lower bound for the dual side (known result; see Lib.ClassField.GreenbergWiles.GreenbergWilesBound).
-Part of: Greenberg–Wiles formula, as a lower bound for the dual side (known result; see Lib.ClassField.GreenbergWiles.GreenbergWilesBound).
-Part of: Greenberg–Wiles formula, as a lower bound for the dual side (known result; see Lib.ClassField.GreenbergWiles.GreenbergWilesBound).
-Part of: Greenberg–Wiles formula, as a lower bound for the dual side (known result; see Lib.ClassField.GreenbergWiles.GreenbergWilesBound).
-Part of: Greenberg–Wiles formula, as a lower bound for the dual side (known result; see Lib.ClassField.GreenbergWiles.GreenbergWilesBound).
-Part of: Grunwald–Wang theorem in prime exponent (known result; see Lib.GaloisRep.Main.AttachedDeterminant).
-Part of: Algebraic Hecke characters (type A₀); extension of the quadratic character of a CM field (known result; see Lib.ClassField.HeckeCharacter.SplittingCharExists).
-Part of: Algebraic Hecke characters (type A₀); extension of the quadratic character of a CM field (known result; see Lib.ClassField.HeckeCharacter.SplittingCharExists).
-Part of: Algebraic Hecke characters (type A₀); extension of the quadratic character of a CM field (known result; see Lib.ClassField.HeckeCharacter.SplittingCharExists).
-Part of: Algebraic Hecke characters (type A₀); extension of the quadratic character of a CM field (known result; see Lib.ClassField.HeckeCharacter.SplittingCharExists).
-Part of: Algebraic Hecke characters (type A₀); extension of the quadratic character of a CM field (known result; see Lib.ClassField.HeckeCharacter.SplittingCharExists).
-Part of: Algebraic Hecke characters (type A₀); extension of the quadratic character of a CM field (known result; see Lib.ClassField.HeckeCharacter.SplittingCharExists).
-Part of: Algebraic Hecke characters (type A₀); extension of the quadratic character of a CM field (known result; see Lib.ClassField.HeckeCharacter.SplittingCharExists).
-Known result: Algebraic Hecke characters (type A₀) and the extension of the quadratic character of a CM field.
-Part of: Algebraic Hecke characters (type A₀); extension of the quadratic character of a CM field (known result; see Lib.ClassField.HeckeCharacter.SplittingCharExists).
-Part of: Hecke L-functions: Euler product, continuation to s = 1, non-vanishing, prime densities (known result; see Lib.ClassField.HeckeL.HeckeContinuation).
-Part of: Hecke L-functions: Euler product, continuation to s = 1, non-vanishing, prime densities (known result; see Lib.ClassField.HeckeL.HeckeContinuation).
-Known result: Euler product, continuation to s = 1, non-vanishing and prime densities for Hecke L-functions.
-Part of: Hecke L-functions: Euler product, continuation to s = 1, non-vanishing, prime densities (known result; see Lib.ClassField.HeckeL.HeckeContinuation).
-Known result: Local class field theory, covering the invariant of the Brauer group, the Artin map, norms and the tame symbol.
-Known result: Local Tate duality in degree 1, as an upper bound for orthogonal groups of cocycles.
-Part of: Local Tate duality in degree 1, as an upper bound for orthogonal groups of cocycles (known result; see Lib.ClassField.LocalDuality.CrystallineDuality).
-General lemmas of algebraic number theory (textbook or folklore).
-Part of: Hilbert ramification theory for infinite Galois extensions; ideles and ideal classes (known result; see Lib.ClassField.Places.LocalFrobenius).
-Part of: Hilbert ramification theory for infinite Galois extensions; ideles and ideal classes (known result; see Lib.ClassField.Places.LocalFrobenius).
-Part of: Hilbert ramification theory for infinite Galois extensions; ideles and ideal classes (known result; see Lib.ClassField.Places.LocalFrobenius).
-Part of: Hilbert ramification theory for infinite Galois extensions; ideles and ideal classes (known result; see Lib.ClassField.Places.LocalFrobenius).
-Part of: Hilbert ramification theory for infinite Galois extensions; ideles and ideal classes (known result; see Lib.ClassField.Places.LocalFrobenius).
-Part of: Hilbert ramification theory for infinite Galois extensions; ideles and ideal classes (known result; see Lib.ClassField.Places.LocalFrobenius).
-Part of: Hilbert ramification theory for infinite Galois extensions; ideles and ideal classes (known result; see Lib.ClassField.Places.LocalFrobenius).
-Part of: Hilbert ramification theory for infinite Galois extensions; ideles and ideal classes (known result; see Lib.ClassField.Places.LocalFrobenius).
-Part of: Hilbert ramification theory for infinite Galois extensions; ideles and ideal classes (known result; see Lib.ClassField.Places.LocalFrobenius).
-Known result: Hilbert ramification theory for infinite Galois extensions; ideles and ideal classes.
-Part of: Hilbert ramification theory for infinite Galois extensions; ideles and ideal classes (known result; see Lib.ClassField.Places.LocalFrobenius).
-Part of: Hilbert ramification theory for infinite Galois extensions; ideles and ideal classes (known result; see Lib.ClassField.Places.LocalFrobenius).
-Part of: Hilbert ramification theory for infinite Galois extensions; ideles and ideal classes (known result; see Lib.ClassField.Places.LocalFrobenius).
-Part of: Bound for the odd part of a twisted Tate–Shafarevich group of an abelian CM field (known result; see Lib.Cyclotomic.OddSha.OddShaBound).
-Part of: Hilbert ramification theory for infinite Galois extensions; ideles and ideal classes (known result; see Lib.ClassField.Places.LocalFrobenius).
-Part of: Hilbert ramification theory for infinite Galois extensions; ideles and ideal classes (known result; see Lib.ClassField.Places.LocalFrobenius).
-Known result: Cup product with a degree-two class and closed supports, for mod-ℓ cohomology as Ext.
-Part of: Descent of torsion étale cohomology along v-covers; excision, transfer, limits (known result; see Lib.Cohomology.Etale.ContinuityAtlas).
-Part of: Descent of torsion étale cohomology along v-covers; excision, transfer, limits (known result; see Lib.Cohomology.Etale.ContinuityAtlas).
-Part of: Descent of torsion étale cohomology along v-covers; excision, transfer, limits (known result; see Lib.Cohomology.Etale.ContinuityAtlas).
-Part of: Descent of torsion étale cohomology along v-covers; excision, transfer, limits (known result; see Lib.Cohomology.Etale.ContinuityAtlas).
-Known result: Descent of torsion étale cohomology along v-covers, with excision, transfer and limits.
-Part of: Descent of torsion étale cohomology along v-covers; excision, transfer, limits (known result; see Lib.Cohomology.Etale.ContinuityAtlas).
-Part of: Descent of torsion étale cohomology along v-covers; excision, transfer, limits (known result; see Lib.Cohomology.Etale.ContinuityAtlas).
-Part of: Descent of torsion étale cohomology along v-covers; excision, transfer, limits (known result; see Lib.Cohomology.Etale.ContinuityAtlas).
-Part of: Descent of torsion étale cohomology along v-covers; excision, transfer, limits (known result; see Lib.Cohomology.Etale.ContinuityAtlas).
-Part of: Descent of torsion étale cohomology along v-covers; excision, transfer, limits (known result; see Lib.Cohomology.Etale.ContinuityAtlas).
-Part of: Descent of torsion étale cohomology along v-covers; excision, transfer, limits (known result; see Lib.Cohomology.Etale.ContinuityAtlas).
-Part of: Descent of torsion étale cohomology along v-covers; excision, transfer, limits (known result; see Lib.Cohomology.Etale.ContinuityAtlas).
-Part of: Descent of torsion étale cohomology along v-covers; excision, transfer, limits (known result; see Lib.Cohomology.Etale.ContinuityAtlas).
-Part of: Descent of torsion étale cohomology along v-covers; excision, transfer, limits (known result; see Lib.Cohomology.Etale.ContinuityAtlas).
-Part of: Descent of torsion étale cohomology along v-covers; excision, transfer, limits (known result; see Lib.Cohomology.Etale.ContinuityAtlas).
-Part of: Descent of torsion étale cohomology along v-covers; excision, transfer, limits (known result; see Lib.Cohomology.Etale.ContinuityAtlas).
-Part of: Descent of torsion étale cohomology along v-covers; excision, transfer, limits (known result; see Lib.Cohomology.Etale.ContinuityAtlas).
-Part of: Class of the diagonal and Künneth surjectivity in Hodge cohomology (Grothendieck symbols) (known result; see Lib.Cohomology.Hodge.FixedPointFormula).
-Part of: Class of the diagonal and Künneth surjectivity in Hodge cohomology (Grothendieck symbols) (known result; see Lib.Cohomology.Hodge.FixedPointFormula).
-Part of: Class of the diagonal and Künneth surjectivity in Hodge cohomology (Grothendieck symbols) (known result; see Lib.Cohomology.Hodge.FixedPointFormula).
-Known result: Class of the diagonal and Künneth surjectivity in Hodge cohomology (Grothendieck symbols).
-Part of: Class of the diagonal and Künneth surjectivity in Hodge cohomology (Grothendieck symbols) (known result; see Lib.Cohomology.Hodge.FixedPointFormula).
-General lemmas of commutative and general algebra (textbook or folklore).
-Part of: Class of the diagonal and Künneth surjectivity in Hodge cohomology (Grothendieck symbols) (known result; see Lib.Cohomology.Hodge.FixedPointFormula).
-Part of: Class of the diagonal and Künneth surjectivity in Hodge cohomology (Grothendieck symbols) (known result; see Lib.Cohomology.Hodge.FixedPointFormula).
-Part of: Class of the diagonal and Künneth surjectivity in Hodge cohomology (Grothendieck symbols) (known result; see Lib.Cohomology.Hodge.FixedPointFormula).
-Known result: The Künneth formula over a field for mod-ℓ étale cohomology, in Leray–Hirsch form.
-Known result: Hodge–Tate images of point classes are non-zero and detect degrees of zero-cycles.
-Part of: Hodge–Tate images of point classes are non-zero and detect degrees of zero-cycles (known result; see Lib.Cohomology.PointClass.GaloisRep).
-Part of: Hodge–Tate images of point classes are non-zero and detect degrees of zero-cycles (known result; see Lib.Cohomology.PointClass.GaloisRep).
-Part of: Hodge–Tate images of point classes are non-zero and detect degrees of zero-cycles (known result; see Lib.Cohomology.PointClass.GaloisRep).
-Part of: Hodge–Tate images of point classes are non-zero and detect degrees of zero-cycles (known result; see Lib.Cohomology.PointClass.GaloisRep).
-Part of: Hodge–Tate images of point classes are non-zero and detect degrees of zero-cycles (known result; see Lib.Cohomology.PointClass.GaloisRep).
-Part of: Kummer sequence, Chern class of O(1), projective line formula (tilted O/p coefficients) (known result; see Lib.Cohomology.ProjectiveLine.NormalizationPullback).
-Known result: The Kummer sequence, the Chern class of O(1) and the projective line formula (tilted O/p coefficients).
-Part of: Kummer sequence, Chern class of O(1), projective line formula (tilted O/p coefficients) (known result; see Lib.Cohomology.ProjectiveLine.NormalizationPullback).
-Part of: Proper base change; invariance under extension of algebraically closed fields (known result; see Lib.Cohomology.ProperBaseChange.ProperBaseChange).
-Part of: Proper base change; invariance under extension of algebraically closed fields (known result; see Lib.Cohomology.ProperBaseChange.ProperBaseChange).
-Part of: Proper base change; invariance under extension of algebraically closed fields (known result; see Lib.Cohomology.ProperBaseChange.ProperBaseChange).
-Known result: Proper base change and invariance under extension of algebraically closed fields.
-Part of: Proper base change; invariance under extension of algebraically closed fields (known result; see Lib.Cohomology.ProperBaseChange.ProperBaseChange).
-General lemmas of commutative and general algebra (textbook or folklore).
-Known result: Smooth base change, stating that restriction to the generic fibre is bijective on cohomology.
-Part of: Half of the holomorphic Lefschetz (Woods Hole) formula for h-forms and correspondences (known result; see Lib.Cohomology.PointClass.GaloisRep).
-Known result: Stickelberger annihilation and the Kolyvagin–Rubin bound for odd twisted components.
-Part of: Stickelberger annihilation and Kolyvagin–Rubin bound for odd twisted components (known result; see Lib.Cyclotomic.Kolyvagin.ComponentBound).
-Known result: Bound for the odd part of a twisted Tate–Shafarevich group of an abelian CM field.
-Known result: Stickelberger's factorisation of Gauss sums and the Davenport–Hasse product relation.
-Known result: Voronoi's congruence for twisted power sums and trivial zeros of Dirichlet L-functions.
-Part of: Bessel subgroup of a real unitary group: coordinates, Haar measure, Bessel functions (known result; see Lib.DiscreteSeries.Bessel.RealMeasures).
-Known result: Bessel subgroup of a real unitary group, with coordinates, Haar measure and Bessel functions.
-General lemmas of measure and integration (textbook or folklore).
-General lemmas of measure and integration (textbook or folklore).
-Part of: Isotropic flags in unitary groups: Heisenberg radicals, big Bruhat cell, Haar measure (known result; see Lib.DiscreteSeries.Bruhat.ComplexPlace).
-Known result: Isotropic flags in unitary groups (Heisenberg radicals, big Bruhat cell, Haar measure).
-General lemmas of linear algebra and matrices (textbook or folklore).
-Part of: Isotropic flags in unitary groups: Heisenberg radicals, big Bruhat cell, Haar measure (known result; see Lib.DiscreteSeries.Bruhat.ComplexPlace).
-Known result: Discrete series character on the compact Cartan by orbital integrals, and the formal degree.
-Known result: Weyl character and dimension formulas for U(n) and products of unitary groups.
-Part of: Discrete series character on the compact Cartan by orbital integrals; formal degree (known result; see Lib.DiscreteSeries.Character.FormalDegree).
-Part of: Discrete series character on the compact Cartan by orbital integrals; formal degree (known result; see Lib.DiscreteSeries.Character.FormalDegree).
-General lemmas of linear algebra and matrices (textbook or folklore).
-General lemmas of measure and integration (textbook or folklore).
-General lemmas of real and complex analysis (textbook or folklore).
-Known result: Schur orthogonality, and coefficients of integrable discrete series are cusp forms.
-Part of: Schur orthogonality; coefficients of integrable discrete series are cusp forms (known result; see Lib.DiscreteSeries.CuspKernel.CircleMean).
-Part of: Flensted-Jensen's function: coefficient of the lowest K-type of a discrete series (known result; see Lib.DiscreteSeries.FlenstedJensen.KTypeProjection).
-Part of: Flensted-Jensen's function: coefficient of the lowest K-type of a discrete series (known result; see Lib.DiscreteSeries.FlenstedJensen.KTypeProjection).
-Known result: Flensted-Jensen's function, the coefficient of the lowest K-type of a discrete series.
-Part of: Flensted-Jensen's function: coefficient of the lowest K-type of a discrete series (known result; see Lib.DiscreteSeries.FlenstedJensen.KTypeProjection).
-Part of: Flensted-Jensen's function: coefficient of the lowest K-type of a discrete series (known result; see Lib.DiscreteSeries.FlenstedJensen.KTypeProjection).
-Part of: Flensted-Jensen's function: coefficient of the lowest K-type of a discrete series (known result; see Lib.DiscreteSeries.FlenstedJensen.KTypeProjection).
-Part of: Flensted-Jensen's function: coefficient of the lowest K-type of a discrete series (known result; see Lib.DiscreteSeries.FlenstedJensen.KTypeProjection).
-General lemmas of group theory (textbook or folklore).
-Part of: Flensted-Jensen's function: coefficient of the lowest K-type of a discrete series (known result; see Lib.DiscreteSeries.FlenstedJensen.KTypeProjection).
-Part of: Haar measure of U(J) in Cayley coordinates, volume of U(n), polynomial volume growth (known result; see Lib.DiscreteSeries.Haar.RegularRepL2).
-Part of: Haar measure of U(J) in Cayley coordinates, volume of U(n), polynomial volume growth (known result; see Lib.DiscreteSeries.Haar.RegularRepL2).
-Part of: Haar measure of U(J) in Cayley coordinates, volume of U(n), polynomial volume growth (known result; see Lib.DiscreteSeries.Haar.RegularRepL2).
-General lemmas of measure and integration (textbook or folklore).
-Known result: Haar measure of U(J) in Cayley coordinates, volume of U(n), polynomial volume growth.
-Part of: Haar measure of U(J) in Cayley coordinates, volume of U(n), polynomial volume growth (known result; see Lib.DiscreteSeries.Haar.RegularRepL2).
-Part of: Haar measure of U(J) in Cayley coordinates, volume of U(n), polynomial volume growth (known result; see Lib.DiscreteSeries.Haar.RegularRepL2).
-General lemmas of linear algebra and matrices (textbook or folklore).
-Part of: Holomorphic discrete series: highest coefficient and reproducing property (known result; see Lib.DiscreteSeries.Holomorphic.HolomorphicExtension).
-Known result: Highest coefficient and reproducing property of the holomorphic discrete series.
-Part of: Holomorphic discrete series: highest coefficient and reproducing property (known result; see Lib.DiscreteSeries.Holomorphic.HolomorphicExtension).
-Part of: Holomorphic discrete series: highest coefficient and reproducing property (known result; see Lib.DiscreteSeries.Holomorphic.HolomorphicExtension).
-Known result: A cusp form is large only away from the cusps (Siegel's argument).
-Part of: Lowest K-type and Casimir value determine a discrete series coefficient; analytic vectors (known result; see Lib.DiscreteSeries.Rigidity.CasimirGrowth).
-Part of: Lowest K-type and Casimir value determine a discrete series coefficient; analytic vectors (known result; see Lib.DiscreteSeries.Rigidity.CasimirGrowth).
-Known result: Lowest K-type and Casimir value determine a discrete series coefficient; analytic vectors.
-Supporting lemmas (textbook or folklore).
-Part of: Lowest K-type and Casimir value determine a discrete series coefficient; analytic vectors (known result; see Lib.DiscreteSeries.Rigidity.CasimirGrowth).
-Part of: Theta correspondence of discrete series for real unitary dual pairs; joint harmonics (known result; see Lib.DiscreteSeries.Theta.LocalThetaCorrespondence).
-Part of: Theta correspondence of discrete series for real unitary dual pairs; joint harmonics (known result; see Lib.DiscreteSeries.Theta.LocalThetaCorrespondence).
-One general lemma (a derivation applied to a product of determinants), then joint harmonics for FockDualPair.
-Part of: Theta correspondence of discrete series for real unitary dual pairs; joint harmonics (known result; see Lib.DiscreteSeries.Theta.LocalThetaCorrespondence).
-Known result: Theta correspondence of discrete series for real unitary dual pairs, and joint harmonics.
-Part of: Theta correspondence of discrete series for real unitary dual pairs; joint harmonics (known result; see Lib.DiscreteSeries.Theta.LocalThetaCorrespondence).
-Known result: Branching from GL(n+1) to GL(n) with multiplicity one.
-Part of: Branching from GL(n+1) to GL(n) with multiplicity one (known result; see Lib.GLn.Branching.Branching).
-Part of: Dual of a Weyl module by Jacobi's complementary minors; Cartan component (known result; see Lib.GLn.Branching.Branching).
-Part of: Dual of a Weyl module by Jacobi's complementary minors; Cartan component (known result; see Lib.GLn.Branching.Branching).
-Part of: Dual of a Weyl module by Jacobi's complementary minors; Cartan component (known result; see Lib.GLn.Branching.Branching).
-Part of: Standard basis theorem for Schur (dual Weyl) modules over any ring, with character (known result; see Lib.GLn.SchurModule.MinorBasis).
-Part of: Contravariant form on Weyl's lattice, Fischer product, irreducibility under U(n) (known result; see Lib.Adelic.CuspForms.DeltaForms).
-Part of: Standard basis theorem for Schur (dual Weyl) modules over any ring, with character (known result; see Lib.GLn.SchurModule.MinorBasis).
-Part of: Standard basis theorem for Schur (dual Weyl) modules over any ring, with character (known result; see Lib.GLn.SchurModule.MinorBasis).
-Known result: Standard basis theorem for Schur (dual Weyl) modules over any ring, with character.
-Part of: Standard basis theorem for Schur (dual Weyl) modules over any ring, with character (known result; see Lib.GLn.SchurModule.MinorBasis).
-Part of: Standard basis theorem for Schur (dual Weyl) modules over any ring, with character (known result; see Lib.GLn.SchurModule.MinorBasis).
-Part of: Standard basis theorem for Schur (dual Weyl) modules over any ring, with character (known result; see Lib.GLn.SchurModule.MinorBasis).
-Part of: Standard basis theorem for Schur (dual Weyl) modules over any ring, with character (known result; see Lib.GLn.SchurModule.MinorBasis).
-Lemmas on Weyl representations, their Gram form and the highest vector, used to turn algebraic forms into functions on G.
-Part of: Contravariant form on Weyl's lattice, Fischer product, irreducibility under U(n) (known result; see Lib.Adelic.CuspForms.DeltaForms).
-Known result: cyclic base change of prime degree for definite unitary groups (weak lift, local matching).
-Part of: Cyclic base change of prime degree for definite unitary groups (weak lift, local matching) (known result; see Lib.GaloisRep.BaseChange.BaseChangeEigenchar).
-Part of: Cyclic base change of prime degree for definite unitary groups (weak lift, local matching) (known result; see Lib.GaloisRep.BaseChange.BaseChangeEigenchar).
-General lemmas of algebraic number theory (textbook or folklore).
-Part of: Cyclic base change of prime degree for definite unitary groups (weak lift, local matching) (known result; see Lib.GaloisRep.BaseChange.BaseChangeEigenchar).
-Auxiliary definitions and lemmas for base change (norm roots, matching pairs and cocycle splitting for unitary matrices, a CM-field lemma), plus one general group-action lemma on class sums of orbit counts.
-Part of: Cyclic base change of prime degree for definite unitary groups (weak lift, local matching) (known result; see Lib.GaloisRep.BaseChange.BaseChangeEigenchar).
-Part of: Cyclic base change of prime degree for definite unitary groups (weak lift, local matching) (known result; see Lib.GaloisRep.BaseChange.BaseChangeEigenchar).
-Part of: Cyclic base change of prime degree for definite unitary groups (weak lift, local matching) (known result; see Lib.GaloisRep.BaseChange.BaseChangeEigenchar).
-Part of: Cyclic base change of prime degree for definite unitary groups (weak lift, local matching) (known result; see Lib.GaloisRep.BaseChange.BaseChangeEigenchar).
-In one step of a known theorem (Galois representations for definite unitary groups), degree-n polynomials kill most Frobenius elements and a cocharacter with very different exponents forces rank n.
-Known result: the theta lift to larger rank, the step that reduces even rank to odd rank.
+Artin reciprocity law on principal finite ideles, via cyclotomic characters; sign law.
+Existence theorem of class field theory for totally complex fields, by Kummer counting. p-adic avatar of algebraic Hecke characters over totally complex fields; values off p.
+Class field theory of a CM extension: real ideles modulo norms, signs, splitting character.
+Surjectivity of Artin map, cyclic norm group, Hasse norm theorem for totally positive elements.
+Herbrand's equivariant S-unit theorem: units plus Z span permutation module of places.
+Herbrand-type index; counting equivariant maps from a lattice to a projective module.
+Bound on trivialised cocycles when a central element acts without fixed vectors.
+Count of trivialised cocycles for a projective module (Euler characteristic type formula).
+Selmer cocycle groups, their finiteness, S-units, split primes, tame generators, places.
+Membership in Selmer groups of cocycles; dropping conditions and places where unramified.
+Selmer conditions against trivialisations; many relations at split primes: Greenberg–Wiles lower bound.
+Power residue symbols of S-units give exactly the relations on tame ramification of cocycles.
+Grunwald's theorem in prime exponent over a totally complex field; symmetrised characters.
+Tame Hecke character on determinants of integral adelic points is product of residue characters.
+Existence, finiteness and algebraicity of tame algebraic characters of the norm-one torus. p-adic absolute value of an algebraic Hecke character is given by its weights.
+Unitary Hecke characters, characters of U(1), base change, weight and tame part.
+Rational and tame-level points of U(1); finiteness of its ray class group.
+Surjective reduction of the level group; tame characters modulo a modulus.
+Tamely ramified characters, local components and residues; data and theta integrals named.
+Global characters of the determinant read through local components at chosen places.
+Existence of an unramified splitting Hecke character of a CM field.
+Local values of base change; weight, powers and algebraicity of the splitting character.
+L-function of a base-changed U(1) character: type, symmetry, non-vanishing for s ≥ 1.
+Finite ideles: principal, local, S-ideles, openness, compactness, almost-everywhere unramified characters.
+Hecke's theorem: L-function of a nontrivial Hecke character is analytic at 1.
+Adelic theta sum of a tent; Riemann-sum estimate replacing Poisson summation.
+Local Artin map: norm functoriality, density, units to inertia, tame symbol, tame generator.
+Dual crystalline lattices have complementary cocycle counts; index form of the local duality inequality.
+Invariant map Br(k) ≅ Q/Z of a henselian local field and its functoriality.
+Ideles to ideals and class group; large S; open subgroups that contain the principal ideles of totally positive elements have finite index.
+Complex conjugation on Galois group, places, Frobenius, inertia; anticyclotomic characters locally.
+Basic properties of decomposition groups, inertia groups and Frobenius elements.
+Cyclotomic p-power tower of Q_p is totally ramified; inertia hits each cyclotomic value.
+Places from p-adic embeddings; decomposition group is Galois group of the completion.
+Frobenius of Q_ℓ raises prime-to-ℓ roots of unity to powers of ℓ.
+Profinite Galois groups, local fields, places, decomposition, inertia, Frobenius, cyclotomic character.
+Principal units, places above q, primes 1 mod m split in cyclotomic fields.
+Definitions: uniformiser, order, cyclotomic character, local invariant, local Artin map, chosen place.
+Finite extension of a local field is local, with ef equal to the degree.
+Uniformisers and the normalised rational valuation on the algebraic closure of a local field.
+Ax-Sen-Tate: fixed points in C_p are limits of fixed algebraic numbers.
+Places as valuation rings over primes: existence, conjugacy, finitely many ramified.
+Infinite Galois theory for an abstract profinite group: fixed fields, restriction, continuity.
+Complex conjugation, anticyclotomic characters, Selmer cocycles, Tate twists, odd Sha: definitions.
+Structure of tame inertia: acts through roots of uniformiser, Frobenius acts by q.
+Prime induced by a p-adic embedding; extension to the completion and finite adeles.
+A degree-two Ext class between flat functors tensors naturally with every functor.
+Relatively representable (affine) maps of functors on rings: pullbacks, closed and open loci.
+Covers by sums of representables; Ext commutes with products of coefficient functors.
+Closed classes of functors: stable under bijections, finite unions and exact functors.
+Locally constant functions on tests are additive for idempotent partitions.
+Cohomology turns filtered limits of relatively affine functors into colimits; base change functors.
+Cohomology as Ext of presheaves: equivalences, dense subfunctors, comparisons, fibre powers, additivity.
+Geometric l-adic cohomology with Galois action; reduction from Z_l to F_l coefficients.
+Commutation of cohomology with filtered limits descends along Čech covers.
+Functoriality of Ext of abelian presheaves in both variables and along exact functors.
+Compatible classes with supports glue when lower degrees vanish.
+Dense subfunctors form a Grothendieck topology; Mayer–Vietoris short exact sequence.
+Proper functors: fibre products, base change, dense images, cover by the space of places.
+A relation among maps on a locus with the same cohomology gives a relation among pull-backs.
+Relative cohomology of pairs of functors; locally zero sections, excision, transfer.
+Test rings, functors of points, locally constant coefficients, cohomology as Ext.
+Functorial envelope: maps from given rings to tests factor through a test ring.
+Test rings: products, quotients, localisations; local rings are valuation rings of algebraically closed fields.
+Tensor product of functors, total Ext with Yoneda composition, cup product and naturality.
+Local cohomology vanishes below the depth; Zariski descent for Hodge tests.
+Class of the diagonal in Hodge cohomology, glued from local Grothendieck symbols.
+Pull-back of the diagonal class is a weighted sum of point classes.
+Grothendieck symbols [dT/T]: definition, transformation law, multiplicativity, degree-one form.
+Ext classes of cocycles of functors; connecting classes commute up to sign.
+Künneth formula in Hodge cohomology, surjectivity of the cross product.
+Class of a rational point in Hodge cohomology; independence of choices, excision, sums.
+Class of the diagonal and Künneth surjectivity in Hodge cohomology (Grothendieck symbols)
+Künneth in Leray–Hirsch form over the special fibre, passed from geometric points to tests.
+Hodge–Tate images of distinct point classes on a projective variety are linearly independent.
+Homogeneous Noether normalisation and Galois closure of the cone over a variety.
+Hodge–Tate image of dX/X is the units extension class mod (ker θ)².
+Projective space as functor with standard atlas; a map P^d×P¹ to P^{d+1}.
+Hodge class of a point of a product is the product of point classes.
+Hodge–Tate map does not kill the class of a point of projective space.
+Kummer sequence, trivialised Tate twist, and its cup action on torsion coefficient theories.
+Projective line formula for tilted O/p coefficients via a left inverse of cup with η.
+Perfected projective line from two perfect discs: tilted cohomology relative to infinity vanishes.
+Cohomology invariant under algebraically closed field extension; classes detected at points.
+Mayer-Vietoris for locally constant functions on two rings with a common localisation.
+Proper base change with supports: classes detected on geometric points, field-extension invariance.
+Proper base change: closed fibre over an absolutely integrally closed valuation ring, F_l coefficients.
+A non-valuation subring splits into two larger ones with exact Mayer-Vietoris sequence.
+Proper functors and the Riemann-Zariski type space of places covering them.
+Duality comparison globalised; smooth schemes over valuation rings keep cohomology on the generic fibre.
+Reduced coincidences of two maps are finitely many; local Jacobian terms.
+Kolyvagin derivative cocycles of Gauss sums: ramification and the Frobenius-to-inertia relation.
+Locally constant cocycles for a character with vanishing conditions; the odd component.
+Ray class group generators detect cocycles unramified off l; crude count by Minkowski.
+Valuations of Gauss sums, Jacobi-type quotients, distribution relation up to roots of unity.
+Twisted Voronoi congruence, trivial zeros, one bounded integer divisible by all Stickelberger elements.
+Norms of a Bessel function and of its means are invariant under Bessel subgroup.
+Haar measure on unipotent subgroups is Lebesgue in free entries, bi-invariant, conjugation-invariant.
+Names for the real unitary group, frames, coordinates and measures on unipotent subgroups.
+Product integrals, measurability, and L² bounds of integral operators multiply over products.
+Product of Heisenberg floor measures equals coordinate Haar measure on the unipotent group.
+The place C, boosts, cell densities, top floor carries Leray measure on hyperboloid.
+Hermitian form, Eichler transformations are isometries; leading minors invariant under unitriangular groups.
+Flag stabilisers, unipotent radicals, Levi factors and Weyl-torus elements of a unitary group.
+Orbital integral times denominators is an antisymmetric Laurent polynomial confined by K-types.
+Weyl character and denominator formulas for U(p)×U(q); conjugacy into the torus.
+Laurent polynomials on the torus, Weyl denominators, alternants, leading monomials, density.
+Haar measure of U(p,q) as the measure of its open orbit on flags.
+Weyl character formula at regular semisimple elements of products of GL_n.
+Definitions: convolution, Bessel functions, unitary action of U(κ).
+Convolution with compactly supported smooth functions is smooth; derivatives fall on the bump.
+Cauchy-Schwarz, Fubini along measure-preserving maps, convolution; integrable minimal idempotent definition.
+Module generated by the coefficient: decay, embedding in L², Schur orthogonality, unitarity.
+Flensted-Jensen's function is a Casimir eigenfunction with value |λ|²−|ρ|².
+Flensted-Jensen integral is analytic and independent of the accretive splitting.
+Lowest K-type occurs once; K-types outside the cone above it do not occur.
+Basic properties of the coefficient: polar formula, inversion, conjugation, values on K.
+Decay of the coefficient like (2/‖g‖)^h, constant free of the parameter.
+The coefficient as a smooth function on the group; continuity.
+Parameters, lowest K-type, Flensted-Jensen integral, coefficient, degree and kernel for U(p,q).
+Smooth functions on U(p,q) as gl_n-module by right derivatives; chain rule.
+Explicit Lipschitz bound for the coefficient; crude bound for degree times tail integrals.
+Cayley chart density gives Haar measure on U(J); area inequality; invariance under isometries.
+Splitting a skew matrix into one column and block; Jacobian of column chart.
+U(n) has total mass one; the measure on U(J) is right invariant.
+Logarithmic derivative on U(J), determinant of congruence, measure-preserving isometries.
+Polynomial volume growth of norm balls in closed subgroups; integrability of norm powers.
+Real determinant of two-sided multiplication; basic API for U(J) and skew coordinates.
+Integrating one row and column of the Cayley density gives sphere volume.
+Hermitian involutions and real coordinates on skew-hermitian matrices.
+Discrete series coefficient equals a product of minors in the holomorphic chamber.
+Coefficients of highest vectors extend holomorphically to G·B; mean value over circle.
+Highest coefficient is holomorphic; circle mean and reproducing property of holomorphic functions.
+Sums and products of holomorphic functions; semi-invariance of products of minors.
+Rapidly decreasing holomorphic forms are large only away from cusps, explicit depth.
+Lowest K-type and Casimir value determine a discrete series coefficient; analytic vectors
+Invariant forms, compact Casimir value, words and filtration of a (g,K)-module.
+Casimir bounds and linear growth of the Lie algebra action along the filtration.
+Highest weight vectors exist; filtration steps are spanned by lowering words, finite-dimensional.
+Discrete series projector on representations: idempotent, fixes highest vectors, positivity, kills other K-types.
+Swap symmetry, vacuum weight, Laplacians and Fischer inner product for Howe's argument.
+Howe's argument: joint harmonic generates Fock space modulo other K-types.
+Products of minors are joint harmonics; existence for matched parameters.
+Weights of matched parameters; uniqueness up to scalar of the joint harmonic.
+Local theta correspondence: positivity, fixed by partner projector, generation by the joint harmonic.
+Oscillator actions on Fock polynomials, matched parameters, joint harmonics.
+Extremal vector is cyclic; Schur's lemma for U(n) on Weyl modules.
+Norm on Weyl's lattice, Zariski density of U(n), hook number clears denominators.
+Tensors on complementary blocks lie in the Cartan component; integral, isometric, equivariant product.
+Integral invariant pairing of opposite weights; it gives the values of ofAlgForm.
+Integral isometric Cartan component of a Weyl module tensor a dual Weyl module.
+Leading terms in one row, bordering of minors, recursion for alternants.
+Contravariant form on Weyl's lattice: symmetric, positive, invariant, inverse to the Fischer product up to the hook number.
+Weights majorised by λ, extremal weights have multiplicity one, symmetric power case.
+Leading exponent in a row interlaces; leading coefficient is again semi-invariant.
+Products of minors form a basis over every ring, with character identity.
+Basic API: Borel semi-invariant polynomials, substitution, Fischer product, base change.
+Rational representation of a product of GL_n on Weyl's lattice, twisted by determinants.
+Continuity of the Schur matrix in its argument.
+Universal basis, Schur matrices with functoriality and base change, Weyl character formula.
+Maps between algebraic forms and scalar functions on the adelic group.
+Unitary groups acting on Weyl modules, invariant metric, extremal vector, Harish-Chandra parameter.
+Twisted trace over E' is proportional to trace over E for matching functions.
+Base change keeps a depth-zero label at an inert place via Shintani lift.
+Tame levels; matching of unit functions at principal congruence level, keeping unramified places maximal.
+A totally complex number field with a conjugation for all embeddings is CM.
+Matching of spherical Hecke functions at places splitting completely in the extension.
+Polynomial roots inverting the norm, matched pairs of test functions, splitting of cocycles.
+Local matching of pro-p Iwahori double cosets of t and its norm.
+Level decomposition and commuting families of local and spherical operators for the trace comparison.
+Hasse principle for norms in one CM field via reciprocity and Hasse's norm theorem.
+An adelic polynomial root of the norm can be corrected to a rational one.
+Degree-n killing polynomials and free cocharacter weights force rank n and characteristic polynomials.
+Nonzero theta lift to larger rank; Hecke polynomials twisted and gaining a string.
 Known result: Hilbert 90 for GL_n and norm surjectivity on units, for a cyclic action at congruence level.
-Part of: Hilbert 90 for GL_n and norm surjectivity on units, cyclic action, congruence level (known result; see Lib.GaloisRep.Hilbert90.TameDescent).
-Known result: The Hodge-Tate cocharacter lies in the algebraic monodromy group.
-Part of: Local-global compatibility at tame level, away from and at l (known result; see Lib.GaloisRep.LocalGlobal.LabelCompatibility).
-Known result: Local-global compatibility at tame level, away from and at l.
-Part of: Local-global compatibility at tame level, away from and at l (known result; see Lib.GaloisRep.LocalGlobal.LabelCompatibility).
-Part of: Local-global compatibility at tame level, away from and at l (known result; see Lib.GaloisRep.LocalGlobal.LabelCompatibility).
-Part of: Local-global compatibility at tame level, away from and at l (known result; see Lib.GaloisRep.LocalGlobal.LabelCompatibility).
-Part of: Local-global compatibility at tame level, away from and at l (known result; see Lib.GaloisRep.LocalGlobal.LabelCompatibility).
-Part of: Galois representations attached to forms on definite unitary groups (known result; see Lib.GaloisRep.Main.AvatarCompatibility).
-Known result: Grunwald–Wang theorem in prime exponent.
-Known result: Galois representations attached to forms on definite unitary groups.
-Part of: Galois representations attached to forms on definite unitary groups (known result; see Lib.GaloisRep.Main.AvatarCompatibility).
-Part of: Galois representations attached to forms on definite unitary groups (known result; see Lib.GaloisRep.Main.AvatarCompatibility).
-Part of: Galois representations attached to forms on definite unitary groups (known result; see Lib.GaloisRep.Main.AvatarCompatibility).
-Part of: Galois representations attached to forms on definite unitary groups (known result; see Lib.GaloisRep.Main.AvatarCompatibility).
-Part of: Galois representations attached to forms on definite unitary groups (known result; see Lib.GaloisRep.Main.AvatarCompatibility).
-Known result: pseudocharacters, Brauer–Nesbitt, Clifford, and the fact that compact subgroups of GL_n stabilise a lattice.
-Part of: Pseudocharacters, Brauer–Nesbitt, Clifford; compact subgroups of GL_n stabilise a lattice (known result; see Lib.GaloisRep.Pseudocharacter.FibreSum).
-Known result: Density of algebraic vectors, congruences to supercuspidal types, and limits of eigensystems.
-General lemmas of commutative and general algebra (textbook or folklore).
-General lemmas of commutative and general algebra (textbook or folklore).
-General lemmas of commutative and general algebra (textbook or folklore).
-General lemmas of commutative and general algebra (textbook or folklore).
-General lemmas of commutative and general algebra (textbook or folklore).
-General lemmas of commutative and general algebra (textbook or folklore).
-General lemmas of commutative and general algebra (textbook or folklore).
-General lemmas of commutative and general algebra (textbook or folklore).
+Unitary Hilbert 90 at level m and orthonormal frames over profinite rings.
+Hodge–Tate cocharacter lies in the Zariski closure of the image near the identity.
+Local-global compatibility for sorted tame Iwahori eigencharacters at split places.
+Compatibility on inertia for squarefree depth-zero types induced with characters of the determinant.
+Forms spherical off S; simultaneous diagonalisation of Hecke operators; levels off finite sets.
+Parahoric types and depth-zero labels; type implies label by Frobenius reciprocity.
+Fundamental tame characters of inertia; existence of exponents; link with local reciprocity.
+With one ramified character, U equals Frobenius where tame inertia acts non-trivially.
+Definition of attached representation and statement of the main theorem.
+Field cut out by χχ^c is CM of prime degree, with norm-detecting character.
+Galois representations for all eigenforms of odd rank, by l-adic limits of seeds.
+Hecke polynomial coefficients, monic of degree n; jumps are distinct.
+Local conditions: unramified or crystalline, finite type, killing polynomials, jumps.
+Galois representation from geometry for odd-rank forms of cuspidal type and free weights.
+Galois representations for eigenforms of any rank, compatible at spherical places.
+Enough places above a split quadratic place, using roots of unity.
+Cancelling disjoint sets of characters from two semisimple representations with equal trace differences.
+Wedderburn tools, Brauer-Nesbitt, Clifford, representation from a trace, continuity from the trace.
+Ultrametric Stone-Weierstrass for modules; density of matrix coefficients of lacunary weights.
+Absolutely integrally closed rings: definition and permanence; Frobenius ring map.
+Fitting ideal bounded by a length over a DVR, through a matrix algebra quotient.
+Long exact sequences of abelian groups, their morphisms and the shift.
+Coefficients of substituted p-adic series; bounds by products over columns; lowest terms.
+General lemmas of commutative and general algebra
+A faithful complex character of the units of the algebraic closure of F_q exists.
+Relative lengths, kernels and determinants over a DVR; functions cut by matrix relations.
+Generalised index is invariant under the involution; lattice index is index of the determinant.
 A general count of the fixed points of an involution on a finite field, applied to finite places of a stably unramified CM field: a place with w̄ = w has norm r ^ 2 with r ≡ 3 mod 4, so a place of prime norm is split.
-General lemmas of commutative and general algebra (textbook or folklore).
-General lemmas of commutative and general algebra (textbook or folklore).
-General lemmas of commutative and general algebra (textbook or folklore).
-General lemmas of commutative and general algebra (textbook or folklore).
-General lemmas of commutative and general algebra (textbook or folklore).
-General lemmas of commutative and general algebra (textbook or folklore).
-General lemmas of commutative and general algebra (textbook or folklore).
-General lemmas of commutative and general algebra (textbook or folklore).
-General lemmas of commutative and general algebra (textbook or folklore).
-Known result: Combinatorial Nullstellensatz with multiplicity.
-General lemmas of real and complex analysis (textbook or folklore).
-General lemmas of real and complex analysis (textbook or folklore).
-General lemmas of real and complex analysis (textbook or folklore).
-General lemmas (textbook or folklore) of algebraic number theory, commutative algebra and analysis.
-General lemmas of combinatorics (textbook or folklore).
-General lemmas of algebraic geometry (textbook or folklore).
-General lemmas of algebraic geometry (textbook or folklore).
-General lemmas of algebraic geometry (textbook or folklore).
-General lemmas of algebraic geometry (textbook or folklore).
-General lemmas of algebraic geometry (textbook or folklore).
-General lemmas of algebraic geometry (textbook or folklore).
-General lemmas of algebraic geometry (textbook or folklore).
-General lemmas of algebraic geometry (textbook or folklore).
-General lemmas of algebraic geometry (textbook or folklore).
-General lemmas of algebraic geometry (textbook or folklore).
-General lemmas of algebraic geometry (textbook or folklore).
-General lemmas of algebraic geometry (textbook or folklore).
-General lemmas of algebraic geometry (textbook or folklore).
-General lemmas of algebraic geometry (textbook or folklore).
-General lemmas of algebraic geometry (textbook or folklore).
-General lemmas of group theory (textbook or folklore).
-General lemmas of group theory (textbook or folklore).
-General lemmas of group theory (textbook or folklore).
-General lemmas of group theory (textbook or folklore).
-General lemmas of group theory (textbook or folklore).
-General lemmas of group theory (textbook or folklore).
-General lemmas of group theory (textbook or folklore).
-General lemmas of group theory (textbook or folklore).
-General lemmas of group theory (textbook or folklore).
-General lemmas of group theory (textbook or folklore).
-General lemmas of group theory (textbook or folklore).
-General lemmas of linear algebra and matrices (textbook or folklore).
-General lemmas of linear algebra and matrices (textbook or folklore).
-General lemmas of linear algebra and matrices (textbook or folklore).
-General lemmas of linear algebra and matrices (textbook or folklore).
-General lemmas of linear algebra and matrices (textbook or folklore).
-General lemmas of linear algebra and matrices (textbook or folklore).
-General lemmas of linear algebra and matrices (textbook or folklore).
-General lemmas of linear algebra and matrices (textbook or folklore).
-General lemmas of linear algebra and matrices (textbook or folklore).
-General lemmas of linear algebra and matrices (textbook or folklore).
-General lemmas of linear algebra and matrices (textbook or folklore).
-General lemmas of linear algebra and matrices (textbook or folklore).
-Known result: Amitsur's formula for the characteristic polynomial of a sum (integrality consequence).
-General lemmas of linear algebra and matrices (textbook or folklore).
-General lemmas of linear algebra and matrices (textbook or folklore).
-General lemmas of linear algebra and matrices (textbook or folklore).
-General lemmas of linear algebra and matrices (textbook or folklore).
-General lemmas of measure and integration (textbook or folklore).
-General lemmas of measure and integration (textbook or folklore).
-General lemmas of measure and integration (textbook or folklore).
-General lemmas of algebraic number theory (textbook or folklore).
-General lemmas of algebraic number theory (textbook or folklore).
-General lemmas of algebraic number theory (textbook or folklore).
-General lemmas of algebraic number theory (textbook or folklore).
-General lemmas of algebraic number theory (textbook or folklore).
-General lemmas of algebraic number theory (textbook or folklore).
-General lemmas of algebraic number theory (textbook or folklore).
-General lemmas of algebraic number theory (textbook or folklore).
-General lemmas of algebraic number theory (textbook or folklore).
-General lemmas of algebraic number theory (textbook or folklore).
-General lemmas of algebraic number theory (textbook or folklore).
-General lemmas of topology (textbook or folklore).
-Part of: Green's characters of GL_n(F_q) and the parabolic-induction ring (known result; see Lib.LocalGL.Green.LabelDegree).
-Part of: The Brauer lift is a virtual character; cuspidal times Steinberg is induced from a torus (known result; see Lib.LocalGL.Green.CuspidalInnerProduct).
-Known result: The Brauer lift is a virtual character, and cuspidal times Steinberg is induced from a torus.
-General lemmas of linear algebra and matrices (textbook or folklore).
-Definitions for Green's characters of GL_n(k): τ_P, Ξ_c, labels, χ∘det, the reflection sum and the idempotents e_c.
-Part of: Green's characters of GL_n(F_q) and the parabolic-induction ring (known result; see Lib.LocalGL.Green.LabelDegree).
-Part of: Green's characters of GL_n(F_q) and the parabolic-induction ring (known result; see Lib.LocalGL.Green.LabelDegree).
-Known result: Green's characters of GL_n(F_q) and the parabolic-induction ring.
-Part of: Green's characters of GL_n(F_q) and the parabolic-induction ring (known result; see Lib.LocalGL.Green.LabelDegree).
-Part of: Green's characters of GL_n(F_q) and the parabolic-induction ring (known result; see Lib.LocalGL.Green.LabelDegree).
-Part of: Exponents, U-operators and spherical vectors at pro-p Iwahori level; conjugacy in I t I (known result; see Lib.LocalGL.Tadic.ChainLemma).
-Part of: Exponents, U-operators and spherical vectors at pro-p Iwahori level; conjugacy in I t I (known result; see Lib.LocalGL.Tadic.ChainLemma).
-Part of: Exponents, U-operators and spherical vectors at pro-p Iwahori level; conjugacy in I t I (known result; see Lib.LocalGL.Tadic.ChainLemma).
-Part of: Exponents, U-operators and spherical vectors at pro-p Iwahori level; conjugacy in I t I (known result; see Lib.LocalGL.Tadic.ChainLemma).
-Part of: Exponents, U-operators and spherical vectors at pro-p Iwahori level; conjugacy in I t I (known result; see Lib.LocalGL.Tadic.ChainLemma).
-Part of: Exponents, U-operators and spherical vectors at pro-p Iwahori level; conjugacy in I t I (known result; see Lib.LocalGL.Tadic.ChainLemma).
-Part of: Shintani descent for GL_n(F_q), with the lift named (known result; see Lib.LocalGL.Shintani.ShintaniLifting).
-Known result: Shintani descent for GL_n(F_q), with the lift named.
-Known result: Satake parameters of unitary unramified representations of GL_n come in strings.
-Known result: Taylor–Wiles freeness at auxiliary primes, up to the orders of the stabilisers.
-Part of: Taylor–Wiles freeness at auxiliary primes, up to the orders of the stabilisers (known result; see Lib.LocalGL.TaylorWiles.AuxPlaceOperators).
-Part of: Comparison of simple trace formulas for unitary groups that differ only at real places (known result; see Lib.LocalGL.TraceFormula.TraceComparison).
-Known result: Comparison of simple trace formulas for unitary groups that differ only at real places.
-Known result: Derived completeness for a principal ideal, with Nakayama, finiteness and completed base change.
-Known result: Crystalline comparison, which says that p-adic étale cohomology with good reduction is crystalline.
-General lemmas of commutative and general algebra (textbook or folklore).
-Part of: Crystalline comparison: p-adic étale cohomology with good reduction is crystalline (known result; see Lib.PadicComparison.Crystalline.CrystallineClasses).
-Part of: Crystalline comparison: p-adic étale cohomology with good reduction is crystalline (known result; see Lib.PadicComparison.Crystalline.CrystallineClasses).
-Part of: Crystalline comparison: p-adic étale cohomology with good reduction is crystalline (known result; see Lib.PadicComparison.Crystalline.CrystallineClasses).
-Known result: The congruence relation for the crystalline Frobenius.
-Part of: Congruence relation for the crystalline Frobenius (known result; see Lib.PadicComparison.CrystallineFrobenius.CrystallineCohomology).
-Known result: Almost acyclicity of the structure sheaf for the v-topology.
-Part of: Almost acyclicity of the structure sheaf for the v-topology (known result; see Lib.PadicComparison.Descent.AlmostAcyclic).
-Part of: Almost acyclicity of the structure sheaf for the v-topology (known result; see Lib.PadicComparison.Descent.AlmostAcyclic).
-Part of: Almost acyclicity of the structure sheaf for the v-topology (known result; see Lib.PadicComparison.Descent.AlmostAcyclic).
-Part of: Comparison of cohomology theories by duality: a diagonal kernel on products of P¹ (known result; see Lib.Cohomology.ProjectiveLine.NormalizationPullback).
-Part of: Comparison of cohomology theories by duality: a diagonal kernel on products of P¹ (known result; see Lib.Cohomology.ProjectiveLine.NormalizationPullback).
-Part of: Hodge–Tate map from Hodge cohomology to p-adic étale cohomology (known result; see Lib.PadicComparison.HodgeTate.HodgeTateVectors).
-Part of: Hodge–Tate map from Hodge cohomology to p-adic étale cohomology (known result; see Lib.PadicComparison.HodgeTate.HodgeTateVectors).
-Part of: Hodge–Tate map from Hodge cohomology to p-adic étale cohomology (known result; see Lib.PadicComparison.HodgeTate.HodgeTateVectors).
-Part of: Hodge–Tate map from Hodge cohomology to p-adic étale cohomology (known result; see Lib.PadicComparison.HodgeTate.HodgeTateVectors).
-Part of: Hodge–Tate map from Hodge cohomology to p-adic étale cohomology (known result; see Lib.PadicComparison.HodgeTate.HodgeTateVectors).
-Known result: The Hodge–Tate map from Hodge cohomology to p-adic étale cohomology.
-General lemmas of algebraic geometry (textbook or folklore).
-Part of: Primitive comparison theorem and period isomorphism (known result; see Lib.PadicComparison.CrystallineFrobenius.CrystallineCohomology).
-Part of: Primitive comparison theorem and period isomorphism (known result; see Lib.PadicComparison.CrystallineFrobenius.CrystallineCohomology).
-Known result: Faltings' toric towers and their Koszul complexes.
-Known result: The rank formula for the Bloch–Kato finite local condition and the size of its annihilator.
-Part of: Bloch–Kato finite local condition: rank formula and size of its annihilator (known result; see Lib.PadicHodge.BlochKato.BlochKato).
-Known result: Characters with finite image on inertia are potentially crystalline of weight 0.
-Part of: Characters with finite image on inertia are potentially crystalline of weight 0 (known result; see Lib.PadicHodge.Characters.LocalCharacters).
-Dwork's trick, as an integral crystalline comparison with a uniform denominator.
-Part of: Potentially crystalline representations, Hodge–Tate weights, Weil–Deligne Frobenius (known result; see Lib.PadicHodge.Crystalline.RegularityFrobenius).
-Part of: Potentially crystalline representations, Hodge–Tate weights, Weil–Deligne Frobenius (known result; see Lib.PadicHodge.Crystalline.RegularityFrobenius).
-Part of: Potentially crystalline representations, Hodge–Tate weights, Weil–Deligne Frobenius (known result; see Lib.PadicHodge.Crystalline.RegularityFrobenius).
-Part of: Potentially crystalline representations, Hodge–Tate weights, Weil–Deligne Frobenius (known result; see Lib.PadicHodge.Crystalline.RegularityFrobenius).
-General lemmas of commutative and general algebra (textbook or folklore).
-Part of: Potentially crystalline representations, Hodge–Tate weights, Weil–Deligne Frobenius (known result; see Lib.PadicHodge.Crystalline.RegularityFrobenius).
-Known result: Potentially crystalline representations, Hodge–Tate weights and the Weil–Deligne Frobenius.
-Part of: Artin–Schreier–Witt resolution over the tilt (known result; see Lib.PadicHodge.WachGamma.KisinModuleDefs).
-Part of: Limits of crystalline representations with bounded weights are crystalline (known result; see Lib.PadicHodge.Limit.LocalLimit).
-Part of: Limits of crystalline representations with bounded weights are crystalline (known result; see Lib.PadicHodge.Limit.LocalLimit).
-Limits of crystalline representations with bounded weights are crystalline.
-Part of: Fontaine's period rings and the fundamental exact sequence (known result; see Lib.PadicHodge.PeriodRings.BdR).
-General lemmas of commutative and general algebra (textbook or folklore).
-Known result: Fontaine's period rings and the fundamental exact sequence.
-Part of: Fontaine's period rings and the fundamental exact sequence (known result; see Lib.PadicHodge.PeriodRings.BdR).
-Part of: Fontaine's period rings and the fundamental exact sequence (known result; see Lib.PadicHodge.PeriodRings.BdR).
-Part of: Fontaine's period rings and the fundamental exact sequence (known result; see Lib.PadicHodge.PeriodRings.BdR).
-Part of: Fontaine's period rings and the fundamental exact sequence (known result; see Lib.PadicHodge.PeriodRings.BdR).
-Part of: Ax–Sen–Tate theorem and Tate's vanishing of the invariants of C_p(i) (known result; see Lib.PadicHodge.TateSen.NearOne).
-Known result: Ax–Sen–Tate theorem and Tate's vanishing of the invariants of C_p(i).
-Part of: Kisin modules: Galois action trivial modulo the variable, Hodge–Tate weights read off (known result; see Lib.PadicHodge.WachGamma.Letters).
+General lemmas of commutative and general algebra
+The Fischer pairing is preserved by an injective renaming of the variables.
+Integral finite adeles of a CM field with 5040th roots of unity: adelic-ring axioms.
+Multivariable Hensel lemma over an absolutely integrally closed local domain.
+Functoriality of adic completion; extending monoid actions to completions, localisations, Witt vectors.
+Successive approximation in adically complete modules; extracting the largest power of an element.
+Sum over Z/N, N prime, splits as zero term plus sum over units.
+General lemmas of commutative and general algebra
+Flat change of coefficients in Ext cohomology is a map of delta-functors.
+Schur modules, Weyl lattices, Fischer product, kernel, Gram form, symmetric powers: definitions.
+Fourier inversion and uniqueness on a compact abelian quotient, via Stone-Weierstrass.
+Holomorphic implies analytic in several variables; analyticity of parameter integrals.
+Elementary lower bound n ≤ φ(n)(2 log n + 1) for Euler's totient.
+General facts on differents, root discriminants; ramified ideals divide the different.
+Localisation identity for Schur polynomials; extracting Schur weights by algebraic independence of embeddings.
+Bijectivity of a comparison defines a closed class; charted schemes (IsCharted).
+Locus where a point lies in a closed subscheme is an ideal. fpqc descent: a functional relation total on a cover is a morphism.
+Charts with étale coordinates on functors: lifting criterion, shrinking, products, intersections, atlases.
+Reduced closures of points; free finite group actions are étale; Galois covers generically smooth.
+Functor of points on k-algebras; module-valued coefficient functors with scalar action.
+Functor-of-points basics: open and separated subfunctors, étale charts, atlases, complements of points.
+Regular functions via functor of points: evaluation, gluing, fpqc descent of functions.
+Picard group of a scheme, pull-back, fpqc descent of sections and frames.
+Smooth proper schemes are separated functors with finite étale atlases and affine covers.
+A proper scheme has closed diagonal and valuative lifting from one affine atlas.
+Line bundles as cocycles of functions on ring-valued points; sections, frames.
+Very general point of a holomorphic family by Baire; countable residue fields.
+Serre: sections of high powers of a very ample bundle are forms.
+Smoothness from a tangent bound and an immersed generic holomorphic family.
+Projective embeddings by linear systems: properness, closed immersions, Segre, affine charts.
+Pontryagin duality for the abelianisation of a profinite group; characters separate points.
+Central projections of a group algebra act as orthogonal projections; convolution contracts.
+Central idempotents of group algebras and their tensor products over product groups.
+Smooth and unitary representations; averaging projector over a compact subgroup.
+Cyclic subrepresentation of a vector; subrepresentation of smooth vectors.
+Index of a finite product of subgroups is the product of indices.
+Recognising irreducible and virtual characters by pairings; when a character's projector vanishes.
+Basic facts on Q/Z; character group of a finite abelian group.
+Tame pair with residually distinct conjugate eigenvalues spans all matrices of a lattice.
+Unitary group of a form over a star ring; integral, congruence subgroups; topology instances.
+Basic properties of characters and virtual characters of finite groups.
+Generalised inverses, factorisation through a column space, ye + bx = 1 over a field.
+Instance priorities, shortcut instances, simp set-up; Mathlib matrix lemmas restated with classical decidability.
+|det| of the block diagonal part of g in U(p,q) is at least (‖g‖/2)².
+Two-block matrices: inclusion matrices, block embedding of GL_r, block-triangular criteria.
+Smith normal form over rings that are valuation rings up to idempotents.
+Auerbach's lemma: basis dual to chosen forms with all forms bounded by one.
+The element of an adelic unitary group with a given isometric matrix.
+Products of principal minors of weight w: transpose, inverse, triangular laws, analyticity.
+Kronecker products, parabolic, unitriangular, Levi, parahoric subgroups; Bessel subgroups and frame of the space.
+Hilbert-Schmidt estimates, matrix logarithm and integrated Jacobi formula near the identity.
+Complex Gaussian integral for matrices of positive real part; linear change of variables.
+Real Heisenberg bicharacter, Gaussian vacuum, creation and annihilation operators, Lie algebra action.
+Characteristic polynomials over a subring pass from spanning elements to the whole algebra.
+Primitive matrices extend to bases; partner data and their laws under integral matrices.
+A twisted trace identity between commuting families transfers eigensystems.
+Separating forms separate U ⊗ V; ultrametric bound on Mx; vanishing via submersion.
+Polynomials in matrices: adjoints, base change, invertibility, characteristic polynomial divisibility.
+Haar measure push-forwards, modulus versus index, modulus of GL_n equals modulus of determinant.
+Leray measures on hermitian quadrics disintegrate volume, uniquely, over an axiomatised place (Place).
+Quotient measure defined by a cutoff weight of mass one on each orbit.
+Crude bound for the class number by degree and discriminant.
+Complex embeddings of a totally complex field come in conjugate pairs.
+Fundamental domains and covolumes of adelic lattices; box domain for filtered discrete subgroups.
+A finite product of completions is an instance of SemilocalField.
+Compact subgroups of l-adic units (1 mod 4) are procyclic.
+Imaginary quadratic field Q(√-d): degree, CM structure, integers, different, quadratic character.
+Primes and residue degrees, Frobenius on quadratic integers, lifting the exponent at 2.
+Integer rings of finite Galois extensions of Q_ℓ: DVR, compact, directed; length versus cardinality.
+Splitting character and Weil data: imaginary element, self-dual idele, inert sign.
+Inertia at p fixes roots of unity of order prime to p. l-adic valuation on the algebraic closure; normalised lengths over integer rings.
+Symmetry of zeros of Dirichlet L-functions from the functional equation, imprimitive characters included.
+Schwartz-Bruhat functions, products of local fields, tame and additive characters.
+Values of Steinberg and cuspidal class functions at field elements, by generating series.
+Adjoint of multiplication; it is a derivation for cuspidal functions (Zelevinsky).
+Naming characters of F_Q^× by field elements; multiplicativity and norm compatibility.
+Cuspidal class functions vanish unless the characteristic polynomial is a prime power.
+Definitions: labels, cuspidal Green characters, their products, determinant characters, idempotents.
+Cuspidality, independence of choices and orthogonality of the characters of irreducible polynomials.
+Frobenius reciprocity between parabolic induction and block means on GL_n(F_q).
+Induction on squarefree labels; lower bound from the degree of Green's characters.
+Twisting a Green character by a determinant character scales the label's roots.
+Similarity classes of matrices, class functions, parabolic induction product, rank parts, means.
+Depth-zero type induced from determinant characters yields a sorted tame Iwahori eigenvector.
+Degree of I t I; spherical T_j acts on exponents by elementary symmetric functions.
+U operator preserves character eigenspaces of the parahoric stabilising a line.
+Elements of I t I, t strictly dominant, are twisted-conjugate into the torus.
+Conjugation of parahorics by monomial matrices; quadratic relation of the Iwahori Hecke algebra.
+Exchanging and sorting the θ_i(ϖ) of exponents (torusChar θ, l); eigenvectors give exponents in unitary representations.
+Shintani norm via IsRootChoice: descent keeps inner products, commutes with induction; extension.
+Occurrence of a parabolically induced character detected on the parabolic (Frobenius reciprocity).
+An unramified exponent with sorted roots is non-zero on spherical vectors.
+Finite groups at auxiliary places act on forms; Higman operator up to stabiliser orders.
+Algebra of scalar systems preserving integral forms, its action and closedness.
+Finitely many double cosets of frames of given signature (finite class number).
+Equal Hecke traces on unitary groups differing at real places; Selberg principle.
+Derived completeness: Nakayama, retracts, cohomology, comparison mod a, completed base change.
+Crystalline comparison on charts étale over tori, by adjoining roots of coordinates. Čech–Alexander flat base change; crystalline classes span period-ring cohomology.
+A_max as Frobenius-twisted A_inf-algebra; map from O_C to A_max modulo divided powers. Étale algebras lift along surjections; étale over perfect is perfect.
+Divided power ideal, p-complete torsion-free algebras, reduction modulo divided powers.
+Basis of the envelope; gamma-1 is onto with constant invariants (crystalline Poincare lemma).
+Completed divided power envelope, its universal property, lifts from perfect rings and Witt vectors.
+p-adic etale cohomology of smooth proper varieties is finite with continuous Galois action.
+Transfer: rational cohomology of the base is the invariants of a Galois cover.
+Almost acyclicity of the tilted structure sheaf for perfect algebras on p-adic tests.
+p-adic tests, their tilts, Witt and completion functors, base change of coefficients.
+One test covers all points; dévissage from representables to affinely covered functors.
+v-covers of perfect rings descend: follow a class by Zorn to a valuation ring.
+Integration along P¹, natural operations, retract argument with the diagonal kernel on (P¹)^d.
+Moving a supported kernel class between points of (P^1)^d one coordinate at a time.
+For smooth spaces, forgetting first-order lifts of points preserves cohomology.
+Galois acts on Hodge–Tate images of degree h through a cyclotomic power.
+Relative ring B_dR+/ξ² on p-adic tests as square-zero extension of the generic fibre.
+Hodge–Tate map in weight h: definition, naturality, scaling, multiplicativity.
+Tests with affine spaces of lifts modulo ξ², contraction class and its powers.
+Hodge classes map naturally to vectors of Hodge–Tate weight h in étale cohomology.
+Primitive comparison and finiteness of mod p cohomology for smooth proper varieties.
+Primitive comparison modulo p lifts to period-ring coefficients.
+Comparison map from F_p to the tilt; tilted coefficients form a theory with supports.
+Periodic functions represent root systems of a unit; Kummer tower has Wang sequence.
+Bloch–Kato rank formula for crystalline cocycles; positive weights and cyclotomic twists as consequences.
+Filtered de Rham frame; extensions by crystalline cocycles are admissible; such cocycles are continuous.
+Local behaviour of l-adic avatars and of characters with finite inertia image.
+Algebra lemma: killing polynomials in all positive degrees give one in degree zero.
+Dwork's trick: after Frobenius the frame is constant basis times unit over A_max.
+Definitions: (potentially) crystalline, Hodge–Tate jumps, Weil pairs, linear Frobenius, crystalline cocycles.
+Potentially crystalline with inertia acting trivially on D_pcris implies crystalline.
+Base change of a bilinear pairing and its naturality.
+Diagonal Galois action on B tensor T written in matrix coordinates.
+Sums over coset representatives are invariant under left translation.
+Potentially crystalline representations, Hodge–Tate weights, Weil–Deligne Frobenius
+Admissibility under subobjects, tensors, duals; the linear Weil–Deligne Frobenius and killing polynomials.
+Artin–Schreier–Witt resolution over the tilt
+Crystalline cocycles modulo p^m: continuity, kernel of reduction, stability under corestriction.
+A_max periods embed in B_max periods; crystalline with weights in [0,h]; bundled representations.
+Uniform limits of traces keep crystallinity, Hodge-Tate weights and killing polynomials.
+Tilt of O_C, A_inf, theta, epsilon, xi, mu, actions; tilt is algebraically closed.
+Adic extension of linear maps; existence of (p,z)-adic topological bases with coordinates.
+The ideal W(m♭) and continuity of the Galois action on W(C♭) modulo p^m.
+B_max^+ is a domain, kernel of theta; B_dR^+ is a discrete valuation ring.
+C_p, its integers, isometric Galois action; functoriality of tilt, untilt and Fontaine's θ.
+Kernel of the fundamental exact sequence for B_max; pole bound by powers of μ.
+A_inf: kernel of θ, divisibility by μ and τ, φ-equations, completeness.
+Filtration of B_dR by powers of t; Galois invariants of B_dR modulo submodules.
+Tate: normalised trace bounded on cyclotomic tower; H^0 of C_p(i) vanishes.
+Galois stability of the Kisin lattice; congruence step towards triviality modulo the variable.
 Known result: the Artin–Schreier–Witt resolution over the tilt.
-Kisin modules, with the Galois action trivial modulo the variable and the Hodge–Tate weights read off.
-Part of: Kisin lattice (Breuil–Kisin module) of a crystalline lattice (known result; see Lib.PadicHodge.WachKisin.PeriodMatrixFrame).
-Part of: Kisin lattice (Breuil–Kisin module) of a crystalline lattice (known result; see Lib.PadicHodge.WachKisin.PeriodMatrixFrame).
-Part of: Kisin lattice (Breuil–Kisin module) of a crystalline lattice (known result; see Lib.PadicHodge.WachKisin.PeriodMatrixFrame).
-Part of: Kisin lattice (Breuil–Kisin module) of a crystalline lattice (known result; see Lib.PadicHodge.WachKisin.PeriodMatrixFrame).
-Part of: Kisin lattice (Breuil–Kisin module) of a crystalline lattice (known result; see Lib.PadicHodge.WachKisin.PeriodMatrixFrame).
-Part of: Kisin lattice (Breuil–Kisin module) of a crystalline lattice (known result; see Lib.PadicHodge.WachKisin.PeriodMatrixFrame).
-Part of: Kisin lattice (Breuil–Kisin module) of a crystalline lattice (known result; see Lib.PadicHodge.WachKisin.PeriodMatrixFrame).
-Part of: Kisin lattice (Breuil–Kisin module) of a crystalline lattice (known result; see Lib.PadicHodge.WachKisin.PeriodMatrixFrame).
-Known result: Kisin lattice (Breuil–Kisin module) of a crystalline lattice.
-Part of: Abelian schemes: isogenies finite flat, [m]*L = L^{m²}, Cartier, unramified torsion (known result; see Lib.Shimura.AbelianScheme.ThetaFamily).
-General lemmas of algebraic geometry (textbook or folklore).
-General lemmas of algebraic geometry (textbook or folklore).
-Known result: Abelian schemes (isogenies finite flat, [m]*L = L^{m²}, Cartier, unramified torsion).
-Part of: Frobenius' dimension formula and irreducibility of the theta group (known result; see Lib.Shimura.ComplexTheta.ThetaDimension).
-Known result: Fourier coefficients of theta lifts as periods over stabilisers.
-Known result: Frobenius' dimension formula and irreducibility of the theta group.
-Known result: the pointwise step of the Eichler–Shimura congruence relation for GU(1,n−1) at a split place.
-Part of: Eichler–Shimura congruence relation for GU(1,n−1) at a split place: the pointwise step (known result; see Lib.Shimura.CongruenceRelation.CongruenceStep).
-Part of: Deformations of the PEL object have at most n-1 parameters (known result; see Lib.Shimura.Deformation.TangentBound).
+Functoriality of Kisin modules, projectors to embeddings, pole orders of invariant forms.
+Maps θφ^{-n}; tilt elements fixed by the fixer of S approximated from S (Ax).
+Period matrix of a crystalline lattice with Frobenius matrix and Hodge basis.
+Value fields in B_dR, filtration lemmas, S-linear retractions preserve B_dR^+ relations.
+Kisin module of a crystalline lattice: frame, finite height, divisibility tests, spanning by nearly invariant vectors.
+Hodge–Tate maps of distinct weights are independent; jumps read from a basis of them.
+Regularity of B_max: invariant fractions lie in W[1/p], via a Kummer chart.
+Weil pairs (s, m): products, powers, uniqueness of m.
+Kisin lattice of a period matrix is free and dense up to p-powers.
+Existence of a finite-height Kisin frame in A_inf for a crystalline period matrix.
+Abelian schemes with ring action, translations, Picard pairing, parallelogram law: definitions.
+Geometric points in locally closed sets; homogeneity and dimension of group schemes.
+Lie algebra via étale charts and square-zero extensions; action matrices; signature condition.
+Isogenies are finite flat; homomorphisms killing the kernel factor through them.
+Canonical semicharacter from an endomorphism b with b + b* = 1 for the Riemann form; normalised translations and their cocycle.
+Vanishing theta descent to the split group forces zero period over the stabiliser.
+Theta series converge; Frobenius dimension formula, irreducibility and Schur's lemma for the theta group.
+Frobenius-twisted reduced Hecke neighbours of A depend only on A + W, some W ≠ 0.
+Cartier's theorem; finite flat kernel is closure of its generic points.
+Linear functions on w-torsion with zero differential span at most n-1 dimensions.
 Known result: Deformations of the PEL object have at most n-1 parameters.
-Part of: Galois representation cut out of cohomology by a Hecke eigensystem; Eichler-Shimura (known result; see Lib.Cohomology.PointClass.GaloisRep).
-Known result: Homomorphisms and line bundles of abelian schemes extend from the generic fibre.
-Known result: Good reduction of unitary PEL abelian varieties, in analytic form (no toric degeneration).
-General lemmas of algebraic number theory (textbook or folklore).
-Part of: Good reduction of unitary PEL abelian varieties, in analytic form (no toric degeneration) (known result; see Lib.Shimura.GoodReduction.ArcReduction).
-Part of: Good reduction of unitary PEL abelian varieties, in analytic form (no toric degeneration) (known result; see Lib.Shimura.GoodReduction.ArcReduction).
-Part of: Good reduction of unitary PEL abelian varieties, in analytic form (no toric degeneration) (known result; see Lib.Shimura.GoodReduction.ArcReduction).
-Part of: Hecke algebra of a pair and its action by correspondences on the base of a tower (known result; see Lib.Shimura.HeckeTower.WildType).
-Known result: Hecke algebra of a pair and its action by correspondences on the base of a tower.
-Part of: Integral Kuga–Sato models for GU(1,n−1) with level covers and congruence relation (known result; see Lib.Shimura.IntegralModel.ModelExistence).
-Known result: integral Kuga–Sato models for GU(1,n−1) with level covers and congruence relation.
-Part of: Integral Kuga–Sato models for GU(1,n−1) with level covers and congruence relation (known result; see Lib.Shimura.IntegralModel.ModelExistence).
-Part of: Integral Kuga–Sato models for GU(1,n−1) with level covers and congruence relation (known result; see Lib.Shimura.IntegralModel.ModelExistence).
-Part of: Theta group of an ample line bundle: span of sections, K(L), symmetric theta structures (known result; see Lib.Shimura.ThetaGroup.RigidFibres).
-Known result: the theta group of an ample line bundle, with the span of sections, K(L) and symmetric theta structures.
-Part of: Theta group of an ample line bundle: span of sections, K(L), symmetric theta structures (known result; see Lib.Shimura.ThetaGroup.RigidFibres).
-Part of: Theta group of an ample line bundle: span of sections, K(L), symmetric theta structures (known result; see Lib.Shimura.ThetaGroup.RigidFibres).
-Part of: Moduli of abelian varieties by theta values (theta-null embedding, universal family) (known result; see Lib.Shimura.ThetaModuli.UniversalFamily).
-Part of: Moduli of abelian varieties by theta values (theta-null embedding, universal family) (known result; see Lib.Shimura.ThetaModuli.UniversalFamily).
-General lemmas of algebraic geometry (textbook or folklore).
-Part of: Moduli of abelian varieties by theta values (theta-null embedding, universal family) (known result; see Lib.Shimura.ThetaModuli.UniversalFamily).
-Known result: Moduli of abelian varieties by theta values (theta-null embedding, universal family).
-General lemmas of algebraic geometry (textbook or folklore).
-Known result: Normal generation of sections on abelian varieties, kept under good reduction.
-Part of: Simple trace formula: Hecke trace on a definite group; non-elliptic terms vanish (known result; see Lib.Shimura.TraceFormula.MarkedEqDefinite).
-Known result: the simple trace formula, with the Hecke trace on a definite group and the vanishing of non-elliptic terms.
-Part of: Simple trace formula: Hecke trace on a definite group; non-elliptic terms vanish (known result; see Lib.Shimura.TraceFormula.MarkedEqDefinite).
-Part of: Transfer of eigensystems between inner forms of a unitary group differing at a real place (known result; see Lib.Shimura.Transfer.PELDataExistence).
-Known result: Transfer of eigensystems between inner forms of a unitary group differing at a real place.
+Largest Hecke eigen-quotient of cohomology: existence, continuity, crystallinity, killed Frobenius, weights.
+Polarisation-multiplying isogenies of complex tori extend to abelian schemes over valuation rings.
+Theta tori over good places have multiplicative sup norm; degree and level are units.
+Mean of the theta kernel as Gauss sum times Gaussian integral; real fourth power.
+Polarised torus with multiplications: canonical multiplier, normalised translations, isogeny kernels and degree.
+Theta identity by Schur, kernel of c keeps peaks, descent and contraction of defects.
+Valuations of theta values at torsion points, sup norm, boundedness, peak-shifting defects.
+spans in the group ring k[G]; elements sending K-fixed vectors to eigenvectors.
+Local GL_n at split places, spherical Hecke elements, commuting operators on base cohomology.
+PEL datum with theta group, Lagrangian and padding; good primes; class identities.
+Integral Kuga-Sato model with Hecke covers and congruence relation exists.
+Marked triples, orbital counts, local embeddings, Hecke operators at split places, local terms.
+Deep principal levels for finitely many isogenies; finite torsion index sets.
+Sections over a valuation ring as theta functions; lifted translations, commutators, orbit lattices.
+Theta coordinates span the sections on fibres of a modelled abelian scheme.
+Quasi-finiteness from ample pull-backs; identities for the pairing: ⟨x+y, z⟩ + ⟨x−y, z⟩ = 2⟨x, z⟩, ⟨mx, y⟩ = m⟨x, y⟩ for natural m, symmetry, and compatibility with additive maps; [m]*L = L^(m²).
+Symmetric theta coordinates are unique; K(L) is killed by the order of the index set.
+Flatness over a local ring from constant Hilbert ranks, by standard monomials and determinants.
+Closure of theta points is an abelian scheme with action and theta structure.
+Schematic density of points passes to stalks and to fibre products.
+Projective embeddability passes to composites and to closed subschemes of finite products.
+Analytic families immerse, finitely many meet every point; covers have only the expected points.
+Every point is centre of a rank-one valuation at a dense complex point.
+Riemann's theta relation; largest theta constants; reduction cut out by level points.
+Trace of a Hecke operator on definite algebraic modular forms as orbital sum.
+Non-elliptic terms vanish for a cuspidal type, so marked and definite counts agree.
+Trace of a (twisted) Hecke operator on algebraic forms as sum over representatives.
+Conjugation invariance of the count; reflections commuting with a regular matrix.
+Regular test function with cuspidal type that does not kill the given vector.
 Known result: complex uniformisation of PEL abelian varieties, Appell–Humbert and finite class number.
-Part of: Complex uniformisation of PEL abelian varieties; Appell–Humbert; finite class number (known result; see Lib.Shimura.Uniformisation.AppellHumbert).
-Part of: Complex uniformisation of PEL abelian varieties; Appell–Humbert; finite class number (known result; see Lib.Shimura.Uniformisation.AppellHumbert).
-Part of: Complex uniformisation of PEL abelian varieties; Appell–Humbert; finite class number (known result; see Lib.Shimura.Uniformisation.AppellHumbert).
-Part of: Complex uniformisation of PEL abelian varieties; Appell–Humbert; finite class number (known result; see Lib.Shimura.Uniformisation.AppellHumbert).
-Part of: Complex uniformisation of PEL abelian varieties; Appell–Humbert; finite class number (known result; see Lib.Shimura.Uniformisation.AppellHumbert).
-Part of: Complex uniformisation of PEL abelian varieties; Appell–Humbert; finite class number (known result; see Lib.Shimura.Uniformisation.AppellHumbert).
-Part of: Complex uniformisation of PEL abelian varieties; Appell–Humbert; finite class number (known result; see Lib.Shimura.Uniformisation.AppellHumbert).
-Part of: Complex uniformisation of PEL abelian varieties; Appell–Humbert; finite class number (known result; see Lib.Shimura.Uniformisation.AppellHumbert).
-Part of: Complex uniformisation of PEL abelian varieties; Appell–Humbert; finite class number (known result; see Lib.Shimura.Uniformisation.AppellHumbert).
-Part of: Complex uniformisation of PEL abelian varieties; Appell–Humbert; finite class number (known result; see Lib.Shimura.Uniformisation.AppellHumbert).
-Part of: Complex uniformisation of PEL abelian varieties; Appell–Humbert; finite class number (known result; see Lib.Shimura.Uniformisation.AppellHumbert).
-Part of: Siegel–Weil formula in the convergent range (known result; see Lib.SiegelWeil.Formula.SiegelWeilFormula).
+Ball model for signature (1,n-1): periods, polarisation, linearised action at fixed points.
+Adelic unitary similitude group, torsion module, frames of hermitian forms, reflections, signatures.
+Valuation rings of ℂ, holomorphic families of points, jets, uniformisations, theta coordinates.
+Theta functions on complex tori, Riemann form, semicharacters, Heisenberg translations, basic API.
+Every full complex PEL abelian variety is uniformised by a frame and reflection.
+Linear maps to the torsion module come from finite-adelic matrices.
+Finite adelic vectors modulo integral ones give the torsion module (E/O)^n.
+Adelic frames give full lattices in (E⊗R)^n; density and compatibility lemmas.
+Ball and fibre spaces; E⊗R acts complex-linearly through a period map.
+Rigid objects: theta coordinates span sections; theta law over local rings.
+Smooth is geometrically reduced; an abelian scheme over an algebraically closed field is integral.
+Invariant functional small against the positive Eisenstein series vanishes, by one Hecke operator.
 Known result: Siegel–Weil formula in the convergent range.
-Part of: Siegel–Weil formula in the convergent range (known result; see Lib.SiegelWeil.Formula.SiegelWeilFormula).
-Known result: Mass formula for unimodular hermitian lattices, ratio of consecutive masses.
-General lemmas of measure and integration (textbook or folklore).
-Known result: Siegel's formula for representing a number by a hermitian form, and local density bounds.
-Known result: Rallis inner product formula by doubling.
-Known result: Witt's extension theorem for hermitian forms, unimodular lattices, and the Iwasawa decomposition.
-Known result: Singular forms are governed by their coefficients at unimodular indices.
-Known result: Strong approximation for isotropic unitary groups.
-Part of: Tower property: constant term of a theta lift along an isotropic line (known result; see Lib.SiegelWeil.Tower.LargeSideConstantTerm).
-Tower property for the constant term of a theta lift along an isotropic line.
-Part of: Tower property: constant term of a theta lift along an isotropic line (known result; see Lib.SiegelWeil.Tower.LargeSideConstantTerm).
-Part of: Theta lift for a definite unitary pair as a class sum on algebraic modular forms (known result; see Lib.Weil.CompactLift.RallisFormula).
-Known result: Theta lift for a definite unitary pair as a class sum on algebraic modular forms.
-Part of: Adelic Weil representation of a unitary group and the invariant theta functional (known result; see Lib.Weil.DualPair.PairSplitting).
-Part of: Adelic Weil representation of a unitary group and the invariant theta functional (known result; see Lib.Weil.DualPair.PairSplitting).
-Part of: Adelic Weil representation of a unitary group and the invariant theta functional (known result; see Lib.Weil.DualPair.PairSplitting).
-Part of: Adelic Weil representation of a unitary group and the invariant theta functional (known result; see Lib.Weil.DualPair.PairSplitting).
-Part of: Adelic Weil representation of a unitary group and the invariant theta functional (known result; see Lib.Weil.DualPair.PairSplitting).
-Part of: Adelic Weil representation of a unitary group and the invariant theta functional (known result; see Lib.Weil.DualPair.PairSplitting).
-Part of: Adelic Weil representation of a unitary group and the invariant theta functional (known result; see Lib.Weil.DualPair.PairSplitting).
-Part of: Adelic Weil representation of a unitary group and the invariant theta functional (known result; see Lib.Weil.DualPair.PairSplitting).
-Part of: Adelic Weil representation of a unitary group and the invariant theta functional (known result; see Lib.Weil.DualPair.PairSplitting).
-Part of: Adelic Weil representation of a unitary group and the invariant theta functional (known result; see Lib.Weil.DualPair.PairSplitting).
-Part of: Adelic Weil representation of a unitary group and the invariant theta functional (known result; see Lib.Weil.DualPair.PairSplitting).
-Part of: Adelic Weil representation of a unitary group and the invariant theta functional (known result; see Lib.Weil.DualPair.PairSplitting).
-Part of: Adelic Weil representation of a unitary group and the invariant theta functional (known result; see Lib.Weil.DualPair.PairSplitting).
-Part of: Adelic Weil representation of a unitary group and the invariant theta functional (known result; see Lib.Weil.DualPair.PairSplitting).
-Part of: Adelic Weil representation of a unitary group and the invariant theta functional (known result; see Lib.Weil.DualPair.PairSplitting).
-Part of: Adelic Weil representation of a unitary group and the invariant theta functional (known result; see Lib.Weil.DualPair.PairSplitting).
-Part of: Theta kernels of unitary dual pairs: functoriality, seesaw, growth, rapid decay (known result; see Lib.Weil.DualPair.KernelDecay).
-A step of the proof of: Theta kernels of unitary dual pairs: functoriality, seesaw, growth, rapid decay.
-Part of: Theta kernels of unitary dual pairs: functoriality, seesaw, growth, rapid decay (known result; see Lib.Weil.DualPair.KernelDecay).
-Part of: Theta kernels of unitary dual pairs: functoriality, seesaw, growth, rapid decay (known result; see Lib.Weil.DualPair.KernelDecay).
-Known result: Functoriality, seesaw, growth and rapid decay for theta kernels of unitary dual pairs.
-Part of: Theta kernels of unitary dual pairs: functoriality, seesaw, growth, rapid decay (known result; see Lib.Weil.DualPair.KernelDecay).
-Part of: Theta kernels of unitary dual pairs: functoriality, seesaw, growth, rapid decay (known result; see Lib.Weil.DualPair.KernelDecay).
-Part of: Theta kernels of unitary dual pairs: functoriality, seesaw, growth, rapid decay (known result; see Lib.Weil.DualPair.KernelDecay).
-Part of: Theta kernels of unitary dual pairs: functoriality, seesaw, growth, rapid decay (known result; see Lib.Weil.DualPair.KernelDecay).
-Known result: Adelic Weil representation of a unitary group and the invariant theta functional.
-Part of: Theta kernels of unitary dual pairs: functoriality, seesaw, growth, rapid decay (known result; see Lib.Weil.DualPair.KernelDecay).
-Part of: Theta kernels of unitary dual pairs: functoriality, seesaw, growth, rapid decay (known result; see Lib.Weil.DualPair.KernelDecay).
-Part of: Theta kernels of unitary dual pairs: functoriality, seesaw, growth, rapid decay (known result; see Lib.Weil.DualPair.KernelDecay).
-Part of: Theta kernels of unitary dual pairs: functoriality, seesaw, growth, rapid decay (known result; see Lib.Weil.DualPair.KernelDecay).
-Part of: Bargmann–Fock model of the harmonic (oscillator) representation of U(p,q) (known result; see Lib.Weil.Fock.OscillatorPair).
-Part of: Bargmann–Fock model of the harmonic (oscillator) representation of U(p,q) (known result; see Lib.Weil.Fock.OscillatorPair).
-Part of: Bargmann–Fock model of the harmonic (oscillator) representation of U(p,q) (known result; see Lib.Weil.Fock.OscillatorPair).
-Part of: Bargmann–Fock model of the harmonic (oscillator) representation of U(p,q) (known result; see Lib.Weil.Fock.OscillatorPair).
-Part of: Bargmann–Fock model of the harmonic (oscillator) representation of U(p,q) (known result; see Lib.Weil.Fock.OscillatorPair).
-Part of: Bargmann–Fock model of the harmonic (oscillator) representation of U(p,q) (known result; see Lib.Weil.Fock.OscillatorPair).
-Known result: the Bargmann–Fock model of the harmonic (oscillator) representation of U(p,q).
-Part of: Bargmann–Fock model of the harmonic (oscillator) representation of U(p,q) (known result; see Lib.Weil.Fock.OscillatorPair).
-Known result: the basis problem in the stable range, as a reproducing formula.
-General lemmas of linear algebra and matrices (textbook or folklore).
-Known result: Gauss sums of a character of the determinant over matrix rings.
-Part of: Joint harmonics and global theta lifts between discrete series types (known result; see Lib.Weil.Lift.Edge).
-Known result: Joint harmonics and global theta lifts between discrete series types.
-Known result: harmonic highest vectors for (U(p,q), U(n)) give holomorphic vectors.
-Part of: Schrödinger and mixed models of the Weil representation; action of parabolic subgroups (known result; see Lib.Weil.MixedModel.ZeroTermLaw).
-Part of: Schrödinger and mixed models of the Weil representation; action of parabolic subgroups (known result; see Lib.Weil.MixedModel.ZeroTermLaw).
-Part of: Schrödinger and mixed models of the Weil representation; action of parabolic subgroups (known result; see Lib.Weil.MixedModel.ZeroTermLaw).
-Part of: Schrödinger and mixed models of the Weil representation; action of parabolic subgroups (known result; see Lib.Weil.MixedModel.ZeroTermLaw).
-Part of: Schrödinger and mixed models of the Weil representation; action of parabolic subgroups (known result; see Lib.Weil.MixedModel.ZeroTermLaw).
-Part of: Schrödinger and mixed models of the Weil representation; action of parabolic subgroups (known result; see Lib.Weil.MixedModel.ZeroTermLaw).
-Part of: Schrödinger and mixed models of the Weil representation; action of parabolic subgroups (known result; see Lib.Weil.MixedModel.ZeroTermLaw).
-Part of: Schrödinger and mixed models of the Weil representation; action of parabolic subgroups (known result; see Lib.Weil.MixedModel.ZeroTermLaw).
-Part of: Schrödinger and mixed models of the Weil representation; action of parabolic subgroups (known result; see Lib.Weil.MixedModel.ZeroTermLaw).
-Part of: Schrödinger and mixed models of the Weil representation; action of parabolic subgroups (known result; see Lib.Weil.MixedModel.ZeroTermLaw).
-Part of: Schrödinger and mixed models of the Weil representation; action of parabolic subgroups (known result; see Lib.Weil.MixedModel.ZeroTermLaw).
-Known result: the Schrödinger and mixed models of the Weil representation and the action of parabolic subgroups.
-Part of: Transfer of Bessel and Fourier–Jacobi periods under a theta lift (one unfolding step) (known result; see Lib.Weil.Periods.UnfoldingStep).
-Part of: Transfer of Bessel and Fourier–Jacobi periods under a theta lift (one unfolding step) (known result; see Lib.Weil.Periods.UnfoldingStep).
-Part of: Transfer of Bessel and Fourier–Jacobi periods under a theta lift (one unfolding step) (known result; see Lib.Weil.Periods.UnfoldingStep).
-Part of: Transfer of Bessel and Fourier–Jacobi periods under a theta lift (one unfolding step) (known result; see Lib.Weil.Periods.UnfoldingStep).
-Known result: the transfer of Bessel and Fourier–Jacobi periods under a theta lift (one unfolding step).
-Part of: Commutativity of the spherical Hecke algebra of GL_n; Eichler commutation relation (known result; see Lib.General.LinearAlgebra.ColumnLattices).
-Part of: Commutativity of the spherical Hecke algebra of GL_n; Eichler commutation relation (known result; see Lib.General.LinearAlgebra.ColumnLattices).
-Part of: Commutativity of the spherical Hecke algebra of GL_n; Eichler commutation relation (known result; see Lib.General.LinearAlgebra.ColumnLattices).
-Part of: Commutativity of the spherical Hecke algebra of GL_n; Eichler commutation relation (known result; see Lib.General.LinearAlgebra.ColumnLattices).
-The inequality (⋆), an upper bound for weighted non-split primes.
-Also holds known results stated on this proof's data: Integral group-ring elements interpolating twisted Hecke L-values, with norm relations (known result; see New.Selmer.ValueFamilies).
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Part of: Scaled Hecke operators repair divisibility at inert primes pairing tops (see New.Columns.LocalStatement).
-Scaled Hecke operators repair divisibility at inert primes pairing tops.
-Part of: Scaled Hecke operators repair divisibility at inert primes pairing tops (see New.Columns.LocalStatement).
-Set-up for this proof: size bookkeeping for the data of this proof.
-A Frobenius-twisted Hecke operator has small elementary divisors.
-Part of: Reduction theory: Mahler-Godement compactness, finite covolume, adelic Minkowski theorems (known result; see Lib.Adelic.Reduction.Defs).
-General lemmas on IndexDvd and HasType: bookkeeping for the index of a submodule.
-Known results stated on this proof's data: Galois action on CM theta functions and on the finite Weil representation (known result; see Lib.CM.Reciprocity.SemilinearWeilLaw).
-Also holds known results stated on this proof's data: Galois action on CM theta functions and on the finite Weil representation (known result; see Lib.CM.Reciprocity.SemilinearWeilLaw).
-Part of: Some jet is no more divisible than predicted (see New.Rows.GluedFormTheta).
-Normal form of theta series at non-split primes.
-Tight frames and an integral standard theta function.
-Part of: Tight frames and an integral standard theta function (see New.Curve.FrameSections).
-Divisibility of matrix jets at non-split primes.
-Known results stated on this proof's data: Sharpness of Katz's divisibility for invariant derivatives on a CM formal group (known result; see Lib.General.Algebra.DepthBounds).
-Part of: Divisibility of the chain of theta lifts at each prime (see New.Columns.LocalStatement).
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Part of: Normal form of theta series at non-split primes (see New.Curve.FormalParameter).
-Part of: Tight frames and an integral standard theta function (see New.Curve.FrameSections).
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Set-up for this proof: size bookkeeping for the data of this proof.
-Set-up for this proof: size bookkeeping for the data of this proof.
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Part of: Discrete series coefficients near 1 and explicitly large Bessel functions (see New.DiscreteSeries.RestrictionLemma).
-Part of: Discrete series coefficients near 1 and explicitly large Bessel functions (see New.DiscreteSeries.RestrictionLemma).
-Part of: Discrete series coefficients near 1 and explicitly large Bessel functions (see New.DiscreteSeries.RestrictionLemma).
-Discrete series coefficients near 1 and explicitly large Bessel functions.
-Part of: Discrete series coefficients near 1 and explicitly large Bessel functions (see New.DiscreteSeries.RestrictionLemma).
-Part of: The inequality (⋆): upper bound for weighted non-split primes (see New.Main).
-A good second scale in every long window.
-The remainder primeError written as an exact finite prime sum.
-Choice of the level prime.
-This file: Galois conjugate of the lift is the lift for the conjugate Hecke character.
-Set-up for this proof: general results applied to the objects of this proof.
-Part of: Exchange theorem for theta integrals of complementary rank (see New.Exchange.ExchangeTheorem).
-Part of: Injectivity and norm of a chain of theta lifts (see New.Exchange.TriangleArrows).
-Set-up for this proof: general results applied to the objects of this proof.
-Set-up for this proof: general results applied to the objects of this proof.
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Crude rows, with integral twisted lifts and bounded conjugates.
-Part of: Exchange theorem for theta integrals of complementary rank (see New.Exchange.ExchangeTheorem).
-Part of: Exchange theorem for theta integrals of complementary rank (see New.Exchange.ExchangeTheorem).
-Part of: Exchange theorem for theta integrals of complementary rank (see New.Exchange.ExchangeTheorem).
+Lagrangians, their zero terms, torus action and integrable bound for the theta integral.
+Ratio of consecutive masses of unimodular hermitian lattices, explicit error uniform in field.
+Scaled inverse different in self-adjoint finite adeles is a compact open subgroup.
+Siegel's mean value formula for representing one number by a sum of norms.
+Doubling: inner product of theta lifts as integral of matrix coefficients; dual datum.
+Adelic Iwasawa decomposition for unitary parabolics; centre of radical and Fourier coefficients.
+Adapted hyperbolic splittings compose, reindex and factor in stages.
+Automorphic function invariant at a split place, compact group and torus is constant.
+Constant term of a theta integral along an isotropic line, unfolded over orbits.
+Constant term of lifted character equals smaller lift times explicit Hecke L-value factor.
+Finite part of isotropic-line term for standard ramified data is a Gauss sum.
+Matrix of jets is an equivariant kernel for definite unitary theta lifts.
+Definite theta lift equals class-sum lift of algebraic forms; matching of parameters.
+Adelic vacuum function and Heisenberg cocycle of the standard hermitian form.
+Definition of tight frames in the unimodular lattice, with multiplicities.
+Standard spaces, Taylor series of theta functions, jets along Schur matrix entries.
+Finite adelic Heisenberg group, self-dual lattice, additive character, semicharacter and vacuum.
+Finite multiplier of the splitting through saturating matrices; multiplicativity, phase, lattice index.
+Finite part of the Weil representation: stable, smooth, vacuum characterised by lattice invariance.
+Self-dual lattice gives a vacuum for the finite Heisenberg group (lattice model).
+Entire canonical theta functions come from finite Weil vectors, with Schur orthogonality.
+Sign of a Gauss sum fixed modulo 4 by orbits of order four.
+L¹ (Feichtinger) space of vacuum coefficients, Heisenberg representation, reproducing formula, Schur's lemma.
+Tensor products of Heisenberg vacuum models; Wiener amalgam bound for coefficients.
+Space of data, Heisenberg and Weil operators, vacuum, theta functional, projections.
+Lattice vacuum projections at finite places and their interaction with the Weil action.
+Elementary identities for the Heisenberg bicharacter and the vacuum function.
+The finite-adelic cocycle of the Weil operators written as a finite Gauss sum.
+Abstract Weil operators on vacuum coefficients: cocycle, unitarity, intertwining of Heisenberg action, continuity.
+Finite vectors of the Weil representation are fixed by open subgroups.
+Predicate: all theta descents with data vacuum at given places vanish.
+Adjoint map exchanges the two groups of a dual pair, up to a phase.
+Real mixed model of an adapted splitting; slices factor into real and finite parts.
+Rapid decay of theta kernels for data supported on full-rank maps at split places.
+The Kronecker product map U(S)×U(T) → unitary group of Hom(S,T).
+Moderate growth of theta kernels; lifts converge, are equivariant, adjoint to descents.
+Operator norm of block diagonal matrices; block embeddings are proper maps.
+Real dual pair on Fock space; maximal compact subgroups act by substitution and character.
+Rational points of the unitary group fix the theta functional, by doubling.
+Finite-place action of a dual pair on data; explicit scalars at split places.
+Name for the real slice of a datum in the mixed model.
+Heisenberg group law and its normalisation by the dual pair, in rational coordinates.
+Rules for theta kernels with data mod m: twists, level action, sums, conjugation.
+Theta function of a real vacuum datum is entire and determines the datum.
+Cocycle identity for U(p,q): oscillator representation splits, by a complex Gaussian determinant.
+Functional bounded by its small-shift differences decays as any power of the shift.
+L1 Fock space, polynomial vectors, derivative of the Heisenberg action on them.
+Sign projections, real multiplier as conjugate determinant of negative block, its norm bound.
+Weighted moments on Fock data; polynomial vectors dense in all moment norms.
+Derivative of oscillator representation on polynomial vectors is the quadratic creation-annihilation operator.
+Bargmann–Fock model of the harmonic (oscillator) representation of U(p,q)
+Reproducing formula by theta lifts to large definite groups; holomorphic determinant vectors.
+Finite Fourier inversion on matrices; Gauss sums of primitive determinant characters.
+Cut-off ramified character: periodic, of norm one on units, locally constant.
+Theta lift on forms: equivariance, adjoint, matched real data lift types to types.
+Theta lifts with joint harmonic data carry discrete series forms to the corresponding type.
+Holomorphic Fock vectors and kernels; automorphic functions of a level, basic API.
+Zero term along an isotropic subspace taken in stages; independent of the frame.
+Schwartz–Bruhat functions at split places, Schrödinger action, spanned by translates of the lattice indicator.
+Archimedean Tate integral of slices of a rapid datum converges and is rapid.
+Framed hyperbolic space; matrices unitary at infinity and integral at finite places.
+Standard polarisation of the hyperbolic space as a splitting.
+The mixed Schrödinger model function of a vector is continuous and integrable.
+Moduli prime to their conjugate; theta kernel of a polynomial and function modulo m.
+Coordinate changes keeping the vacuum intertwine Heisenberg and Weil operators (negation, conjugation).
+Schrödinger model at split places embedded in the vacuum model: Heisenberg action, inner products.
+for ξ rapid, τ smooth of compact support and u smooth with unitary values, the vectors τ(x)ω₀(u(x))ξ are the slices of one rapid vector.
+Splittings along isotropic subspaces, Levi and unipotent radical of the parabolic, adapted points.
+Parabolic subgroup acts on the zero term by an explicit character of the determinant.
+Heisenberg cocycle and translations on Hom in rational coordinates; kernels and theta-lift predicate.
+Graded hermitian spaces: definite part plus string, unipotent and Bessel subgroups.
+Minus the additive valuation, −ord_w, of a finite idele.
+Base point of the surviving orbit, shift character, generic Bessel/Fourier-Jacobi functions.
+Surviving rational orbit by Witt's theorem, its stabiliser, twists killing other terms.
+Cosets of minuscule Hecke operators of GL_n indexed by residue subspaces; local congruence groups.
+Eichler commutation relation of Hecke polynomials through theta lifts at split places.
+Spherical Hecke operators at split places commute, are adjoint, and are simultaneously diagonalisable.
+Scalar by which a uniformiser acts in the Weil representation.
+The inequality (⋆) from Theorems A to C; the one-sided bound; GRH.
+Determinant theta class sum: twist-free expansion and norm relation on adding a place.
+the primes of E dividing π; the levels on the spaces X_j; columns, that is, algebraic forms on X_0 (not the columns of a Young diagram, nor IsColumn); branching and restriction from X_m to Y_m.
+Marked primes at inert p: orders of -p, parity, balance; scaled Hecke operator.
+Scaled Hecke operator passes the chain; divisibility on its image at non-split primes.
+Scaled Hecke operator at a marked prime has image of small index on columns.
+Size bookkeeping: row lengths, factorial sizes, class counts, sum of allowed losses.
+Valuation at N of character factors and of data given modulo N.
+Crude explicit bound for the class number of the standard unimodular hermitian genus.
+Index of a submodule bounded via determinants; multiplicativity; operators onto up to small index.
+Galois action on translates of a theta product; integral bounded scaled vacuum values.
+Standard data: stability, and p-adic bounds transfer from theta products to their jets.
+Choice of admissible pairs and numerical bound against the predicted valuation F(p).
+Jets of products of torsion translates of theta are integral after scaling.
+The jet series of a Weil vector is the Taylor series of its theta function.
+Function mod m names an admissible sum of vacuum translates, with explicit denominator.
+Tilting matrices that kill Frobenius pairings at controlled determinant cost.
+Sharpness of Katz's divisibility, by a multiplicative inequality between jets.
+Names for asked divisibility, gain, loss, short and served primes.
+The number s₀, an f-th root of chiFin(α)⁻¹, and its absolute value.
+Theta products along tight frames: integral up to one exponential coupling partner places.
+For each prime p, tight frames of every large length with a vector v such that every s₁·conj τ(v) is a p-adic unit, s₁ = Parameters.periodFactor.
+Record of admissible data; names for ranks, weights, the prime sum, the error budget and the cost of one direction.
+Chosen places above g, the integer Data.chosenGroupOrder, principal level, trivial stabilisers, sizes.
+Admissible data exist for large x; Behrend sets and class-group pigeonhole as inputs.
+Parameters N₀, d; fields K, E; infinite places as a group; CM type.
+Logarithmic size calculus (upper and lower exponent bounds) for the parameters of the data.
+Size comparisons among nominal weights and weights of the lifts.
+Decomposition of primes and Frobenius in a cyclotomic extension of an imaginary quadratic field.
+Record tying a Bessel system to its weight, degree and discrete series projector.
+Near 1 the coefficient is explicit phase times real factor, uniform error.
+Second-order expansion of log principal minors near 1 with absolute error constants.
+Period of deep-level Poincaré series equals main term up to explicit error.
+Steep parameters, phase cancellation; integrand is large only near diagonal U(X).
+Theorem C (Data.integral_forms_long: a lower bound for the covolume of the lifts of an almost spanning family of small index), and the family given by Theorems A and B.
+One-sided bound gives a zero-free half-plane; small value in every long window.
+Weighted non-split prime sums; their Mellin transform has poles at zeros of L-functions.
+Theorem A (Data.short_forms: projected Poincaré series of integral forms have small lifts and small index), Theorem B (Data.enough_forms: few translates nearly span), the remainder as prime sums.
+Galois conjugate of the lift is the lift for the conjugate Hecke character.
+Weights, Harish-Chandra parameters and ranks of the spaces fit the lift hypotheses.
+Sections over cosets; matched pairs are GL-stable and determined by one side.
+Chain of theta lifts is injective; its inner product and level index count.
+Norm of the adjoint lift from W_j: twist-free constant, explicit count, Hecke sum.
+Cost in squares bookkeeping; exchange constants on the data cost one square.
+Kernels, data and the definite chain B of the proof, named.
+The main result Data.crude_rows.
+Determinant vectors in Fock space are cone integrals of determinant vectors one floor up.
+Removing hyperbolic planes from both sides preserves the exchange identity.
+Difference of both theta integrals is an equivariant functional of one partner datum.
 Exchange theorem for theta integrals of complementary rank.
-Part of: Crude rows: integral twisted lifts and bounded conjugates (see New.Exchange.CrudeRows).
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Part of: Exchange theorem for theta integrals of complementary rank (see New.Exchange.ExchangeTheorem).
-Part of: Exchange theorem for theta integrals of complementary rank (see New.Exchange.ExchangeTheorem).
-Lift then descent is proportional to descent then lift.
-Part of: Exchange theorem for theta integrals of complementary rank (see New.Exchange.ExchangeTheorem).
-Part of: Exchange theorem for theta integrals of complementary rank (see New.Exchange.ExchangeTheorem).
-Set-up for this proof: general results applied to the objects of this proof.
-Every row pairs with a restriction of explicit level.
-Part of: Lift then descent is proportional to descent then lift (see New.Exchange.OneSquare).
-Part of: Exchange theorem for theta integrals of complementary rank (see New.Exchange.ExchangeTheorem).
-Part of: Exchange theorem for theta integrals of complementary rank (see New.Exchange.ExchangeTheorem).
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Injectivity and norm of a chain of theta lifts.
-Set-up for this proof: size bookkeeping for the data of this proof.
-Part of: Injectivity and norm of a chain of theta lifts (see New.Exchange.TriangleArrows).
-Part of: Second moment of the Poincaré series with constant one (see New.Filling.Moments).
-Part of: Real-place Bessel integrals: band limits, energy and open-cell bound (see New.Filling.FillingData).
-Part of: Incoherent and degenerate pairs are negligible (see New.Filling.CrudeEnergy).
-Agreeing characters force shared vectors up the flag.
-Set-up for this proof: dictionaries between two encodings of the same objects.
-Part of: Incoherent and degenerate pairs are negligible (see New.Filling.CrudeEnergy).
-Incoherent and degenerate pairs are negligible.
-Set-up for this proof: size bookkeeping for the data of this proof.
-Part of: Positive kernels and a sieve losing almost nothing (see New.Filling.GlobalSieve).
-Set-up for this proof: size bookkeeping for the data of this proof.
-Band limits, energy and open-cell bound for real-place Bessel integrals.
+Twist-free restriction projected to level g; periods under translation; index ratios.
+Lifts are killed by the Hecke polynomial at smallest root; real data exist.
+Tuples of matrices, tidy data on paths, and the periods of the staircase.
+Index sets, signs, parameters of grids and triangles; gaps, interlacing and matching.
+Finitely many pairs (character, integer), from finiteness of tame Hecke characters.
+Orbit terms of theta kernel with standard ramified datum at parabolic points.
+Theta integral coefficient vanishes at forms not negative definite, by circle weights.
+Up-then-down and down-then-up theta lifts agree on partner data up to L-values.
+Locally constant partner data are matched pairs.
+Matched real data giving the exchange identity at the top of the tower.
+The one-square lemma applied to a grid square, constant costing one square.
+Descent chain is the transpose of the lift chain, hence onto.
+Theta integrals under change to an isometric or opposite hermitian space.
+A stable space containing a standard datum contains all partner data.
+If coefficients at unimodular indices vanish, all standard ramified data are killed.
+The chosen parameters satisfy the steepness hypothesis of the Laplace-method lemma.
+The lifts and descents of the data form a triangle with two laws.
+Integrality of the lift; integral group-ring element interpolating tame twists of L-values.
+Abstract triangle of maps: chains are injective, Gram determinant factors over first arrows.
+Blocks of the unfolded moment: convergence, cut, weight change, moves, identity term.
+Definition of Bessel systems: band limits, Schur bounds, tail bound; the constants of the open-cell bound, which is proved in New.RealPlace.OpenCellBound.
+Sum of inverse discriminant powers over classes and subspaces.
+Positive form on links, lifts to the lattice, dimension and isotropy of links.
+Dictionary between adelic groups and frame coordinates; columns in orthonormal coordinates.
+Chinese remainder lift at level primes; fixers of frame vectors modulo them.
+Agreeing characters with vanishing discriminant force a level; disagreeing terms contribute zero.
+Last step: pairing on the top group is a multiple of the branching restriction.
+Link of two frames, Gram discriminant g(γ); basis of the marked unimodular lattice.
+Index and class counts of columns; the filling data are admissible.
+A polynomial identity that splits a product of determinants (used in New.Rows.Separation).
 Translates of the columns fill the rows.
-Part of: Phase sums are sharply dominated by local Bessel kernels (see New.Filling.Moments).
-Part of: Phase sums are sharply dominated by local Bessel kernels (see New.Filling.Moments).
-Positive kernels and a sieve losing almost nothing.
-Set-up for this proof: dictionaries between two encodings of the same objects.
-General lemmas of algebraic number theory (textbook or folklore).
-Set-up for this proof: dictionaries between two encodings of the same objects.
+One-sided Siegel formula at T; top kernel dominates phase sums nearly sharply.
+A group Z between K(g) and K for which Level.floorZeroForm Z, divided by the measure of Z, is smaller than for K by b^(6|κ|) for each given place above q₀ where a frame vector is fixed.
+Adelic sieve: one-sided Poisson summation per pivot, frequency sum bound, final sieve inequality.
+Dictionary between global data and the places in T; phase sums as local integrals.
+Discriminant of lattice points in a subspace; Liouville inequality for Gram determinants.
+Continuity and norm formulas for the product Bessel function, kernel and amplitudes.
+Dictionary between rational, finite adelic and real coordinates of the filling record.
+Bordered determinant bounds the discriminant of the lattice of lifts of a link.
+Trace of a small central projection on the Bessel-subgroup terms is small.
+Siegel's lemma for hermitian lattices; convergence of height zeta function of subspaces.
+Poincaré series from cut-off Bessel function: convergence, being a form, unfolding, inner products.
+Dimension of rows at most group order times degree times mass.
+Energy of terms of the second moment; splitting; passage to cut Bessel functions.
 Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Part of: Incoherent and degenerate pairs are negligible (see New.Filling.CrudeEnergy).
-Second moment of the Poincaré series with constant one.
-Lemmas on lattices, strong approximation, freeness and frame data used for near terms.
-Set-up for this proof: dictionaries between two encodings of the same objects.
-Set-up for this proof: general results applied to the objects of this proof.
-Part of: Incoherent and degenerate pairs are negligible (see New.Filling.CrudeEnergy).
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Part of: Incoherent and degenerate pairs are negligible (see New.Filling.CrudeEnergy).
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Part of: Incoherent and degenerate pairs are negligible (see New.Filling.CrudeEnergy).
-Part of: Phase sums are sharply dominated by local Bessel kernels (see New.Filling.Moments).
-Set-up for this proof: size bookkeeping for the data of this proof.
-Set-up for this proof: general results applied to the objects of this proof.
-Part of: Good forms on different unitary groups have equal traces (see New.Trace.GoodFormTransfer).
-Heights of families indexed by ℓ-adic embeddings; product formula.
-Few translates nearly span; height of one Gram determinant.
-Part of: Cokernel bounds and vanishing cup products for Kisin modules (see New.Lift.LongGap).
-Part of: Cokernel bounds and vanishing cup products for Kisin modules (see New.Lift.LongGap).
-Part of: Cokernel bounds and vanishing cup products for Kisin modules (see New.Lift.LongGap).
-(In the statements a jump is a Hodge–Tate weight, and Z_f the crystalline cocycles.) An exponent independent of the ramification index for tame types.
-Part of: Length bound for crystalline classes with few low weights (see New.Lift.ExponentTheorems).
-Part of: Cokernel bounds and vanishing cup products for Kisin modules (see New.Lift.LongGap).
-Cokernel bounds and vanishing cup products for Kisin modules.
-Rank-free exponents for crystalline classes at large weights.
-Part of: Deformed trace at one auxiliary level bounds the denominator (see New.Patching.OnePrimeTie).
-Deformed trace at one auxiliary level bounds the denominator.
-Part of: Real-place Bessel integrals: band limits, energy and open-cell bound (see New.Filling.FillingData).
+Invariance of link, level and discriminant under unipotent groups; link is Lagrangian (link: classes of the pairs (y, γ⁻¹y), y orthogonal to X and γX, X spanned by e₁, …, e_ϱ).
+Finite place carries a level and gauges for the tower method; masses of K.
+Schur-test bound for total amplitude of a thin double-coset class of terms.
+Finite Bessel function; shell, frequency and bottom-value bounds for its forms.
+Explicit covolume of the level-g arithmetic unipotent group in scaled real coordinates.
+Finite test datum of the auxiliary pair: sum of translates and transformation law.
+Given an injective lift to forms on a definite group, a Hecke eigensystem has at most one primitive label at a chosen place over g.
+Heights of families indexed by ℓ-adic embeddings: additivity and product formula.
+Positive-type functions avoid singular minors; Hilbert-Schmidt variance inequality giving spread.
+Low and far weight windows, gap condition, sum of valuations over two intervals.
+a cup product of crystalline cocycles is a coboundary if they have lifts to W(C^♭)-coefficients whose Galois and Frobenius differences pair into W(𝔪^♭).
+Lattices with prescribed exponents at each E_a, cost of Galois steps, retraction API.
+Final exponent and length bounds for crystalline classes against congruent dual lattices.
+Colength bound for constants lifting to deep points; cup products vanish on that submodule.
+Galois operators (g-1)/zτ deepen Kisin module elements at explicit cost in p.
+Points, strictness, safe pairs and the walk along Frobenius orbits killing cup products.
+Polynomial in tame generator kills cokernel of Kisin modules independently of ramification index.
+Transfer to finite GL_n of a line-stabiliser character factors through the determinant.
+Tie at each new prime; top coefficient of Ribet's element clears the projection's denominator.
+Band limits and energy bound for cut Bessel function at a real place.
 Normalise a real-place Bessel function and cut it off.
-This file: the coordinates of the full function of a Bessel system are orthonormal.
-Part of: Real-place Bessel integrals: band limits, energy and open-cell bound (see New.Filling.FillingData).
-Part of: Tower method: pairings of kernels bounded floor by floor (see New.RealPlace.LocalTheorem).
-Part of: Real-place Bessel integrals: band limits, energy and open-cell bound (see New.Filling.FillingData).
-Part of: Tower method: pairings of kernels bounded floor by floor (see New.RealPlace.LocalTheorem).
-Part of: Tower method: pairings of kernels bounded floor by floor (see New.RealPlace.LocalTheorem).
-Set-up for this proof: size bookkeeping for the data of this proof.
-Part of: Real-place Bessel integrals: band limits, energy and open-cell bound (see New.Filling.FillingData).
-Part of: Real-place Bessel integrals: band limits, energy and open-cell bound (see New.Filling.FillingData).
-Set-up for this proof: general results applied to the objects of this proof.
-Tower method, with pairings of kernels bounded floor by floor.
-Part of: Real-place Bessel integrals: band limits, energy and open-cell bound (see New.Filling.FillingData).
-Part of: Tower method: pairings of kernels bounded floor by floor (see New.RealPlace.LocalTheorem).
-Part of: Real-place Bessel integrals: band limits, energy and open-cell bound (see New.Filling.FillingData).
-Part of: Incoherent and degenerate pairs are negligible (see New.Filling.CrudeEnergy).
-Part of: Tower method: pairings of kernels bounded floor by floor (see New.RealPlace.LocalTheorem).
-Exchange of theta kernels with explicit determinant polynomials.
-Part of: Integral comparison forms seeing the twist through one number (see New.Rows.ComparisonForms).
+the coordinates of the full function of a Bessel system are orthonormal.
+Jacobian and injectivity of the open-cell double coset chart of U(p,q).
+Tower measure at C is Haar with constant bound; level and gauge at C.
+Summing the local theorem over shells at C; explicit band bound for forms.
+Gauge estimates: flat charts, fibre masses, nearness, supports and weights on floors.
+Laws of floor kernels; pairing on one floor is integral of next floor's pairings.
+Basic properties of frame vectors and the size function modulo the Bessel subgroup.
+Explicit section is unitary and represents every double coset of the open cell.
+Definition of open-cell section, its domain, differentiability, norm and derivative bounds.
+Invariant measure as a tower of big cells; definitions of level, gauge, weights, pairing kernels.
+Local theorem: weighted bounds for pairings of cut Bessel kernels, descent between floors.
+Mean-square bound for Bessel integrals on the open cell.
+Size filtrations; size bounds for minors, heads and group elements near two frames.
+Lower bound for Haar integral via open-cell double coset chart, explicit constant.
+Frames with equal Gram block and congruent middle parts are lattice translates.
+Three weight integrals and sliced Plancherel bounds on quadrics and Heisenberg radicals.
+Matched identity summed on a square block; datum reduces to one coset's class sum.
+Denominator lost by the Cartan product at the glued lattice.
 Integral comparison forms seeing the twist through one number.
-Some jet is no more divisible than predicted.
-Each ratio of Hecke values repays one direction.
-The rows repay the cost of the idle directions.
-Twisted theta forms lie on one line.
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Crude denominators and conjugate bounds for theta jets.
-Non-lifts sharing one Hecke root have zero theta periods.
-Set-up for this proof: general results applied to the objects of this proof.
-Part of: Products of theta forms detect all good forms (see New.Rows.Separation).
-Part of: Twisted theta forms lie on one line (see New.Rows.LineArithmetic).
-Part of: Exchange of theta kernels with explicit determinant polynomials (see New.Rows.Carrier).
-Part of: The rows repay the cost of the idle directions (see New.Rows.LiftVolumeHeight).
-Part of: Twisted theta forms lie on one line (see New.Rows.LineArithmetic).
-Products of theta forms detect all good forms.
-Part of: Products of theta forms detect all good forms (see New.Rows.Separation).
-Records of the data and parameters used below, and names for their objects.
-Set-up for this proof: size bookkeeping for the data of this proof.
-Part of: Seesaw identity for a chain of theta lifts (see New.Seesaw.SeesawTheorem).
-Set-up for this proof: general results applied to the objects of this proof.
-Part of: Seesaw identity for a chain of theta lifts (see New.Seesaw.SeesawTheorem).
-Part of: Seesaw identity for a chain of theta lifts (see New.Seesaw.SeesawTheorem).
-Part of: Seesaw identity for a chain of theta lifts (see New.Seesaw.SeesawTheorem).
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Part of: Seesaw identity for a chain of theta lifts (see New.Seesaw.SeesawTheorem).
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Part of: Unfolded periods as finite sums with controlled denominators (see New.Seesaw.SeesawTheorem).
-Set-up for this proof: size bookkeeping for the data of this proof.
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Set-up for this proof: dictionaries between two encodings of the same objects.
-Part of: Seesaw identity for a chain of theta lifts (see New.Seesaw.SeesawTheorem).
-Part of: Seesaw identity for a chain of theta lifts (see New.Seesaw.SeesawTheorem).
-Set-up for this proof: dictionaries between two encodings of the same objects.
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Seesaw identity for a chain of theta lifts.
-Part of: Seesaw identity for a chain of theta lifts (see New.Seesaw.SeesawTheorem).
-Part of: Seesaw identity for a chain of theta lifts (see New.Seesaw.SeesawTheorem).
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Set-up for this proof: size bookkeeping for the data of this proof.
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Part of: Crystalline losses above ℓ are affordable (see New.Selmer.RibetElement).
-Set-up for this proof: Galois cohomology in degrees ≤ 2: Shapiro, Hilbert 90, Kummer, symbols, Herbrand quotient.
-Part of: Crystalline losses above ℓ are affordable (see New.Selmer.RibetElement).
-Part of: Crystalline losses above ℓ are affordable (see New.Selmer.RibetElement).
-Denominator of projection to lifts, without the even part.
-Part of: Denominator of projection to lifts, without the even part (see New.Selmer.DenominatorBound).
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-A twist with few congruences for each prime.
-This file: the auxiliary pairs have apt labels; representations attached to eigenforms are conjugate self-dual, and local conditions pass to the conjugate place; a Hecke-stable space of forms has a Hecke-stable complement and is spanned by 
-Strings of roots of Hecke polynomials, from the eigenvalue 1 of a Galois representation.
-Part of: Galois representations of theta lifts: irreducible block plus string (see New.Selmer.RowsExist).
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Part of: Tied conditions at new primes shrink Selmer groups (see New.Selmer.TwistTheorem).
-Part of: Crystalline losses above ℓ are affordable (see New.Selmer.RibetElement).
-Set-up for this proof: general results applied to the objects of this proof.
-Part of: Triangular Taylor–Wiles primes controlling the even classes (see New.Selmer.TrianglePrimes).
-Part of: Ribet's method with congruent blocks and tied auxiliary primes (see New.Selmer.RibetElement).
-Ribet's method with congruent blocks and tied auxiliary primes.
-Part of: Ribet's method with congruent blocks and tied auxiliary primes (see New.Selmer.RibetElement).
-Roots of unity keeping polynomial valuations low, in any degree.
-Set-up for this proof: dictionaries between two encodings of the same objects.
-Set-up for this proof: general results applied to the objects of this proof.
-Part of: Ribet's method with congruent blocks and tied auxiliary primes (see New.Selmer.RibetElement).
-Part of: Crystalline losses above ℓ are affordable (see New.Selmer.RibetElement).
-Part of: Tied conditions at new primes shrink Selmer groups (see New.Selmer.TwistTheorem).
-Triangular Taylor–Wiles primes controlling the even classes.
+Some jet with indicator datum is no more divisible than predicted, at every prime.
+Inverse ratio of twisted Hecke values has height repaying one direction; product version.
+Height bound for untwisted over twisted volume of one lift on good forms.
+Coefficient vectors are integral off the conductor and small when untwisted.
+Names for index sets, characters, moduli and polynomials of the comparison construction.
+Cauchy-type bounds for all conjugates of theta jets and Schur jets.
+Forms killed by θ, the reflection sums and one Hecke polynomial have zero theta periods; comparison forms are orthogonal to them.
+Crude exponential bounds for conjugates of cleared L-values.
+The carrier is non-zero, of level one, rapidly decreasing and holomorphic.
+Stabiliser subgroup, data on columns; on that subgroup the datum is a product.
+Real-place matching of determinant polynomials via invariant functionals on Fock space.
+Volume of the chain on rows factors into volumes of single lifts.
+for products of polynomials, weights add and norm bounds multiply.
+The main result Data.eq_zero_of_integral_fNatural_tableTheta.
+Crude formal degree bound; rotation argument isolating a value at a point where |F| is at least half its supremum.
+Record of auxiliary dual pair: levels, characters, data, theta descent, Hecke test polynomial.
+Calculus of finite combinations tracking support, denominator and size of conjugates.
+Denominator control under adjoints and conjugation; membership in the glued lattice.
+Names for column coordinates and projection to rows on the data.
+Two unfolding steps equal a double theta lift of the evaluated datum.
+Finite part of the zero term; its frequency lies in the dual period lattice.
+Lattice bases adapted to the flag, their diagonal lines, nearness and glue conditions.
+Glued lattice is unimodular and real frames exist for the spaces Y_j.
+Constant terms of the chain's finite data are admissible sums with controlled denominators.
+Levels, finite data, Weil actions and tame characters of the row lifts.
+Different generator and root discriminant lie between x^10 and x^12.
+Finite coset cut with multiplicities dividing powers of q; period as weighted finite sum.
+Integrality away from q of quotients; at elements integral above l, the Weil factor and characters of the determinant are l-adic units.
+Lattice basis gradedLatticeBasis, admissible combinations of translates with controlled denominators and size.
+Column level at N read as conjugated mirabolic group; restriction keeps valuation, size.
+Support of unfolded periods: lattice lines move at most one step per lift.
+A moved translate of the vacuum is an admissible average of vacuum translates.
+Abstract lift laws mod N; Gauss-sum Hecke operator slides through a chain of lifts.
+Integral branching pairing for interlacing weights; definite periods as class sums, norm bound.
+Seesaw identity for the chain of lifts, by downward induction with finite cuts.
+Under Grading.SpansLattice, the inclusion U(X) → U(V) maps a congruence subgroup mod π into Kf; base case of the support bound.
+Function left after k unfoldings: coefficient of the definite chain; its support.
+here (unlike New.Rows, New.Columns, where they are forms) a column is a conjugate self-dual ℓ-adic representation with prescribed jumps, unramified off S and ℓg, and a row is one with S empty whose lattices span all matrices.
+Divisibility and counting bookkeeping at the level; lattice versus representation dictionary.
+An auxiliary pair with apt labels c gives a BaseLevel of forms containing the image of the idempotent of c.
+Cocycles obeying relations among u(g)-1, extension by Artin-Rees; blocks of a lift.
+New primes with anticyclotomic characters, auxiliary sets, families of interpolated L-values.
+Case analysis on ℓ bounding crystalline classes modulo those orthogonal to congruent lattices.
+the rank of the crystalline cocycles Z_f(L) is rk L plus the number of negative Hodge–Tate weights; so a power of ℓ that maps Z_f(L) into a submodule bounds the quotient in length.
+Denominator of projection to theta lifts bounded without the even classes.
+Bloch–Kato finite condition at places above ℓ as relations on global cocycles.
+Adjoint of the Hecke polynomial operator in each Galois-conjugate Petersson product.
+Existence of twists, one per embedding, whose first m powers have few congruences.
+the auxiliary pairs have apt labels; representations attached to eigenforms are conjugate self-dual, and local conditions pass to the conjugate place; a Hecke-stable space of forms has a Hecke-stable complement and is spanned by its isotypi
+Weak lifts: Hecke polynomial is the string times a factor integral after normalising.
+Labelled representations are rows via tame inertia; quadratic inertia relation at twist primes.
+Avatars of algebraic characters: conjugate duality, inertia action; names for Galois group and places.
+Mirror lemma: relations isotropic on a coset are few, killed by a scalar difference.
+Crystalline defect of the dual of a block at one place, by cases.
+Rank-one denominator bound for test forms by averaging over classes of U(1).
+A value of an even class vanishes if all its cyclic images vanish.
+Ribet's operator by Cramer's rule twice; normalising element; Amitsur for families.
+Ribet's Hecke element for columns with ties; valuation at the lift within budget.
+Fitting ideal of one character contains ∏X_j times a polynomial with bounded constant term.
+ℓ-power roots of unity keep valuations of polynomials of any degree low.
+Roots of unity give a tame class; lattices in columns read above ℓ.
+A twist-free row gives traces of lifts; every good eigensystem has a row.
+Cocycles in a Tate twist cost only local loss and odd classes.
+Spacing lemma: no three thick places (Data.thick) in a short Frobenius arc; thick embeddings have the same sign if ℓ divides Data.cycloConductor.
+Selmer groups cut by relations lie in Selmer groups with local conditions.
+Taylor-Wiles primes in triangular form controlling the even classes.
 One anticyclotomic twist makes all Selmer groups short.
-Tied conditions at new primes shrink Selmer groups.
-Set-up for this proof: general results applied to the objects of this proof.
-Part of: Non-lifts sharing one Hecke root have zero theta periods (see New.Rows.MemberOrthogonality).
-Part of: Non-lifts sharing one Hecke root have zero theta periods (see New.Rows.MemberOrthogonality).
-Bad types have small share in the regular representation.
+Boundedly many tied primes shorten Selmer groups; one anticyclotomic twist then does, controlling L-values.
+Group-ring interpolation of twisted Hecke values, carried to the Galois side as families.
+Vanishing descent for one level datum passes to all data, via reflection sums.
+Climbing the theta tower: bounded descents with a too small Hecke root vanish.
+The bound bad_share_le for the share of bad types.
 Good forms on different unitary groups have equal traces.
-Set-up for this proof: records of the data and parameters of this proof, names for its objects.
-Set-up for this proof: dictionaries between two encodings of the same objects.
-General lemmas of commutative and general algebra (textbook or folklore).
-Dimension bounds mod p from flags and a cone volume.
-Part of: Dimension bounds mod p from flags and a cone volume (see New.TwistedHecke.Counting).
-An approximate projector from averages over generic matrices.
-Part of: An approximate projector from averages over generic matrices (see New.TwistedHecke.ElementaryDivisors).
-Part of: Dimension bounds mod p from flags and a cone volume (see New.TwistedHecke.Counting).
-A term least in all frames obeys Frobenius inequalities.
-Part of: A Frobenius-twisted Hecke operator has small elementary divisors (see New.Columns.TwistedHeckeType).
-Part of: Products of theta forms detect all good forms (see New.Rows.Separation).
+Spaces Y_j, W_j, ideles, levels, rows, auxiliary pairs on the proof's data.
+A Hecke eigensystem meets at most one primitive cuspidal type at a chosen place.
+Integral conjugation-invariant means on generic Levi matrices splitting evaluation at 1 by weight.
+Flag count; amplification bounds dimension of conditioned forms by flags times lattice points.
+A form deep in every frame has a monomial of large cost.
+Twisted Hecke operator has small elementary divisors; approximate projector; Smith form of ends.
+Frobenius-power products of generic matrices: monomial weights track the excess up to error.
+Cyclic interlacing cone volume as a signed sum over permutations, via determinant of indicators.
+Root lemma: a term least in all frames obeys Frobenius inequalities; Gauss filtrations.
+Frobenius-twisted circle of letters: action, depth, excess, weight conditions, basic properties.
+Explicit degree-uniform decay of Heisenberg matrix coefficients of homogeneous Fock vectors.
