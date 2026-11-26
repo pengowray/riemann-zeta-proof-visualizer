@@ -63,6 +63,9 @@ function renderPrinted() {
     [`<a href="${versionUrl(v.id)}#printed">${esc(v.label)}</a> of ${dateFmt(v.date)}: A4 listing, modules printed one after another`, v.printed.a4]));
 }
 
+/** Escaped text with a line-break opportunity after each separator, for long Lean names and paths. */
+const breakable = (s, sep) => esc(s).split(sep).join(sep + "<wbr>");
+
 /** Definitions that are always True or always False, from meta.constProps (see tools/constprops_run.py). */
 function renderConstProps() {
   const c = meta.constProps;
@@ -75,7 +78,7 @@ function renderConstProps() {
   if (!c.defs.length) { $("always-none").hidden = false; $("always-table")?.remove(); return; }
   const dash = `<span class="none">–</span>`;
   $("always-table").innerHTML = `<tr><th>Definition</th><th>Value</th><th class="num">Used in other modules</th><th class="num">${exact ? "Assumed by declarations" : "Assumed in modules"}</th>${exact ? "<th>Any of the five theorems depends on it</th>" : ""}</tr>`
-    + c.defs.map((d, k) => `<tr class="hoverable" data-preview-const="${k}"><td><code>${esc(d.name)}</code><br><span class="note mono">${esc(d.file)}</span></td><td><code>${d.value}</code></td><td class="num">${fmt(d.modules.length)}</td><td class="num">${d.value === "False" ? fmt(d.hyp) : dash}</td>${exact ? `<td>${d.used ? "Yes" : "No"}</td>` : ""}</tr>`).join("");
+    + c.defs.map((d, k) => `<tr class="hoverable" data-preview-const="${k}"><td><code>${breakable(d.name, ".")}</code><br><span class="note mono">${breakable(d.file, "/")}</span></td><td><code>${d.value}</code></td><td class="num">${fmt(d.modules.length)}</td><td class="num">${d.value === "False" ? fmt(d.hyp) : dash}</td>${exact ? `<td>${d.used ? "Yes" : "No"}</td>` : ""}</tr>`).join("");
 }
 
 export function renderCharts() {

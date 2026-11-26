@@ -268,5 +268,5 @@ td.pair { white-space: nowrap; line-height: 1.5; }
 /* a cell where the column does not apply */
 table.data .none { color: var(--ink-3); }
 /* long Lean names and file paths wrap so the counts stay in view */
-#always-table td:first-child { overflow-wrap: anywhere; }
+#always-table td:first-child { overflow-wrap: break-word; }
 #always-table td:first-child .note { font-size: 0.78rem; }

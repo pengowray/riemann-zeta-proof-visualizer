@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Run tools/constprops.lean over a version's compiled modules, in chunks, and summarise.
 
-    python3 tools/constprops_run.py CLONE OUT_DIR
+    python3 tools/constprops_run.py CLONE OUT_DIR [--reuse]
+
+--reuse skips reading the compiled files again and only redoes the counting from the files in OUT_DIR.
 
 CLONE is a checkout after `lake exe cache get`. Each chunk runs in its own process (WORKERS at a
 time), so no process holds every compiled file at once. Writes OUT_DIR/constprops.json:
@@ -47,8 +49,10 @@ def main():
     def lean(*args):
         subprocess.run(["lean", "+" + toolchain, "--run", program, *args], check=True)
 
+    reuse = "--reuse" in sys.argv
     with ThreadPoolExecutor(WORKERS) as pool:
-        list(pool.map(lambda k: lean("names", lists[k], os.path.join(out, f"names_{k}.txt")), range(len(lists))))
+        if not reuse:
+            list(pool.map(lambda k: lean("names", lists[k], os.path.join(out, f"names_{k}.txt")), range(len(lists))))
     names, modules = [], []
     for k in range(len(lists)):
         for line in open(os.path.join(out, f"names_{k}.txt"), encoding="utf-8"):
@@ -60,8 +64,9 @@ def main():
     print(len(project), "modules,", len(names), "declarations", flush=True)
 
     with ThreadPoolExecutor(WORKERS) as pool:
-        list(pool.map(lambda k: lean("edges", lists[k], os.path.join(out, "names.txt"), os.path.join(out, f"part_{k}")),
-                      range(len(lists))))
+        if not reuse:
+            list(pool.map(lambda k: lean("edges", lists[k], os.path.join(out, "names.txt"), os.path.join(out, f"part_{k}")),
+                          range(len(lists))))
 
     def pairs(ext):
         parts = [np.fromfile(os.path.join(out, f"part_{k}.{ext}"), dtype="<u4") for k in range(len(lists))]
@@ -76,11 +81,14 @@ def main():
             i, v = line.split()
             defs.append((int(i), v))
     n = len(names)
+    # A module's exported, server and private parts can each hold the same declaration, so a name can
+    # appear more than once; the Lean pass keeps the last id for each name, and so does this index.
+    index = {name: i for i, name in enumerate(names)}
+    defs = sorted({i: v for i, v in defs if index[names[i]] == i}.items())
     # what the five theorems depend on: breadth-first search over the edges, sorted by source
     order = np.argsort(src, kind="stable")
     src_sorted, dst_sorted = src[order], dst[order]
     starts = np.searchsorted(src_sorted, np.arange(n + 1))
-    index = {name: i for i, name in enumerate(names)}
     seen = np.zeros(n, dtype=bool)
     frontier = np.array([index[r] for r in ROOTS if r in index], dtype=np.int64)
     seen[frontier] = True
@@ -103,11 +111,11 @@ def main():
             "mentionsInProof": int(np.count_nonzero(seen[users])),
         })
     sha = subprocess.run(["git", "-C", clone, "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
-    json.dump({"sha": sha, "declarations": n, "reachedByTheorems": int(seen.sum()), "defs": result},
+    json.dump({"sha": sha, "declarations": len(index), "reachedByTheorems": int(seen.sum()), "defs": result},
               open(os.path.join(out, "constprops.json"), "w"), ensure_ascii=False, indent=1)
     for d in result:
         print(d["value"], d["name"], d["mentionDecls"], len(d["mentionModules"]), d["hypDecls"], d["usedByTheorems"], d["mentionsInProof"])
-    print("theorems depend on", int(seen.sum()), "of", n, "declarations")
+    print("theorems depend on", int(seen.sum()), "of", len(index), "declarations")
 
 
 if __name__ == "__main__":
