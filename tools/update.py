@@ -35,6 +35,7 @@ ORIGINAL_SHA = "40e56bab026552e089d7afcfeff08d2defb9c005"  # tip of the reposito
 #                   and where the import graph and the longest import chain end)
 #   features        optional sections: "steps" (jae-63's blueprint, which names the original's paths),
 #                   "checks" (independent checks of the original), "changes" (comparison with the original)
+#   hidden          left out of the version lists, but still shown at ?v=<id>
 #   mathlibHub      the one module the others reach Mathlib through, when the imports do not name Mathlib modules
 VERSIONS = [
     {"id": "original", "label": "Original release", "family": "Original", "short": "Release", "repo": REPO, "src": "src/",
@@ -53,12 +54,12 @@ VERSIONS = [
     # An unfinished new formalization written with GPT-6.2 Sol; holes.md lists the open obligations.
     {"id": "jamesyc", "label": "New formalization by jamesyc, unfinished", "family": "New formalization", "short": "jamesyc, unfinished",
      "repo": "jamesyc/riemann-hypothesis", "clone": "jamesyc_clone", "branch": "main", "src": "formalization/",
-     "statements": "Challenge.lean", "main": "Solution.lean"},
+     "statements": "Challenge.lean", "main": "Solution.lean", "hidden": True},
 ]
 
 
 # the settings copied into the page's data
-PAGE_KEYS = ("id", "label", "family", "short", "repo", "statements", "main", "features", "mathlibHub")
+PAGE_KEYS = ("id", "label", "family", "short", "repo", "statements", "main", "features", "mathlibHub", "hidden")
 
 
 def run(*args, **kw):

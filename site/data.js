@@ -10,6 +10,8 @@ export const DATA = (asked || versions[0]).data;
 export const ORIGINAL = versions.find((v) => v.id === "original");
 // this version's settings (see VERSIONS in tools/update.py): file names, optional sections, Mathlib notes
 export const SETTINGS = asked || versions[0];
+// the versions offered in the lists: a hidden one appears only while it is the one shown
+export const listed = versions.filter((v) => !v.hidden || v.id === VERSION);
 export const hasFeature = (name) => (SETTINGS.features || []).includes(name);
 export const versionUrl = (id) => (id === "original" ? "./" : "?v=" + id);
 

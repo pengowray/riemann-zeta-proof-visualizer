@@ -1,7 +1,7 @@
 // The charts and tables in the sections below the map. Loaded after the map has painted.
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.16/+esm";
-import { REPO, SOURCE, VERSION, SETTINGS, versions, versionUrl, dateFmt, $, fmt, pct, bytesFmt, esc, meta, N, col, ones, dirs, FAMILIES, fieldFamily, KIND_COLOURS, isDark, cssVar, state, names, pathOf, dirSum } from "./data.js";
+import { REPO, SOURCE, VERSION, SETTINGS, listed, versionUrl, dateFmt, $, fmt, pct, bytesFmt, esc, meta, N, col, ones, dirs, FAMILIES, fieldFamily, KIND_COLOURS, isDark, cssVar, state, names, pathOf, dirSum } from "./data.js";
 import { KEYWORDS } from "./speech.js";
 import { maskWhere, setPreview, luminance, setMask, labelOf, famOf, famColour } from "./map.js";
 
@@ -59,7 +59,7 @@ function renderPrinted() {
       + [...rows, ...extra].map(([label, pages]) => `<tr><td>${label}</td><td class="num">${fmt(pages)}</td><td class="num">${stack(pages)}</td></tr>`).join("");
   };
   // the other versions in the same layout, for comparison
-  draw(versions.filter((v) => v.id !== VERSION && v.printed).map((v) =>
+  draw(listed.filter((v) => v.id !== VERSION && v.printed).map((v) =>
     [`<a href="${versionUrl(v.id)}#printed">${esc(v.label)}</a> of ${dateFmt(v.date)}: A4 listing, modules printed one after another`, v.printed.a4]));
 }
 

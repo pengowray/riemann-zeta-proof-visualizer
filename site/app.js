@@ -2,7 +2,7 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import { renderLean } from "./speech.js";
 import { drawZeta } from "./zeta.js";
-import { VERSION, SOURCE, REPO, versions, ORIGINAL, SETTINGS, hasFeature, versionUrl, dateFmt, moduleFamily, rawUrl, $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, darkQuery, state, names, namesReady, termsReady } from "./data.js";
+import { VERSION, SOURCE, REPO, listed, ORIGINAL, SETTINGS, hasFeature, versionUrl, dateFmt, moduleFamily, rawUrl, $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, darkQuery, state, names, namesReady, termsReady } from "./data.js";
 import { recolour, requestDraw, refreshMini, countMask, maskWhere, setMask, setPreview, renderLegend, chainMask, chainLabel } from "./map.js";
 import "./graph.js";
 
@@ -13,15 +13,15 @@ document.querySelectorAll("[data-only]").forEach((el) => { if (!el.dataset.only.
 document.querySelectorAll("[data-feature]").forEach((el) => { if (!hasFeature(el.dataset.feature)) el.remove(); });
 const shortSha = SOURCE.sha.slice(0, 7);
 const commitLink = `<a href="${REPO}/tree/${SOURCE.sha}"><code>${shortSha}</code></a>`;
-const families = () => [...new Set(versions.map((v) => v.family))];
+const families = () => [...new Set(listed.map((v) => v.family))];
 const repoLink = (repo) => `<a href="https://github.com/${repo}">${esc(repo)}</a>`;
 // above the title on a phone: the versions grouped by family, as in the sidebar
 const versionLink = (v, extra = "") => `<a href="${versionUrl(v.id)}"${v.id === VERSION ? ' aria-current="page"' : ""}>${esc(v.short)}${extra}</a>`;
 $("versions").innerHTML = `<span class="control-label">Version of the proof</span>` + families().map((f) => `<span class="family">${esc(f)}</span>`
-  + versions.filter((v) => v.family === f).map((v) => versionLink(v, ` <span class="n">${fmt(v.modules)} modules</span>`)).join("")).join("");
+  + listed.filter((v) => v.family === f).map((v) => versionLink(v, ` <span class="n">${fmt(v.modules)} modules</span>`)).join("")).join("");
 // the sidebar's list: the same choice, kept in view while the page scrolls, grouped by family
 $("version-pick").innerHTML = `<span class="control-label"><span>Version</span><span>Modules</span></span>` + families().map((f) => `<span class="family">${esc(f)}</span>`
-  + versions.filter((v) => v.family === f).map((v) => versionLink(v, `<span class="n">${fmt(v.modules)}</span>`)).join("")).join("");
+  + listed.filter((v) => v.family === f).map((v) => versionLink(v, `<span class="n">${fmt(v.modules)}</span>`)).join("")).join("");
 const sizeNow = `${fmt(N)} modules and ${fmt(meta.totals.lines)} lines`;
 const sizeBefore = `${fmt(ORIGINAL.modules)} modules and ${fmt(ORIGINAL.lines)} lines`;
 const grhLink = repoLink("lsernau/grh-lean");

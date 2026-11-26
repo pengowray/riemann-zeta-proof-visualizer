@@ -21,7 +21,7 @@ The page shows five versions of the proof. Each has its own data folder and is p
 | Original, community cleanup | `cleanup` | its `alpoge` branch, where the cleanup of the original stopped on 25 November 2026 | `site/data/cleanup/` |
 | Shorter rewrite, community cleanup | `main` | its `main` branch, a copy of the readable edition of [lsernau/grh-lean](https://github.com/lsernau/grh-lean) that the community is cleaning up | `site/data/main/` |
 | Shorter rewrite, compact edition | `compact` | `grh-compact/` in lsernau/grh-lean | `site/data/compact/` |
-| New formalization by jamesyc, unfinished | `jamesyc` | [jamesyc/riemann-hypothesis](https://github.com/jamesyc/riemann-hypothesis), written with GPT-6.2 Sol; `holes.md` lists the steps left unproved | `site/data/jamesyc/` |
+| New formalization by jamesyc, unfinished (hidden from the version lists) | `jamesyc` | [jamesyc/riemann-hypothesis](https://github.com/jamesyc/riemann-hypothesis), written with GPT-6.2 Sol; `holes.md` lists the steps left unproved | `site/data/jamesyc/` |
 
 The versions and their settings (file names, optional sections) are listed in `VERSIONS` at the top
 of `tools/update.py`, which copies the settings into `site/data/versions.json` for the page. Put the paths of your local
