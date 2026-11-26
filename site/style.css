@@ -97,6 +97,7 @@ pre.lean .tk[data-tip] { cursor: help; }
 #legend button:hover, #legend button[aria-pressed="true"] { background: var(--paper-3); }
 #legend .sw { width: 14px; height: 14px; display: inline-block; }
 #legend .share { color: var(--ink-2); }
+#legend .legend-head { color: var(--ink-2); padding-right: 2px; }
 #legend .ramp { height: 14px; width: 220px; }
 #map-wrap { position: relative; }
 #treemap { display: block; width: 100%; height: min(78vh, 62vw); min-height: 360px; background: var(--paper-2); touch-action: pan-y; cursor: crosshair; }
@@ -232,10 +233,12 @@ button.link:hover { text-decoration: underline; }
 
 /* switch between the original release and the community cleanup */
 /* phone version list: a heading for each family, then its versions side by side */
-#versions { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; margin-bottom: 18px; font-size: 0.9rem; }
-#versions .control-label { flex-basis: 100%; }
-#versions .family { flex-basis: 100%; color: var(--ink-2); font-size: 0.8rem; margin-top: 4px; }
-#versions a { padding: 4px 8px; border: 1px solid var(--rule); color: var(--ink); text-decoration: none; }
+/* two versions side by side under each family heading, the module count under each name */
+#versions { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 8px; margin-bottom: 18px; font-size: 0.9rem; }
+#versions .control-label, #versions .family { grid-column: 1 / -1; }
+#versions .family { color: var(--ink-2); font-size: 0.8rem; margin-top: 2px; }
+#versions a { display: block; padding: 3px 8px; border: 1px solid var(--rule); color: var(--ink); text-decoration: none; line-height: 1.25; }
+#versions a .n { display: block; }
 #versions a .n { color: var(--ink-2); font-size: 0.8rem; font-variant-numeric: tabular-nums; }
 #versions a:hover { border-color: var(--ink-3); }
 #versions a[aria-current] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
@@ -259,7 +262,7 @@ td.pair { white-space: nowrap; line-height: 1.5; }
 #version-pick a .n { font-size: 0.8rem; font-variant-numeric: tabular-nums; white-space: nowrap; align-self: center; }
 #version-pick a[aria-current] { background: var(--paper-3); color: var(--ink); }
 #versions.phone-only { display: none; }
-@media (max-width: 1000px) { #versions.phone-only { display: flex !important; } }
+@media (max-width: 1000px) { #versions.phone-only { display: grid !important; } }
 #version-date { display: block; margin-top: 4px; }
 /* on a phone these three tables are wider than the screen: each scrolls sideways on its own */
 @media (max-width: 700px) {

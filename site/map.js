@@ -419,6 +419,8 @@ export function renderLegend() {
     const labels = isField ? FAMILIES.map((f) => f.name) : KIND_NAMES;
     const groupOf = mode.id === "field" ? moduleFamily : mode.id === "dirfield" ? dirFamily : (i) => col.kind[i];
     const shares = sharesBy(groupOf, labels.length);
+    // the percentages are shares of whatever the map is sized by
+    el.insertAdjacentHTML("beforeend", `<span class="legend-head">Share ${esc(state.size.unit)}:</span>`);
     labels.map((name, g) => ({ name, g, share: shares[g] })).filter((d) => d.share > 0).sort((a, b) => b.share - a.share).forEach(({ name, g, share }) => {
       const b = document.createElement("button");
       const key = `${mode.id}:${g}`;
