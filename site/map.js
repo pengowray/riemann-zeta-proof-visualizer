@@ -220,8 +220,11 @@ export function draw() {
       ctx.fillStyle = paletteInk[cidx[i]];
       lines.forEach((line, j) => ctx.fillText(line, nx, ny + j * LINE));
       if (sizeText && lines.length < rows) {
-        ctx.font = sizeFont; ctx.globalAlpha = 0.8;
-        ctx.fillText(sizeText, nx, ny + lines.length * LINE + 1);
+        // the size line drops its words ("lines of code") when only the number fits
+        ctx.font = sizeFont; ctx.globalAlpha = 0.9;
+        const room = x1 * k + tx - nx - 5, short = sizeText.split(" ")[0];
+        const text = ctx.measureText(sizeText).width <= room ? sizeText : ctx.measureText(short).width <= room ? short : "";
+        if (text) ctx.fillText(text, nx, ny + lines.length * LINE + 1);
       }
       ctx.restore();
     }

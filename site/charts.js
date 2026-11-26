@@ -147,16 +147,16 @@ export function renderCharts() {
   const libDepth = topLevel.length < 4 && dirs.some((d) => d.depth === 2) ? 2 : 1;
   const libs = dirs.filter((d) => d.depth === libDepth).map((d) => ({ d, modules: d.end - d.start, lines: dirSum(d, "lines"), bytes: dirSum(d, "bytes"), decls: dirSum(d, "decls") })).sort((a, b) => b.bytes - a.bytes);
   const maxB = libs[0].bytes;
-  const libRow = (l) => `<tr class="hoverable" data-preview-dir="${l.d.i}"><td>${esc(libDepth === 2 ? l.d.path : l.d.name)}</td><td class="num">${fmt(l.modules)}</td><td class="num">${fmt(l.lines)}</td><td class="num">${fmt(l.decls)}</td><td><span class="bar" style="width:${(260 * l.bytes) / maxB}px;background:${cssVar("--ink-3")}"></span>${bytesFmt(l.bytes)} (${pct(l.bytes / meta.totals.bytes)})</td></tr>`;
-  const libHead = `<tr><th>${libDepth === 2 ? "Directory" : "Library"}</th><th class="num">Modules</th><th class="num">Lines</th><th class="num">Declarations</th><th>Size</th></tr>`;
+  const libRow = (l, separate) => `<tr class="hoverable" data-preview-dir="${l.d.i}"><td>${esc(libDepth === 2 && !separate ? l.d.path : l.d.name)}</td><td class="num">${fmt(l.modules)}</td><td class="num">${fmt(l.lines)}</td><td class="num">${fmt(l.decls)}</td><td><span class="bar" style="width:${(260 * l.bytes) / maxB}px;background:${cssVar("--ink-3")}"></span>${bytesFmt(l.bytes)} (${pct(l.bytes / meta.totals.bytes)})</td></tr>`;
+  const libHead = `<tr><th>${libDepth === 2 ? "Directory" : "Library"}</th><th class="num">Modules</th><th class="num">Lines</th><th class="num">Declarations</th><th>Size (share of all bytes)</th></tr>`;
   const drawLibs = (separate) => {
     $("lib-table").innerHTML = libHead + (separate
       ? topLevel.map((t) => `<tr class="group-row hoverable" data-preview-dir="${t.i}"><td colspan="5"><b>${esc(t.name)}</b> · ${plural(t.end - t.start, "module")} · ${bytesFmt(dirSum(t, "bytes"))}</td></tr>`
-          + libs.filter((l) => l.d.parent === t.i).map(libRow).join("")).join("")
-      : libs.map(libRow).join(""));
+          + libs.filter((l) => l.d.parent === t.i).map((l) => libRow(l, true)).join("")).join("")
+      : libs.map((l) => libRow(l, false)).join(""));
   };
   if (libDepth === 2) {
-    const names = topLevel.map((d) => `<code>${esc(d.name)}</code>`).join(" and ");
+    const names = topLevel.map((d) => esc(d.name)).join(" and ");
     $("lib-heading").innerHTML = `By directory, inside ${names}`;
     let separate = true;
     $("lib-combine").hidden = false;
@@ -180,7 +180,8 @@ export function renderCharts() {
   const byPart = !kindCount[1] && PARTS.length > 1;
   const groupOf = byPart ? (i) => (partOf[i] < 0 ? PARTS.length : partOf[i]) : (i) => (col.kind[i] === 1 ? 1 : 0);
   const groupNames = byPart ? [...PARTS.map((d) => d.name), "Top level"] : ["Other modules", "Restates a theorem"];
-  const groupColours = (byPart ? [KIND_COLOURS[0], KIND_COLOURS[2], KIND_COLOURS[3]] : [KIND_COLOURS[0], KIND_COLOURS[1]]).map((c) => c[isDark() ? 1 : 0]);
+  // New and Lib in shades of ink, so they are not read as the field colours of the map above
+  const groupColours = byPart ? [cssVar("--ink"), cssVar("--ink-3"), cssVar("--rule")] : [KIND_COLOURS[0], KIND_COLOURS[1]].map((c) => c[isDark() ? 1 : 0]);
   const groupCount = groupNames.map((_, g) => d3.sum(d3.range(N), (i) => (groupOf(i) === g ? 1 : 0)));
   const lengthRows = d3.rollups(d3.range(N), (v) => v.length, lineBin, groupOf)
     .flatMap(([b, ks]) => ks.map(([g, n]) => ({ bin: binLabel(b), b, kind: groupNames[g], n })));
