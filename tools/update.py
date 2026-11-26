@@ -36,14 +36,13 @@ ORIGINAL_SHA = "40e56bab026552e089d7afcfeff08d2defb9c005"  # tip of the reposito
 #   features        optional sections: "steps" (jae-63's blueprint, which names the original's paths),
 #                   "checks" (independent checks of the original), "changes" (comparison with the original)
 #   mathlibHub      the one module the others reach Mathlib through, when the imports do not name Mathlib modules
-#   usageFrom       where the compiled files for the Mathlib usage table came from, when not this commit
 VERSIONS = [
     {"id": "original", "label": "Original release", "family": "Original", "short": "Release", "repo": REPO, "src": "src/",
      "statements": "Statements.lean", "main": "Main.lean", "features": ["steps", "checks"]},
     # The community cleaned up the original here until 25 November 2026, then moved main to the rewrite.
     {"id": "cleanup", "label": "Original, community cleanup", "family": "Original", "short": "Community cleanup", "repo": REPO,
      "clone": "cleanup_clone", "branch": "alpoge", "src": "src/", "statements": "Statements.lean", "main": "Main.lean",
-     "features": ["steps", "changes"], "usageFrom": "an earlier commit of the same branch, when it had 59,806 modules"},
+     "features": ["steps", "changes"]},
     # main is a copy of grh-lean's readable edition (grh/) at commit 72fead1, cleaned up by the community.
     {"id": "main", "label": "Shorter rewrite, community cleanup", "family": "Shorter rewrite", "short": "Community cleanup", "repo": REPO,
      "clone": "main_clone", "branch": "main", "src": "src/", "statements": "Statements.lean", "main": "Main.lean",
@@ -59,7 +58,7 @@ VERSIONS = [
 
 
 # the settings copied into the page's data
-PAGE_KEYS = ("id", "label", "family", "short", "repo", "statements", "main", "features", "mathlibHub", "usageFrom")
+PAGE_KEYS = ("id", "label", "family", "short", "repo", "statements", "main", "features", "mathlibHub")
 
 
 def run(*args, **kw):
@@ -69,6 +68,20 @@ def run(*args, **kw):
 
 def git(clone, *args):
     return subprocess.run(["git", "-C", clone, *args], check=True, capture_output=True, text=True).stdout.strip()
+
+
+def record_compiled(clone, cache, sha):
+    """Write the size of the project's compiled files to compiled.json, for the printed-pages table.
+    Only when `lake exe cache get` (or a build) has left compiled files that match this commit."""
+    lib = os.path.join(clone, ".lake", "build", "lib", "lean")
+    if not os.path.isdir(lib):
+        return
+    if subprocess.run(["lake", "build", "--no-build"], cwd=clone, capture_output=True).returncode != 0:
+        print("compiled files do not match", sha[:7], "- run `lake exe cache get` in", clone, "to count them")
+        return
+    sizes = [os.path.getsize(os.path.join(d, f)) for d, _, fs in os.walk(lib) for f in fs if f.endswith(".olean")]
+    json.dump({"bytes": sum(sizes), "modules": len(sizes), "sha": sha}, open(os.path.join(cache, "compiled.json"), "w"))
+    print("compiled files:", len(sizes), "modules,", sum(sizes), "bytes")
 
 
 def folder(version):
@@ -119,8 +132,11 @@ def main():
         extra = ("--train-cache", os.path.join(ROOT, "data", "cache"))
         if os.path.isdir(labels):
             extra += ("--labels", labels)
+        sha = git(clone, "rev-parse", "HEAD")
+        os.makedirs(os.path.join(ROOT, "data", "cache", *folder(v["id"])), exist_ok=True)
+        record_compiled(clone, os.path.join(ROOT, "data", "cache", *folder(v["id"])), sha)
         build(v["id"], os.path.join(clone, v["src"]), {
-            **source, "sha": git(clone, "rev-parse", "HEAD"), "date": git(clone, "log", "-1", "--format=%cI")[:10],
+            **source, "sha": sha, "date": git(clone, "log", "-1", "--format=%cI")[:10],
         }, extra)
     # the page's version switch reads this list
     versions = []

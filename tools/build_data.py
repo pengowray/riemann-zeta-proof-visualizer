@@ -487,8 +487,13 @@ def main():
                     u_area_modules.update(used_areas[i])
                     u_libs.update(libs)
         used_area_names = [a for a, _n in u_area_modules.most_common(32)]
+        # which commit the compiled files were from (written by tools/usage_run.py)
+        usage_source_path = os.path.join(cache, "usage", "source.json")
+        usage_source = json.load(open(usage_source_path)) if os.path.exists(usage_source_path) else {}
         mathlib_used = {
             "measured": measured,
+            "fromSha": usage_source.get("sha", ""),
+            "fromModules": usage_source.get("modules", 0),
             # [area, project modules that mention it, Mathlib modules of the area mentioned, mentions]
             "areas": [[a, u_area_modules[a], len(u_area_distinct[a]), u_area_refs[a]] for a in used_area_names],
             "distinct": len(u_module_n),
@@ -508,6 +513,8 @@ def main():
     solid = json.load(open(solid_path)) if os.path.exists(solid_path) else {}
     compiled_path = os.path.join(cache, "compiled.json")
     compiled = json.load(open(compiled_path)) if os.path.exists(compiled_path) else {}
+    if compiled.get("sha") != source.get("sha"):
+        compiled = {}  # counted at another commit (see record_compiled in tools/update.py)
     base64_pages = lambda size: -(-(-(-size // 3) * 4) // 4800)  # base64 writes 4 characters for 3 bytes; 80 x 60 per page
     printed = {
         "a4NewPage": sum(-(-r["wr"]["a80"] // 60) for r in rows),  # every module starts a new page

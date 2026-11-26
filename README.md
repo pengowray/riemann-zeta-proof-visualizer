@@ -52,7 +52,13 @@ python3 tools/usage_run.py /path/to/clone data/cache/cleanup/usage
 ```
 
 and run `python3 tools/update.py cleanup` again. For another version, use its own cache folder,
-such as `data/cache/main/usage`, and record the size of its `.olean` files in `data/cache/<id>/compiled.json`. `tools/usage.lean` reads which library
+such as `data/cache/main/usage`. `usage_run.py` records the commit it measured, and the page says so
+when that is not the commit shown. When a clone holds compiled files that match its commit
+(`lake build --no-build` succeeds), `update.py` records their size for the printed-pages table.
+
+`tools/constprops.lean` lists definitions that are always `True` or always `False` (such as
+`def anyGeometry : GeoP := fun _ _ _ => True`), what mentions them, and whether the five theorems
+depend on them, from the same compiled files. `tools/usage.lean` reads which library
 declarations each module's declarations mention; it took about six minutes for 59,806 modules.
 
 - `tools/scan.py` reads every `.lean` file once and writes one row per file to `data/cache/` (not committed;

@@ -1,7 +1,7 @@
 // The charts and tables in the sections below the map. Loaded after the map has painted.
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.16/+esm";
-import { REPO, VERSION, SETTINGS, versions, versionUrl, dateFmt, $, fmt, pct, bytesFmt, esc, meta, N, col, ones, dirs, FAMILIES, fieldFamily, KIND_COLOURS, isDark, cssVar, state, names, pathOf, dirSum } from "./data.js";
+import { REPO, SOURCE, VERSION, SETTINGS, versions, versionUrl, dateFmt, $, fmt, pct, bytesFmt, esc, meta, N, col, ones, dirs, FAMILIES, fieldFamily, KIND_COLOURS, isDark, cssVar, state, names, pathOf, dirSum } from "./data.js";
 import { KEYWORDS } from "./speech.js";
 import { maskWhere, setPreview, luminance, setMask, labelOf, famOf, famColour } from "./map.js";
 
@@ -216,7 +216,7 @@ function renderUsed() {
     for (const id of ["used-facts", "used-table", "used-top", "used-not"]) $(id).remove();
     return;
   }
-  $("used-text").textContent = "A program read Lean's compiled file for each module and listed the Mathlib declarations that the module's own declarations mention in their statements and proofs. Nothing was compiled or checked again." + (SETTINGS.usageFrom ? ` The compiled files are from ${SETTINGS.usageFrom}.` : "");
+  $("used-text").textContent = "A program read Lean's compiled file for each module and listed the Mathlib declarations that the module's own declarations mention in their statements and proofs. Nothing was compiled or checked again." + (u.fromSha && u.fromSha !== SOURCE.sha ? ` The compiled files are from commit ${u.fromSha.slice(0, 7)}, when this branch had ${fmt(u.fromModules)} modules.` : "");
   $("used-facts").innerHTML = [
     ["Modules measured", `<b>${fmt(u.measured)}</b> of ${fmt(N)}`],
     ["Modules that mention a Mathlib declaration", `<b>${fmt(u.modulesUsingMathlib)}</b>`],

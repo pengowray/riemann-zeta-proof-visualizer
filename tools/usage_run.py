@@ -3,10 +3,12 @@
 
     python3 tools/usage_run.py CLONE OUT_DIR [LIMIT]
 
-CLONE is a checkout of leanprover-community/riemann-hypothesis after `lake exe cache get`.
+CLONE is a checkout of one version of the proof after `lake exe cache get`.
 The project's modules are split into chunks that run side by side, because one process
-keeps every file it has read mapped in memory. Each chunk writes OUT_DIR/usage_<n>.txt.
+keeps every file it has read mapped in memory. Each chunk writes OUT_DIR/usage_<n>.txt, and OUT_DIR/source.json records the commit and the number
+of modules measured, so the page can say when the measurement is from an older commit.
 """
+import json
 import glob
 import os
 import subprocess
@@ -48,6 +50,8 @@ def main():
     with ThreadPoolExecutor(WORKERS) as pool:
         for done in pool.map(run, jobs):
             print("wrote", done, flush=True)
+    sha = subprocess.run(["git", "-C", clone, "rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
+    json.dump({"sha": sha, "modules": len(project)}, open(os.path.join(out, "source.json"), "w"))
 
 
 if __name__ == "__main__":
