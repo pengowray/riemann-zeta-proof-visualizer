@@ -400,9 +400,10 @@ def main():
             imports_fields[i] |= 1 << field_col[j]
             imported_by_fields[j] |= 1 << field_col[i]
 
-    # ---- which modules Main.lean reaches through imports, and which no module imports
+    # ---- which modules the main file (Main.lean) reaches through imports, and which no module imports
     reached = [False] * n
-    stack = [module["Main"]] if "Main" in module else []
+    root = source.get("main", "Main.lean")[:-5].replace("/", ".")
+    stack = [module[root]] if root in module else []
     while stack:
         i = stack.pop()
         if not reached[i]:

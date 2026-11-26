@@ -1,7 +1,7 @@
 // The charts and tables in the sections below the map. Loaded after the map has painted.
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.16/+esm";
-import { REPO, VERSION, versions, versionUrl, dateFmt, $, fmt, pct, bytesFmt, esc, meta, N, col, ones, dirs, FAMILIES, fieldFamily, KIND_COLOURS, isDark, cssVar, state, names, pathOf, dirSum } from "./data.js";
+import { REPO, VERSION, SETTINGS, versions, versionUrl, dateFmt, $, fmt, pct, bytesFmt, esc, meta, N, col, ones, dirs, FAMILIES, fieldFamily, KIND_COLOURS, isDark, cssVar, state, names, pathOf, dirSum } from "./data.js";
 import { KEYWORDS } from "./speech.js";
 import { maskWhere, setPreview, luminance, setMask, labelOf, famOf, famColour } from "./map.js";
 
@@ -94,7 +94,7 @@ export function renderCharts() {
   // --- top-level libraries
   // with only a few top-level directories (the rewrite has Lib and New), list the directories inside them
   const topLevel = dirs.filter((d) => d.depth === 1);
-  const libDepth = topLevel.length < 4 ? 2 : 1;
+  const libDepth = topLevel.length < 4 && dirs.some((d) => d.depth === 2) ? 2 : 1;
   if (libDepth === 2) $("lib-heading").innerHTML = `By directory, inside ${topLevel.map((d) => `<code>${esc(d.name)}</code>`).join(" and ")}`;
   const libs = dirs.filter((d) => d.depth === libDepth).map((d) => ({ d, modules: d.end - d.start, lines: dirSum(d, "lines"), bytes: dirSum(d, "bytes"), decls: dirSum(d, "decls") })).sort((a, b) => b.bytes - a.bytes);
   const maxB = libs[0].bytes;
@@ -155,12 +155,12 @@ export function renderCharts() {
     const rowTotal = d3.sum(used, (b) => meta.fieldMatrix[a][b]);
     for (const b of used) cells.push({ from: meta.fields[a].name, to: meta.fields[b].name, n: meta.fieldMatrix[a][b], share: meta.fieldMatrix[a][b] / rowTotal });
   }
-  $("imports-text").innerHTML = `The project has ${fmt(meta.totals.importEdges)} imports between its own modules. ${pct(same / total)} of them stay inside one field and ${pct(1 - same / total)} cross from one field to another. ${meta.totals.notReached ? `Following imports from Main.lean reaches all but ${fmt(meta.totals.notReached)} of the ${fmt(N)} modules. ${meta.notReached.includes("Challenge.lean") ? "One of them is Challenge.lean, which is meant to stand apart. " : ""}<button type="button" class="link" id="unreached-show" data-mask-key="unreached" aria-pressed="false">Show the ${fmt(meta.totals.notReached)} on the map</button>` : `Every module is imported: all ${fmt(N)} are reachable from Main.lean by following imports.`}`;
+  $("imports-text").innerHTML = `The project has ${fmt(meta.totals.importEdges)} imports between its own modules. ${pct(same / total)} of them stay inside one field and ${pct(1 - same / total)} cross from one field to another. ${meta.totals.notReached ? `Following imports from ${esc(SETTINGS.main)} reaches all but ${fmt(meta.totals.notReached)} of the ${fmt(N)} modules. ${meta.notReached.includes("Challenge.lean") ? "One of them is Challenge.lean, which is meant to stand apart. " : ""}<button type="button" class="link" id="unreached-show" data-mask-key="unreached" aria-pressed="false">Show the ${fmt(meta.totals.notReached)} on the map</button>` : `Every module is imported: all ${fmt(N)} are reachable from ${esc(SETTINGS.main)} by following imports.`}`;
   renderMathlib();
   renderUsed();
   if ($("unreached-show")) $("unreached-show").onclick = () => {
     const paths = new Set(meta.notReached);
-    setMask("unreached", maskWhere((i) => paths.has(pathOf(i))), `${fmt(meta.totals.notReached)} modules that Main.lean does not reach through imports`); $("map").scrollIntoView();
+    setMask("unreached", maskWhere((i) => paths.has(pathOf(i))), `${fmt(meta.totals.notReached)} modules that ${SETTINGS.main} does not reach through imports`); $("map").scrollIntoView();
   };
   const fieldOrder = used.slice().sort((a, b) => fieldFamily[a] - fieldFamily[b]).map((fi) => meta.fields[fi].name);
   const fieldIndex = new Map(meta.fields.map((f, fi) => [f.name, fi]));
@@ -177,10 +177,12 @@ export function renderCharts() {
 
   // --- longest chain
   const chainRows = meta.chain.map((i, j) => ({ j: j + 1, i, family: FAMILIES[famOf(i)].name }));
-  $("chain-text").innerHTML = `The longest chain of imports is ${meta.chain.length} modules: each module in it imports the one before. It ends at Main.lean. Each cell below is one module in the chain, coloured by field. Point at a cell to see where that module is on the map, and click it to read it. <button type="button" class="link" id="chain-show" data-mask-key="chain" aria-pressed="false">Draw the chain on the map</button>`;
+  $("chain-text").innerHTML = `The longest chain of imports is ${meta.chain.length} modules: each module in it imports the one before. It ends at <span class="chain-end"></span>. Each cell below is one module in the chain, coloured by field. Point at a cell to see where that module is on the map, and click it to read it. <button type="button" class="link" id="chain-show" data-mask-key="chain" aria-pressed="false">Draw the chain on the map</button>`;
   $("chain-show").onclick = () => { const m = new Uint8Array(N); for (const i of meta.chain) m[i] = 1; setMask("chain", m, `the longest import chain, ${meta.chain.length} modules`, true); $("map").scrollIntoView(); };
   $("chain-strip").innerHTML = `<div class="chain-cells">${chainRows.map((d) => `<button type="button" class="chain-cell" data-chain="${d.j}" data-open="${d.i}" style="background:${famColour(famOf(d.i))}" aria-label="Module ${d.j} of ${chainRows.length} in the chain"></button>`).join("")}</div>
-    <div class="chain-axis"><span>1: imports no project module</span><span>${chainRows.length}: Main.lean</span></div>`;
+    <div class="chain-axis"><span>1: imports no project module</span><span>${chainRows.length}: <span class="chain-end"></span></span></div>`;
+
+  fillChainEnd();
 
   // --- numbers and tactics
   const tactics = meta.tactics.filter((t) => t[0] !== "sorry").slice(0, 24).map(([name, n]) => ({ name, n }));
@@ -189,7 +191,7 @@ export function renderCharts() {
   $("numbers-text").textContent = `The source is proof text, not data. It contains ${fmt(meta.totals.literals)} numeric literals such as 2 or 1/2, about ${Math.round(meta.totals.literals / N)} per module, but only ${fmt(meta.totals.longLiterals)} of them have seven or more digits, and those sit in ${fmt(meta.totals.modulesWithLongLiterals)} modules. Counting characters instead, ${fmt(longDigits)} of the ${fmt(N)} modules are 20% digits or more. Numbers in set_option lines are settings and are not counted. The proof never uses native_decide, and it uses decide ${fmt(tc.decide || 0)} times. The most common proof steps are have (state an intermediate fact, ${fmt(tc.have)} times), rw (rewrite with an equation, ${fmt(tc.rw)}) and exact (give the proof term, ${fmt(tc.exact)}).`;
   // notation and macros: both sentences end in a button that highlights those modules on the map
   const T = meta.totals;
-  $("syntax-text").innerHTML = `A Lean file can declare its own notations and macros. A notation is a symbol that stands for an expression. A macro is a new tactic name that stands for a sequence of existing tactics. The source declares ${fmt(T.notations)} notations in ${fmt(T.modulesWithNotation)} modules. ${fmt(T.localNotations)} of them are marked <code>local</code>, so they apply only inside the file that declares them. Most are shorthand for a long expression, such as <code>local notation "θ" => fontaineTheta (normInteger K) p</code>. It declares ${fmt(T.macros)} macros in ${fmt(T.modulesWithMacro)} modules. Statements.lean and Main.lean declare neither. Lean's kernel checks the expanded terms, so a notation cannot change what was proved. Show on the map: <button type="button" class="link" id="notation-show" data-mask-key="notation" aria-pressed="false">modules that declare a notation</button>, <button type="button" class="link" id="macro-show" data-mask-key="macro" aria-pressed="false">modules that declare a macro</button>.`;
+  $("syntax-text").innerHTML = `A Lean file can declare its own notations and macros. A notation is a symbol that stands for an expression. A macro is a new tactic name that stands for a sequence of existing tactics. The source declares ${fmt(T.notations)} notations in ${fmt(T.modulesWithNotation)} modules. ${fmt(T.localNotations)} of them are marked <code>local</code>, so they apply only inside the file that declares them. Most are shorthand for a long expression, such as <code>local notation "θ" => fontaineTheta (normInteger K) p</code>. It declares ${fmt(T.macros)} macros in ${fmt(T.modulesWithMacro)} modules. ${esc(SETTINGS.statements)} and ${esc(SETTINGS.main)} declare neither. Lean's kernel checks the expanded terms, so a notation cannot change what was proved. Show on the map: <button type="button" class="link" id="notation-show" data-mask-key="notation" aria-pressed="false">modules that declare a notation</button>, <button type="button" class="link" id="macro-show" data-mask-key="macro" aria-pressed="false">modules that declare a macro</button>.`;
   for (const [id, key, column, n, noun] of [["notation-show", "notation", col.notations, T.modulesWithNotation, "notation"], ["macro-show", "macro", col.macros, T.modulesWithMacro, "macro"]]) {
     $(id).onclick = () => { setMask(key, maskWhere((i) => column[i] > 0), `${fmt(n)} modules that declare a ${noun}`); $("map").scrollIntoView(); };
   }
@@ -214,7 +216,7 @@ function renderUsed() {
     for (const id of ["used-facts", "used-table", "used-top", "used-not"]) $(id).remove();
     return;
   }
-  $("used-text").textContent = "A program read Lean's compiled file for each module and listed the Mathlib declarations that the module's own declarations mention in their statements and proofs. Nothing was compiled or checked again." + (VERSION === "cleanup" ? " The compiled files are from an earlier commit of the same branch, when it had 59,806 modules." : "");
+  $("used-text").textContent = "A program read Lean's compiled file for each module and listed the Mathlib declarations that the module's own declarations mention in their statements and proofs. Nothing was compiled or checked again." + (SETTINGS.usageFrom ? ` The compiled files are from ${SETTINGS.usageFrom}.` : "");
   $("used-facts").innerHTML = [
     ["Modules measured", `<b>${fmt(u.measured)}</b> of ${fmt(N)}`],
     ["Modules that mention a Mathlib declaration", `<b>${fmt(u.modulesUsingMathlib)}</b>`],
@@ -231,11 +233,11 @@ function renderUsed() {
 /** Which parts of Mathlib the modules import by name. Only the cleanup names them; the original imports all of Mathlib. */
 function renderMathlib() {
   const m = meta.mathlib, whole = meta.totals.wholeMathlibImports;
-  if (whole < N / 2 && m.modulesNaming < N / 2) {
+  const hub = SETTINGS.mathlibHub;
+  if (hub && m.modulesNaming < N / 2) {
     // the shorter rewrite: one module imports all of Mathlib and the others reach it through that module
     const k = m.modulesNaming;
-    const hub = { main: "Lib/Speed.lean", compact: "Lib/General/LinearAlgebra/Base.lean" }[VERSION] || "one module";
-    $("mathlib-text").innerHTML = `In the rewrite, the imports do not show which parts of Mathlib each module needs. <code>Statements.lean</code> and <code>${hub}</code> import all of Mathlib, and every other module imports <code>${hub}</code>, directly or through other modules. `
+    $("mathlib-text").innerHTML = `In the rewrite, the imports do not show which parts of Mathlib each module needs. <code>${esc(SETTINGS.statements)}</code> and <code>${hub}</code> import all of Mathlib, and every other module imports <code>${hub}</code>, directly or through other modules. `
       + (k === 0 ? "No module imports a single Mathlib module by name." : k === 1 ? "Only 1 module imports a single Mathlib module by name." : `Only ${fmt(k)} modules import single Mathlib modules by name.`);
     $("mathlib-facts").remove(); $("mathlib-note").remove();
     return;
@@ -246,18 +248,24 @@ function renderMathlib() {
     return;
   }
   const sharedTactic = m.shared.filter((x) => x.startsWith("Mathlib.Tactic.")).length;
-  $("mathlib-text").innerHTML = `The community cleanup replaced <code>import Mathlib</code> with imports of single Mathlib modules.`;
+  $("mathlib-text").innerHTML = VERSION === "cleanup" ? `The community cleanup replaced <code>import Mathlib</code> with imports of single Mathlib modules.` : "Most modules import single Mathlib modules by name.";
   $("mathlib-facts").innerHTML = [
     ["Modules that name the Mathlib modules they import", `<b>${fmt(m.modulesNaming)}</b> of ${fmt(N)}`],
     ["Modules that still import all of Mathlib", `<b>${fmt(whole)}</b>`],
     ["Mathlib import lines", `<b>${fmt(m.lines)}</b>, naming ${fmt(m.distinct)} different Mathlib modules`],
-    ["Modules that import one shared list", `<b>${fmt(m.sharedImporters)}</b> import the same ${fmt(m.shared.length)} Mathlib modules, ${fmt(sharedTactic)} of them from <code>Mathlib.Tactic</code>`],
-    ["Other widely imported Mathlib modules", `<b>${fmt(m.widelyImported)}</b> are each imported by 1,000 or more modules`],
-  ].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
+    m.sharedImporters && ["Modules that import one shared list", `<b>${fmt(m.sharedImporters)}</b> import the same ${fmt(m.shared.length)} Mathlib modules, ${fmt(sharedTactic)} of them from <code>Mathlib.Tactic</code>`],
+    m.widelyImported && ["Other widely imported Mathlib modules", `<b>${fmt(m.widelyImported)}</b> are each imported by 1,000 or more modules`],
+  ].filter(Boolean).map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
   $("mathlib-note").textContent = "These counts show what modules import, which is more than what their proofs use: many of the imported modules come late in Mathlib's own import order and bring large parts of Mathlib with them. The table above shows what the proofs use.";
 }
 
+/** The module the longest chain ends at: its path is known once the module names have loaded. */
+function fillChainEnd() {
+  if (names) document.querySelectorAll(".chain-end").forEach((el) => { el.textContent = pathOf(meta.chain[meta.chain.length - 1]); });
+}
+
 export function renderNameTables() {
+  fillChainEnd();
   const hubs = d3.range(N).sort((a, b) => col.dependents[b] - col.dependents[a]).slice(0, 12);
   $("hub-table").innerHTML = `<tr><th>Module</th><th>Directory label</th><th class="num">Modules that depend on it</th><th class="num">Import it directly</th></tr>`
     + hubs.map((i) => `<tr><td><button class="link" data-open="${i}">${esc(pathOf(i))}</button></td><td>${esc(labelOf(i))}</td><td class="num">${fmt(col.dependents[i])} (${pct(col.dependents[i] / N)})</td><td class="num">${fmt(col.indeg[i])}</td></tr>`).join("");

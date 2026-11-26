@@ -8,6 +8,9 @@ const asked = versions.find((v) => v.id === new URLSearchParams(location.search)
 export const VERSION = asked ? asked.id : "original";
 export const DATA = (asked || versions[0]).data;
 export const ORIGINAL = versions.find((v) => v.id === "original");
+// this version's settings (see VERSIONS in tools/update.py): file names, optional sections, Mathlib notes
+export const SETTINGS = asked || versions[0];
+export const hasFeature = (name) => (SETTINGS.features || []).includes(name);
 export const versionUrl = (id) => (id === "original" ? "./" : "?v=" + id);
 
 export const $ = (id) => document.getElementById(id);

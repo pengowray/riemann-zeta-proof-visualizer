@@ -1,0 +1,10 @@
+[
+ {"id": "Riemann", "label": "Selmer bounds and prime sums", "field": "cohomology", "field2": "analytic-nt",
+  "objects": ["Selmer group", "Stickelberger element", "Cyclotomic tower", "Smoothed prime sums", "Auxiliary primes"],
+  "gloss": "The steps of this proof: bounds on Selmer groups of character twists, and estimates for sums over primes.",
+  "confidence": "medium", "sampled": 0},
+ {"id": "Utilities", "label": "Cyclotomic fields and Galois cohomology", "field": "algebraic-nt", "field2": "cohomology",
+  "objects": ["Cyclotomic field", "Artin symbol", "Stickelberger theorem", "Generalized Bernoulli numbers", "Shapiro's lemma"],
+  "gloss": "General results about cyclotomic fields, Artin symbols, Bernoulli numbers and group cohomology, usable apart from this proof.",
+  "confidence": "medium", "sampled": 0}
+]

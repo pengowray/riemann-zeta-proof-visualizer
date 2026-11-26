@@ -29,16 +29,37 @@ ORIGINAL_SHA = "40e56bab026552e089d7afcfeff08d2defb9c005"  # tip of the reposito
 
 # In the order the page lists them. "clone" names the key in tools/local.json; "src" is the Lean source
 # folder inside that clone, which is also the path prefix of every module on GitHub.
+# Per-version settings that the page reads from data/versions.json (and meta.json's "source"):
+#   family, short   the version's place in the sidebar list: a heading, then a short name under it
+#   statements      the file that states the theorems; main: the file that proves them (shown side by side,
+#                   and where the import graph and the longest import chain end)
+#   features        optional sections: "steps" (jae-63's blueprint, which names the original's paths),
+#                   "checks" (independent checks of the original), "changes" (comparison with the original)
+#   mathlibHub      the one module the others reach Mathlib through, when the imports do not name Mathlib modules
+#   usageFrom       where the compiled files for the Mathlib usage table came from, when not this commit
 VERSIONS = [
-    {"id": "original", "label": "Original release", "family": "Original", "short": "Release", "repo": REPO, "src": "src/"},
+    {"id": "original", "label": "Original release", "family": "Original", "short": "Release", "repo": REPO, "src": "src/",
+     "statements": "Statements.lean", "main": "Main.lean", "features": ["steps", "checks"]},
     # The community cleaned up the original here until 25 November 2026, then moved main to the rewrite.
-    {"id": "cleanup", "label": "Original, community cleanup", "family": "Original", "short": "Community cleanup", "repo": REPO, "clone": "cleanup_clone", "branch": "alpoge", "src": "src/"},
+    {"id": "cleanup", "label": "Original, community cleanup", "family": "Original", "short": "Community cleanup", "repo": REPO,
+     "clone": "cleanup_clone", "branch": "alpoge", "src": "src/", "statements": "Statements.lean", "main": "Main.lean",
+     "features": ["steps", "changes"], "usageFrom": "an earlier commit of the same branch, when it had 59,806 modules"},
     # main is a copy of grh-lean's readable edition (grh/) at commit 72fead1, cleaned up by the community.
-    {"id": "main", "label": "Shorter rewrite, community cleanup", "family": "Shorter rewrite", "short": "Community cleanup", "repo": REPO, "clone": "main_clone", "branch": "main", "src": "src/"},
+    {"id": "main", "label": "Shorter rewrite, community cleanup", "family": "Shorter rewrite", "short": "Community cleanup", "repo": REPO,
+     "clone": "main_clone", "branch": "main", "src": "src/", "statements": "Statements.lean", "main": "Main.lean",
+     "mathlibHub": "Lib/Speed.lean"},
     {"id": "compact", "label": "Shorter rewrite, compact edition", "family": "Shorter rewrite", "short": "Compact edition",
-     "repo": "lsernau/grh-lean", "clone": "grh_clone", "branch": "main",
-     "src": "grh-compact/src/"},
+     "repo": "lsernau/grh-lean", "clone": "grh_clone", "branch": "main", "src": "grh-compact/src/",
+     "statements": "Statements.lean", "main": "Main.lean", "mathlibHub": "Lib/General/LinearAlgebra/Base.lean"},
+    # An unfinished new formalization written with GPT-6.2 Sol; holes.md lists the open obligations.
+    {"id": "jamesyc", "label": "New formalization by jamesyc, unfinished", "family": "New formalization", "short": "jamesyc, unfinished",
+     "repo": "jamesyc/riemann-hypothesis", "clone": "jamesyc_clone", "branch": "main", "src": "formalization/",
+     "statements": "Challenge.lean", "main": "Solution.lean"},
 ]
+
+
+# the settings copied into the page's data
+PAGE_KEYS = ("id", "label", "family", "short", "repo", "statements", "main", "features", "mathlibHub", "usageFrom")
 
 
 def run(*args, **kw):
@@ -85,8 +106,7 @@ def main():
     for v in VERSIONS:
         if which not in (v["id"], "all"):
             continue
-        # "family" and "short" name the version in the sidebar's list, under a heading for each family
-        source = {"id": v["id"], "label": v["label"], "family": v["family"], "short": v["short"], "repo": v["repo"], "prefix": v["src"]}
+        source = {**{k: v[k] for k in PAGE_KEYS if k in v}, "prefix": v["src"]}
         if v["id"] == "original":
             build("original", local["original_src"], {**source, "sha": ORIGINAL_SHA, "date": "2026-11-20"})
             continue

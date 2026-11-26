@@ -18,14 +18,14 @@
   <nav id="toc">
     <a href="#statement">The statement</a>
     <a href="#map">Map of every module</a>
-    <a href="#changes" data-only="cleanup">What the cleanup changed</a>
+    <a href="#changes" data-feature="changes">What the cleanup changed</a>
     <a href="#space">What takes up the space</a>
     <a href="#modules">How the proof is split into modules</a>
     <a href="#printed">If it were printed</a>
     <a href="#fields">Areas of mathematics</a>
     <a href="#imports">Dependencies</a>
     <a href="#numbers">Numbers and tactics</a>
-    <a href="#checks" data-only="original">Who has checked the proof</a>
+    <a href="#checks" data-feature="checks">Who has checked the proof</a>
     <a href="#sources">Sources and method</a>
   </nav>
 </aside>
@@ -35,7 +35,7 @@
 <header id="top">
   <div class="hero-text">
     <h1>The Lean proof of the Riemann Hypothesis, as a treemap</h1>
-    <p class="lede" data-only="cleanup main compact" id="version-lede"></p>
+    <p class="lede" data-only="cleanup main compact jamesyc" id="version-lede"></p>
     <p class="lede" data-only="original">On 20 November 2026 Levent Alpöge released a Lean 4 formalization, written with Claude, that states and proves the Riemann Hypothesis and its generalization to Dirichlet <i>L</i>-functions. The source is 175,187 modules (a module is one <code>.lean</code> file). This page shows what is in them.</p>
     <dl id="facts"></dl>
   </div>
@@ -49,10 +49,11 @@
   <h2>The statement</h2>
   <p data-only="cleanup"><code>Statements.lean</code> defines the propositions and <code>Main.lean</code> proves them, and Mathlib's own <code>RiemannHypothesis</code>, by citing theorems from the other modules. The cleanup also has <code>Challenge.lean</code>, which states the same theorems with <code>sorry</code> in place of each proof so that a checker can compare the two files. Point at a symbol to see how to say it and what type it has.</p>
   <p data-only="main compact"><code>Main.lean</code> proves the Riemann Hypothesis and the Generalized Riemann Hypothesis for Dirichlet <i>L</i>-functions as five theorems, using only Lean's three standard axioms (<code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>). <code>Statements.lean</code> states the five theorems in Mathlib's terms. Both editions of the rewrite also have <code>Challenge.lean</code>, which states the same five theorems with <code>sorry</code> in place of each proof, so that a checker can compare the two files. Point at a symbol to see how to say it and what type it has.</p>
+  <p data-only="jamesyc" id="statement-gaps"></p>
   <p data-only="original">These two files are the whole claim. <code>Statements.lean</code> defines four propositions. <code>Main.lean</code> proves them, and Mathlib's own <code>RiemannHypothesis</code>, by citing theorems from the other 175,185 modules. Point at a symbol to see how to say it and what type it has.</p>
   <div class="code-pair">
-    <figure class="codebox"><figcaption>Statements.lean</figcaption><pre class="lean" id="code-statements"></pre></figure>
-    <figure class="codebox"><figcaption>Main.lean</figcaption><pre class="lean" id="code-main"></pre></figure>
+    <figure class="codebox"><figcaption id="code-statements-name"></figcaption><pre class="lean" id="code-statements"></pre></figure>
+    <figure class="codebox"><figcaption id="code-main-name"></figcaption><pre class="lean" id="code-main"></pre></figure>
   </div>
   <p class="plain"><b>In words:</b> every zero of the Riemann zeta function, other than the trivial zeros −2, −4, −6, … , has real part ½. For every Dirichlet character χ, every zero of <i>L</i>(<i>s</i>, χ) with real part strictly between 0 and 1 has real part ½.</p>
 </section>
@@ -78,12 +79,12 @@
   <h3>Highlight modules that mention</h3>
   <div id="terms" class="chips"></div>
   <p class="note">Terms come from Alpöge's announcement and from standard number theory. A module is counted if the term's identifier appears in its text, not counting import lines.</p>
-  <h3 data-only="original cleanup">Highlight a step of Alpöge's timeline</h3>
-  <p class="note" data-only="original cleanup">Where each step appears to live in the Lean code, according to <a href="https://github.com/jae-63/rh-alpoge-blueprint/blob/main/BLUEPRINT.md">a blueprint of the proof by GitHub user jae-63</a>. ● found clearly &nbsp; ◐ names and position fit &nbsp; ○ weak evidence. The number is how many modules match. Point at a step to see it on the map; click to keep it highlighted.</p>
-  <ol id="steps" class="step-list" data-only="original cleanup"></ol>
+  <h3 data-feature="steps">Highlight a step of Alpöge's timeline</h3>
+  <p class="note" data-feature="steps">Where each step appears to live in the Lean code, according to <a href="https://github.com/jae-63/rh-alpoge-blueprint/blob/main/BLUEPRINT.md">a blueprint of the proof by GitHub user jae-63</a>. ● found clearly &nbsp; ◐ names and position fit &nbsp; ○ weak evidence. The number is how many modules match. Point at a step to see it on the map; click to keep it highlighted.</p>
+  <ol id="steps" class="step-list" data-feature="steps"></ol>
 </section>
 
-<section id="changes" data-only="cleanup">
+<section id="changes" data-feature="changes">
   <h2>What the cleanup changed</h2>
   <dl id="change-facts" class="facts"></dl>
   <p id="change-text"></p>
@@ -119,9 +120,10 @@
 
 <section id="fields">
   <h2>Areas of mathematics</h2>
-  <p>Each module's field is predicted by a classifier from the Mathlib and project identifiers it uses. <span data-only="original cleanup">The prediction agrees with a language model's reading of the module about half the time (details under Sources and method).</span><span data-only="main compact">The classifier was trained and tested on modules of the original release; it was not tested on the rewrite, whose names differ.</span> Point at a row to see where that field sits on the map.</p>
+  <p>Each module's field is predicted by a classifier from the Mathlib and project identifiers it uses. <span data-only="original cleanup">The prediction agrees with a language model's reading of the module about half the time (details under Sources and method).</span><span data-only="main compact jamesyc">The classifier was trained and tested on modules of the original release; it was not tested on this version, whose names differ.</span> Point at a row to see where that field sits on the map.</p>
   <table id="field-table" class="data"></table>
   <p class="note" data-only="original cleanup">The line under each field lists objects and theorems named in the labels that a language model gave to each of 746 directories after reading a digest of its identifiers. Treat them as a guide, not a census.</p>
+  <p class="note" data-only="jamesyc">The line under each field lists objects and theorems named in the labels written for this version's two directories from the names of their modules. Treat them as a guide, not a census.</p>
   <p class="note" data-only="main compact">The line under each field lists objects and theorems named in the labels that a language model gave to each of <span id="labelled-groups"></span> directories after reading the rewrite's guide, its list of files and the start of each module. Treat them as a guide, not a census.</p>
 </section>
 
@@ -164,7 +166,7 @@
   <div id="tactic-chart" class="chart"></div>
 </section>
 
-<section id="checks" data-only="original">
+<section id="checks" data-feature="checks">
   <h2>Who has checked the proof</h2>
   <p>What each of these public pages reported when read on 23 November 2026. None of the checks were run in building this page.</p>
   <table class="data" id="checks-table"></table>
@@ -179,7 +181,7 @@
     <li>Declarations are counted by matching keywords such as <code>theorem</code> and <code>def</code> at the start of a line. <span data-only="original">Lean's kernel sees more declarations (1,484,729 in the <code>nanoda</code> runs) because Lean generates auxiliary ones.</span></li>
     <li id="agree-note"></li>
     <li id="build-note" data-only="original"></li>
-    <li data-only="original cleanup">The proof steps on the map follow <a href="https://github.com/jae-63/rh-alpoge-blueprint/blob/main/BLUEPRINT.md">jae-63's blueprint</a>, which matched Alpöge's timeline to Lean names by search and partial reading. It is one reader's interpretation.</li>
+    <li data-feature="steps">The proof steps on the map follow <a href="https://github.com/jae-63/rh-alpoge-blueprint/blob/main/BLUEPRINT.md">jae-63's blueprint</a>, which matched Alpöge's timeline to Lean names by search and partial reading. It is one reader's interpretation.</li>
   </ul>
   <h3>Other maps and cleanups of the proof</h3>
   <ul>

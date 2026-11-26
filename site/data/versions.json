@@ -6,6 +6,14 @@
   "sha": "40e56bab026552e089d7afcfeff08d2defb9c005",
   "prefix": "src/",
   "date": "2026-11-20",
+  "family": "Original",
+  "short": "Release",
+  "statements": "Statements.lean",
+  "main": "Main.lean",
+  "features": [
+   "steps",
+   "checks"
+  ],
   "data": "data/",
   "modules": 175187,
   "lines": 17374215,
@@ -19,9 +27,7 @@
    "xzPages": 40348,
    "compiledBytes": 0,
    "compiledPages": 0
-  },
-  "family": "Original",
-  "short": "Release"
+  }
  },
  {
   "id": "cleanup",
@@ -30,6 +36,15 @@
   "prefix": "src/",
   "sha": "756a70250dcba9162b99d4ea35c186558434c17e",
   "date": "2026-11-26",
+  "family": "Original",
+  "short": "Community cleanup",
+  "statements": "Statements.lean",
+  "main": "Main.lean",
+  "features": [
+   "steps",
+   "changes"
+  ],
+  "usageFrom": "an earlier commit of the same branch, when it had 59,806 modules",
   "data": "data/cleanup/",
   "modules": 58947,
   "lines": 13710054,
@@ -43,14 +58,17 @@
    "xzPages": 31281,
    "compiledBytes": 64656000000,
    "compiledPages": 17960000
-  },
-  "family": "Original",
-  "short": "Community cleanup"
+  }
  },
  {
   "id": "main",
   "label": "Shorter rewrite, community cleanup",
+  "family": "Shorter rewrite",
+  "short": "Community cleanup",
   "repo": "leanprover-community/riemann-hypothesis",
+  "statements": "Statements.lean",
+  "main": "Main.lean",
+  "mathlibHub": "Lib/Speed.lean",
   "prefix": "src/",
   "sha": "388ec4364376d78ea8d33c0f9e79a91e8b319f3a",
   "date": "2026-11-26",
@@ -65,11 +83,9 @@
    "text": 9130,
    "xzBytes": 5853788,
    "xzPages": 1627,
-   "compiledBytes": 0,
-   "compiledPages": 0
-  },
-  "family": "Shorter rewrite",
-  "short": "Community cleanup"
+   "compiledBytes": 2362230816,
+   "compiledPages": 656176
+  }
  },
  {
   "id": "compact",
@@ -78,6 +94,11 @@
   "prefix": "grh-compact/src/",
   "sha": "72fead102f663d5c7a407964a13dc0cf9d977207",
   "date": "2026-11-25",
+  "family": "Shorter rewrite",
+  "short": "Compact edition",
+  "statements": "Statements.lean",
+  "main": "Main.lean",
+  "mathlibHub": "Lib/General/LinearAlgebra/Base.lean",
   "data": "data/compact/",
   "modules": 794,
   "lines": 112827,
@@ -91,8 +112,32 @@
    "xzPages": 535,
    "compiledBytes": 0,
    "compiledPages": 0
-  },
-  "family": "Shorter rewrite",
-  "short": "Compact edition"
+  }
+ },
+ {
+  "id": "jamesyc",
+  "label": "New formalization by jamesyc, unfinished",
+  "family": "New formalization",
+  "short": "jamesyc, unfinished",
+  "repo": "jamesyc/riemann-hypothesis",
+  "statements": "Challenge.lean",
+  "main": "Solution.lean",
+  "prefix": "formalization/",
+  "sha": "b52203eeafe411fd9ee54223eda534c59a038a4a",
+  "date": "2026-11-25",
+  "data": "data/jamesyc/",
+  "modules": 244,
+  "lines": 40541,
+  "printed": {
+   "a4NewPage": 880,
+   "a4": 765,
+   "a4Code": 681,
+   "book": 1199,
+   "text": 627,
+   "xzBytes": 368136,
+   "xzPages": 103,
+   "compiledBytes": 0,
+   "compiledPages": 0
+  }
  }
 ]

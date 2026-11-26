@@ -1,6 +1,6 @@
 // The import graph of the main directories.
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
-import { $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, FAMILIES, moduleFamily, cssVar, state } from "./data.js";
+import { SETTINGS, $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, FAMILIES, moduleFamily, cssVar, state } from "./data.js";
 import { maskWhere, setPreview, famColour } from "./map.js";
 
 // ---------------------------------------------------------------- import graph of regions
@@ -25,13 +25,13 @@ export async function renderGraph() {
     if (i < st.first) st.first = i; if (i > st.last) st.last = i;
   }
   const M = meta.regionMatrix;
-  // The top level holds Main.lean and Statements.lean; it and Supplements are tiny but are where the proof ends, so they are always shown.
+  // The top level holds the main file (Main.lean) and the statements; it and Supplements are tiny but are where the proof ends, so they are always shown.
   const mainRegion = regionIdx.get("(top level)"), finalRegion = regionIdx.get("Supplements");
   // the top level, Supplements and a small region the top level imports (in the rewrite, New/Main.lean sits alone
   // in the region "New") are where the proof ends: always shown, with every link they have
   const ends = new Set([mainRegion, finalRegion, ...d3.range(R).filter((r) => mainRegion !== undefined && M[mainRegion][r] > 0 && stats[r].modules < 5)]);
   const shown = d3.range(R).filter((r) => stats[r].modules >= 5 || ends.has(r));
-  const elements = shown.map((r) => ({ data: { id: "r" + r, r, main: r === mainRegion ? 1 : 0, label: r === mainRegion ? "Main.lean" : meta.regions[r].split("/").pop().replace(/([a-z])([A-Z])/g, "$1 $2"), size: 18 + Math.sqrt(stats[r].bytes / 1e6) * 7, colour: famColour(d3.maxIndex(stats[r].fam)) } }));
+  const elements = shown.map((r) => ({ data: { id: "r" + r, r, main: r === mainRegion ? 1 : 0, label: r === mainRegion ? SETTINGS.main : meta.regions[r].split("/").pop().replace(/([a-z])([A-Z])/g, "$1 $2"), size: 18 + Math.sqrt(stats[r].bytes / 1e6) * 7, colour: famColour(d3.maxIndex(stats[r].fam)) } }));
   // an edge needs at least 20 imports in the original; the rewrite has about 1% as many imports, so fewer will do
   const minEdge = Math.max(3, Math.min(20, Math.round(meta.totals.importEdges / 2000)));
   let drawn = 0, crossTotal = 0;
@@ -44,7 +44,7 @@ export async function renderGraph() {
       if ((M[a][b] >= minEdge && M[a][b] >= 0.04 * out) || (M[a][b] > 0 && ends.has(a))) { elements.push({ data: { id: `e${a}_${b}`, source: "r" + a, target: "r" + b, n: M[a][b], w: 0.6 + Math.log10(M[a][b]) * 1.1 } }); drawn += M[a][b]; }
     }
   }
-  $("graph-text").textContent = `Each circle is a directory, sized by its bytes and coloured by its most common field. An arrow from A to B means modules in A import modules in B. The ${fmt(elements.length - shown.length)} arrows drawn carry ${pct(drawn / crossTotal)} of the imports between these directories; weaker links are left out. The ringed circle is Main.lean, where the final theorems are stated. Point at a circle to see that directory on the map. Circles can be dragged.`;
+  $("graph-text").textContent = `Each circle is a directory, sized by its bytes and coloured by its most common field. An arrow from A to B means modules in A import modules in B. The ${fmt(elements.length - shown.length)} arrows drawn carry ${pct(drawn / crossTotal)} of the imports between these directories; weaker links are left out. The ringed circle is ${SETTINGS.main}, where the final theorems are stated. Point at a circle to see that directory on the map. Circles can be dragged.`;
   const ink = cssVar("--ink"), ink3 = cssVar("--ink-3");
   const cy = cytoscape({
     container: $("graph"), elements,

@@ -2,13 +2,15 @@
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import { renderLean } from "./speech.js";
 import { drawZeta } from "./zeta.js";
-import { VERSION, SOURCE, REPO, versions, ORIGINAL, versionUrl, dateFmt, moduleFamily, rawUrl, $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, darkQuery, state, names, namesReady, termsReady } from "./data.js";
+import { VERSION, SOURCE, REPO, versions, ORIGINAL, SETTINGS, hasFeature, versionUrl, dateFmt, moduleFamily, rawUrl, $, fmt, pct, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, darkQuery, state, names, namesReady, termsReady } from "./data.js";
 import { recolour, requestDraw, refreshMini, countMask, maskWhere, setMask, setPreview, renderLegend, chainMask, chainLabel } from "./map.js";
 import "./graph.js";
 
 // ---------------------------------------------------------------- which version of the proof this is
 // text that is true of only some versions carries data-only="<id> <id> …"
 document.querySelectorAll("[data-only]").forEach((el) => { if (!el.dataset.only.split(" ").includes(VERSION)) el.remove(); });
+// optional sections carry data-feature="<name>" and show when the version's settings list that feature
+document.querySelectorAll("[data-feature]").forEach((el) => { if (!hasFeature(el.dataset.feature)) el.remove(); });
 const shortSha = SOURCE.sha.slice(0, 7);
 const commitLink = `<a href="${REPO}/tree/${SOURCE.sha}"><code>${shortSha}</code></a>`;
 const families = () => [...new Set(versions.map((v) => v.family))];
@@ -23,11 +25,16 @@ $("version-pick").innerHTML = `<span class="control-label"><span>Version</span><
 const sizeNow = `${fmt(N)} modules and ${fmt(meta.totals.lines)} lines`;
 const sizeBefore = `${fmt(ORIGINAL.modules)} modules and ${fmt(ORIGINAL.lines)} lines`;
 const grhLink = repoLink("lsernau/grh-lean");
+// uses of sorry outside the statements file: steps left unproved
+const gaps = meta.sorryModules.filter(([p]) => p !== SETTINGS.statements);
+const gapCount = gaps.reduce((a, [, n]) => a + n, 0);
 const LEDES = {
   cleanup: `This page shows the last version of the Lean community's cleanup of Levent Alpöge's Lean 4 formalization of the Riemann Hypothesis, released on 20 November 2026. The cleanup took place in ${repoLink(SOURCE.repo)} until the community moved the repository's <code>main</code> branch to a shorter rewrite of the proof. The cleanup of the original is kept on the <code>alpoge</code> branch, shown here at commit ${commitLink} of ${dateFmt(SOURCE.date)}: ${sizeNow}, down from ${sizeBefore} in the original release. A module is one <code>.lean</code> file.`,
   main: `Members of the Lean community are cleaning up a shorter rewrite of Levent Alpöge's Lean 4 formalization of the Riemann Hypothesis, in ${repoLink(SOURCE.repo)}. Their <code>main</code> branch started from the readable edition of ${grhLink}, which lsernau made with colleagues at Anthropic and with Claude and published on 25 November 2026. This page shows that branch at commit ${commitLink} of ${dateFmt(SOURCE.date)}: ${sizeNow}, compared with ${sizeBefore} in the original release. A module is one <code>.lean</code> file. The rewrite's README says that no mathematician has read it through.`,
   compact: `${grhLink} is a shorter rewrite of Levent Alpöge's Lean 4 formalization of the Riemann Hypothesis, made by lsernau with colleagues at Anthropic and with Claude, and published on 25 November 2026. It has a readable edition and a compact edition. This page shows the compact edition at commit ${commitLink} of ${dateFmt(SOURCE.date)}: ${sizeNow}, compared with ${sizeBefore} in the original release. A module is one <code>.lean</code> file. The rewrite's README says that no mathematician has read it through.`,
+  jamesyc: `${repoLink(SOURCE.repo)} is a new, unfinished Lean 4 formalization of the Riemann Hypothesis: ${plural(gapCount, "step")} of its proof, in ${plural(gaps.length, "module")}, are left unproved. The GitHub user jamesyc wrote it, and its README says it was written using only the AI model GPT-6.2 Sol. The README also says the author does not believe that cleaning up Levent Alpöge's 17-million-line formalization is the best way. This page shows commit ${commitLink} of ${dateFmt(SOURCE.date)}: ${sizeNow}, compared with ${sizeBefore} in the original release. A module is one <code>.lean</code> file.`,
 };
+if ($("statement-gaps")) $("statement-gaps").innerHTML = `<code>${esc(SETTINGS.statements)}</code> states the five theorems that this version sets out to prove, the same five as in the other versions: the Riemann Hypothesis and statements about the zeros of Dirichlet <i>L</i>-functions. Each theorem in <code>${esc(SETTINGS.statements)}</code> has <code>sorry</code> in place of its proof. That is intended, because this file only gives the statements. <code>${esc(SETTINGS.main)}</code> proves the five theorems by citing theorems from other modules. A proof that depends on a <code>sorry</code> is not complete, and in this snapshot ${plural(gapCount, "<code>sorry</code> placeholder")} remain in ${plural(gaps.length, "module")} that <code>${esc(SETTINGS.main)}</code> imports, directly or through other modules. Point at a symbol to see how to say it and what type it has.`;
 if (LEDES[VERSION]) $("version-lede").innerHTML = LEDES[VERSION];
 if ($("labelled-groups")) $("labelled-groups").textContent = fmt(meta.totals.labelledGroups);
 const STORED = "This site stores module names and counts, and loads a module's code from GitHub when you open that module.";
@@ -36,6 +43,7 @@ const SOURCE_NOTES = {
   original: `The Lean source is from <a href="https://alpo.ge/remark.pdf">Alpöge's announcement</a>. The page reads it from the <code>original</code> branch of ${repoLink(SOURCE.repo)} at commit ${commitLink}, which keeps the release unchanged. The archive declares no licence, so this site does not store the Lean files; it stores module names and counts, and loads code from GitHub when you open a module.`,
   cleanup: `The Lean source is the <code>alpoge</code> branch of ${repoLink(SOURCE.repo)} at commit ${commitLink} of ${dateFmt(SOURCE.date)}, the last commit of the cleanup of the original. ${STORED}`,
   main: `The Lean source is the <code>main</code> branch of ${repoLink(SOURCE.repo)} at commit ${commitLink} of ${dateFmt(SOURCE.date)}, under the Apache 2.0 licence. This branch began as a copy of the readable edition of ${grhLink} (commit <code>72fead1</code>) and changes often, so the numbers here are a snapshot. ${STORED} ${LINES_NOTE("300,000")}`,
+  jamesyc: `The Lean source is the <code>main</code> branch of ${repoLink(SOURCE.repo)} at commit ${commitLink} of ${dateFmt(SOURCE.date)}. The repository declares no licence, so this site stores only module names and counts, and loads a module's code from GitHub when you open that module. Its <code>holes.md</code> lists the steps left unproved and cites sections of ${repoLink("jimjamzola/RH-Alpoge-Reconstruction")}, a written reconstruction of Alpöge's argument. The project uses Lean and Mathlib v4.36.0, newer than the other versions. It was discussed in a <a href="https://news.ycombinator.com/item?id=50648936">Hacker News thread</a>.`,
   compact: `The Lean source is the compact edition of ${grhLink}, in its <code>grh-compact</code> folder, at commit ${commitLink} of ${dateFmt(SOURCE.date)}, under the Apache 2.0 licence. The README says the repository is not maintained. ${STORED} ${LINES_NOTE("76,000")}`,
 };
 $("source-note").innerHTML = SOURCE_NOTES[VERSION];
@@ -44,20 +52,31 @@ $("source-note").innerHTML = SOURCE_NOTES[VERSION];
 const declTotal = d3.sum(meta.declKinds, (d) => d[1]);
 const declCount = Object.fromEntries(meta.declKinds);
 const sorryCount = Object.fromEntries(meta.tactics).sorry || 0;
+/** Where the uses of sorry are: the files when there are a few, otherwise counts, with the statements file apart. */
+function sorryWhere() {
+  const list = meta.sorryModules;
+  if (!list.length) return "";
+  if (list.length <= 3) return `, all in ${list.map(([p]) => esc(p)).join(", ")}`;
+  const inStatements = list.find(([p]) => p === SETTINGS.statements);
+  if (!inStatements) return `, in ${plural(list.length, "module")}`;
+  const rest = sorryCount - inStatements[1];
+  return `: ${fmt(inStatements[1])} in ${esc(SETTINGS.statements)}, and ${fmt(rest)} in ${plural(list.length - 1, "other module")}`;
+}
 $("facts").innerHTML = [
   ["Modules", `<b>${fmt(N)}</b>`],
   ["Lines of Lean", `<b>${fmt(meta.totals.lines)}</b>`],
   ["Source size", `<b>${bytesFmt(meta.totals.bytes)}</b>, or ${bytesFmt(meta.totals.zbytes)} with each file compressed by zlib`],
   ["Declarations", `<b>${fmt(declTotal)}</b>: ${fmt((declCount.theorem || 0) + (declCount.lemma || 0))} theorems and lemmas, ${fmt((declCount.def || 0) + (declCount.abbrev || 0))} definitions`],
   ["Comments and docstrings", `<b>${meta.totals.commentBytes ? bytesFmt(meta.totals.commentBytes) : "None"}</b>${meta.totals.mergeRecordBytes ? `. ${bytesFmt(meta.totals.mergeRecordBytes)} of that is records written by the cleanup's merge script, which lists the smaller modules each merged module was made from` : ""}`],
-  ["Uses of <code>sorry</code>", `<b>${fmt(sorryCount)}</b> (<code>sorry</code> is Lean's placeholder for a step left unproved)${meta.sorryModules.length ? `, all in ${meta.sorryModules.map(([p]) => esc(p)).join(", ")}` : ""}`],
+  ["Uses of <code>sorry</code>", `<b>${fmt(sorryCount)}</b> (<code>sorry</code> is Lean's placeholder for a step left unproved)${sorryWhere()}`],
   ["Longest import chain", `<b>${fmt(meta.totals.longestChain)}</b> modules`],
 ].filter(Boolean).map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
 
 const zerosSeen = drawZeta($("zeta"), 60, (t) => { $("zeta-t").textContent = t.toFixed(1).padStart(4, " "); });
 $("zeta-zeros").textContent = `The ${zerosSeen.length} zeros up to t = 60 are at t ≈ ${zerosSeen.map((z) => z.toFixed(2)).join(", ")}.`;
 
-for (const [id, path] of [["code-statements", "Statements.lean"], ["code-main", "Main.lean"]]) {
+for (const [id, path] of [["code-statements", SETTINGS.statements], ["code-main", SETTINGS.main]]) {
+  $(id + "-name").textContent = path;
   fetch(rawUrl(path)).then((r) => { if (!r.ok) throw new Error(`${r.status} ${r.statusText}`); return r.text(); })
     .then((t) => { $(id).innerHTML = renderLean(t.trimEnd()); })
     .catch((err) => { $(id).textContent = `Couldn't load ${path} from GitHub: ${err.message}`; });
