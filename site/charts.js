@@ -58,7 +58,7 @@ function renderChanges() {
 /** Page counts for the source under several layouts, with the other version's count for comparison. */
 function renderPrinted() {
   const p = meta.printed;
-  const stack = (pages) => { const m = (pages / 2) * 0.0001; return m >= 1000 ? `${(m / 1000).toFixed(1)} km` : m >= 10 ? `${Math.round(m)} m` : `${m.toFixed(1)} m`; };
+  const stack = (pages) => { const m = (pages / 2) * 0.0001; return m >= 1000 ? `${(m / 1000).toFixed(1)} km` : m >= 10 ? `${Math.round(m)} m` : m >= 1 ? `${m.toFixed(1)} m` : `${(m * 100).toFixed(1)} cm`; };
   const rows = [
     ["A4 listing, each module starting a new page", p.a4NewPage],
     ["A4 listing, modules printed one after another", p.a4],
@@ -92,10 +92,10 @@ function renderConstProps() {
   $("always-about").innerHTML = `<summary>About these definitions</summary>
     <p>A condition that is always <code>True</code> requires nothing, so a lemma that takes it as a condition is the same lemma without it. An example is <code>anyGeometry</code>, which was criticised in the original release.</p>
     <p>A lemma that assumes an always-<code>False</code> definition can never be applied, because applying it needs a proof of <code>False</code>.</p>
-    <p>Neither kind can change what the five final theorems state, or whether their proofs are correct. The theorems are stated in <code>Statements.lean</code> using only Mathlib's definitions, and Lean's kernel checked every proof.</p>
-    <p>${exact
+    ${VERSION === "jamesyc" ? "<p>Neither kind can change what the five theorems state.</p>" : `<p>Neither kind can change what the five final theorems state, or whether their proofs are correct. The theorems are stated in <code>${esc(SETTINGS.statements)}</code> using only Mathlib's definitions, and Lean's kernel checked every proof.</p>`}
+    ${!c.defs.length ? "" : `<p>${exact
       ? `Counts are exact, read from Lean's compiled files at commit ${commit}. The five theorems depend on ${fmt(c.reached)} of the ${fmt(c.declarations)} declarations, directly or through other declarations.`
-      : "Counts are estimated from the Lean text. A module is counted as using a definition when its text contains a name that could refer to that definition. The text alone cannot show whether the five theorems depend on a definition."}</p>`
+      : "Counts are estimated from the Lean text. A module is counted as using a definition when its text contains a name that could refer to that definition. The text alone cannot show whether the five theorems depend on a definition."}</p>`}`
     + (c.disguised !== undefined ? `<p>${c.disguised ? `${plural(c.disguised, "proposition or set is", "propositions or sets are")} defined as` : "No proposition or set is defined as"} <code>⊤</code>, <code>⊥</code>, <code>Set.univ</code> or <code>∅</code>, which are other ways to write <code>True</code> or <code>False</code>.</p>` : "")
     + (numbers.length ? "<p>Functions that return the same number for every input, such as a zero map, are ordinary in mathematics.</p>" : "");
   // functions that return the same number for every input, from the text estimate: the first rows, then "Show all"
@@ -314,8 +314,9 @@ export function renderCharts() {
   ].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
   // notation and macros: both sentences end in a button that highlights those modules on the map
   const T = meta.totals;
-  $("syntax-text").innerHTML = `The source declares ${fmt(T.notations)} notations in ${fmt(T.modulesWithNotation)} modules and ${fmt(T.macros)} macros in ${fmt(T.modulesWithMacro)} modules. A notation is a symbol that stands for an expression, and a macro is a new tactic name that stands for a sequence of existing tactics. ${fmt(T.localNotations)} of the notations are marked <code>local</code>, so they apply only inside the file that declares them. Most are shorthand for a long expression, such as <code>local notation "θ" => fontaineTheta (normInteger K) p</code>. ${esc(SETTINGS.statements)} and ${esc(SETTINGS.main)} declare neither. Lean's kernel checks the expanded terms, so a notation cannot change what was proved. Show on the map: <button type="button" class="link" id="notation-show" data-mask-key="notation" aria-pressed="false">modules that declare a notation</button>, <button type="button" class="link" id="macro-show" data-mask-key="macro" aria-pressed="false">modules that declare a macro</button>.`;
-  for (const [id, key, column, n, noun] of [["notation-show", "notation", col.notations, T.modulesWithNotation, "notation"], ["macro-show", "macro", col.macros, T.modulesWithMacro, "macro"]]) {
+  if (!T.notations && !T.macros) $("syntax-text").textContent = "The source declares no notations and no macros.";
+  else $("syntax-text").innerHTML = `The source declares ${fmt(T.notations)} notations in ${fmt(T.modulesWithNotation)} modules and ${T.macros ? `${fmt(T.macros)} macros in ${fmt(T.modulesWithMacro)} modules` : "no macros"}. A notation is a symbol that stands for an expression, and a macro is a new tactic name that stands for a sequence of existing tactics. ${T.localNotations === T.notations ? "All" : fmt(T.localNotations)} of the notations are marked <code>local</code>, so they apply only inside the file that declares them.${VERSION === "original" ? ` Most are shorthand for a long expression, such as <code>local notation "θ" => fontaineTheta (normInteger K) p</code>.` : ""} ${esc(SETTINGS.statements)} and ${esc(SETTINGS.main)} declare neither. Lean's kernel checks the expanded terms, so a notation cannot change what was proved. Show on the map: <button type="button" class="link" id="notation-show" data-mask-key="notation" aria-pressed="false">modules that declare a notation</button>, <button type="button" class="link" id="macro-show" data-mask-key="macro" aria-pressed="false">modules that declare a macro</button>.`;
+  if ($("notation-show")) for (const [id, key, column, n, noun] of [["notation-show", "notation", col.notations, T.modulesWithNotation, "notation"], ["macro-show", "macro", col.macros, T.modulesWithMacro, "macro"]]) {
     $(id).onclick = () => { setMask(key, maskWhere((i) => column[i] > 0), `${fmt(n)} modules that declare a ${noun}`); $("map").scrollIntoView(); };
   }
   const tacticModules = meta.tacticBits.map((_, b) => { let n = 0; for (let i = 0; i < N; i++) n += (col.tactics[i] >>> b) & 1; return n; });
@@ -335,7 +336,7 @@ export function renderCharts() {
 function renderUsed() {
   const u = meta.mathlibUsed;
   if (!u) {
-    $("used-text").innerHTML = `This was measured on the community cleanup of the original, whose compiled files are published: <a href="?v=cleanup#mathlib-use">see what its modules use from Mathlib</a>.`;
+    $("used-text").innerHTML = `Not measured for this version. It was measured for the community cleanup of the original, whose compiled files are published: <a href="?v=cleanup#mathlib-use">see what the cleanup's modules use from Mathlib</a>.`;
     for (const id of ["used-facts", "used-table", "used-top", "used-not"]) $(id)?.remove();
     return;
   }

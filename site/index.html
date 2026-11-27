@@ -135,7 +135,7 @@
   <h2>How modules depend on each other</h2>
   <p id="imports-text"></p>
   <p data-only="original">A <a href="https://news.ycombinator.com/item?id=50574968">comment on Hacker News</a> reported 204 modules "not referenced anywhere", without a list or a method. Every module except Main.lean is imported by at least one other module. The comment may be counting something else, such as declarations that nothing uses.</p>
-  <figure><figcaption>Imports between fields. Each square is the share of the row field's imports that are of modules in the column field. Point at a square to see those modules on the map.</figcaption><div id="matrix-chart" class="chart"></div></figure>
+  <figure><figcaption>Imports between fields. Each square: of the imports made by modules of the row's field, the share that import modules of the column's field. Point at a square to see those modules on the map.</figcaption><div id="matrix-chart" class="chart"></div></figure>
   <h3 id="mathlib-use">What the modules use from Mathlib</h3>
   <dl id="used-facts" class="facts"></dl>
   <table id="used-table" class="data"></table>
@@ -193,7 +193,7 @@
   <ul>
     <li id="source-note"></li>
     <li data-only="original">All counts on this page come from a script that reads every file once. Its totals match the independent checks above: 175,187 files, 17,374,215 lines, longest import chain 203.</li>
-    <li>Declarations are counted by matching keywords such as <code>theorem</code> and <code>def</code> at the start of a line. <span data-only="original">Lean's kernel sees more declarations (1,484,729 in the <code>nanoda</code> runs) because Lean generates auxiliary ones.</span></li>
+    <li>Declarations are counted by matching keywords such as <code>theorem</code> and <code>def</code> at the start of a line. <span data-only="original">Lean's kernel checks more declarations (1,484,729 in the <code>nanoda</code> runs), because Lean generates auxiliary declarations.</span></li>
     <li id="agree-note"></li>
     <li id="build-note" data-only="original"></li>
     <li data-feature="steps">The proof steps on the map follow <a href="https://github.com/jae-63/rh-alpoge-blueprint/blob/main/BLUEPRINT.md">jae-63's blueprint</a>, which matched Alpöge's timeline to Lean names by search and partial reading. It is one reader's interpretation.</li>
