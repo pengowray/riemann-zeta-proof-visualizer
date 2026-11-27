@@ -379,6 +379,12 @@ def main():
                 truth_stats["dirExact"] += theirs == entry["field"]
                 truth_stats["dirFamily"] += family[theirs] == family[entry["field"]]
         print("sample check:", truth_stats)
+    # A version the classifier was not tested on also carries the original release's test result, read
+    # from the original's built data, so that its page can state the figure.
+    truth_original = None
+    original_meta = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "site", "data", "meta.json")
+    if not truth_stats["n"] and os.path.exists(original_meta):
+        truth_original = json.load(open(original_meta))["totals"]["truth"]
 
     regions, region_index = [], {}
     for r in rows:
@@ -712,6 +718,7 @@ def main():
             "fieldAgree": agree,
             "fieldJudged": judged,
             "truth": truth_stats,
+            "truthOriginal": truth_original,
             "truthCounts": truth_counts,
             "randomCounts": random_counts,
             "randomN": sum(random_counts),

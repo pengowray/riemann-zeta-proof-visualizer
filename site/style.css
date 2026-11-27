@@ -189,6 +189,9 @@ button.link { font: inherit; color: var(--accent); background: none; border: 0; 
 button.link:hover { text-decoration: underline; }
 
 .phone-only { display: none; }
+/* lines about pointing at something are for screens with a pointer; a touch screen cannot hover */
+.touch-only { display: none; }
+@media (hover: none) { .hover-only { display: none; } .touch-only { display: inline; } }
 .find input::placeholder { color: var(--ink-3); opacity: 1; }
 @media (max-width: 700px) {
   /* controls and legend each stay on one line and scroll sideways, so the map is reached sooner */
