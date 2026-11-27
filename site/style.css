@@ -198,12 +198,14 @@ button.link:hover { text-decoration: underline; }
   .control.bend { margin-left: 0; }
   /* the checks table becomes one block per source */
   #checks-table, #checks-table tbody, #checks-table tr, #checks-table td,
-  #always-table, #always-table tbody, #always-table tr, #always-table td { display: block; }
-  #checks-table tr:first-child, #always-table tr:first-child { display: none; }
-  #checks-table tr, #always-table tr { border-bottom: 1px solid var(--rule); padding: 8px 0; }
-  #checks-table td, #always-table td { border: 0; padding: 2px 0; text-align: left; }
+  #always-table, #always-table tbody, #always-table tr, #always-table td,
+  #always-numbers, #always-numbers tbody:not([hidden]), #always-numbers tr, #always-numbers td { display: block; }
+  #checks-table tr:first-child, #always-table tr:first-child, #always-numbers tbody:first-child tr:first-child { display: none; }
+  #checks-table tr, #always-table tr, #always-numbers tr { border-bottom: 1px solid var(--rule); padding: 8px 0; }
+  #checks-table td, #always-table td, #always-numbers td { border: 0; padding: 2px 0; text-align: left; }
   #checks-table td[data-label]:not(:first-child)::before,
-  #always-table td[data-label]:not(:first-child)::before { content: attr(data-label) ": "; color: var(--ink-2); font-size: 0.84rem; }
+  #always-table td[data-label]:not(:first-child)::before,
+  #always-numbers td[data-label]:not(:first-child)::before { content: attr(data-label) ": "; color: var(--ink-2); font-size: 0.84rem; }
   #always-table td.na { display: none; }
 }
 
@@ -280,8 +282,10 @@ table.data .none { color: var(--ink-3); }
 #always-table code.exception { font-weight: 700; }
 /* a top-level directory's heading row inside the directory table */
 table.data tr.group-row td { padding-top: 14px; border-bottom: 1px solid var(--ink-3); }
-#always-more summary { cursor: pointer; }
-#always-more table td:first-child { overflow-wrap: break-word; }
+#always-about summary { cursor: pointer; color: var(--ink-2); font-size: 0.88rem; }
+#always-numbers td:first-child { overflow-wrap: break-word; }
+#always-numbers td:first-child .note { font-size: 0.78rem; }
+#always-numbers-all { padding: 6px 0; }
 /* the first sentence of a module's own comment, in the map popup */
 #tip .doc, .maptip .doc { display: block; font-style: italic; margin: 2px 0 4px; }
 /* full screen: the map section fills the screen, the map takes the height left under the controls */

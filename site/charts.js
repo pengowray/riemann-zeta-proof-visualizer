@@ -83,23 +83,41 @@ const breakable = (s, sep) => esc(s).split(sep).join(sep + "<wbr>");
 /** Definitions that are always True or always False, from meta.constProps (see tools/constprops_run.py). */
 function renderConstProps() {
   const c = meta.constProps;
-  if (!$("always-note")) return; // already drawn without a table, or removed
+  if (!$("always-about")) return; // the section was removed
   if (!c) { $("always").remove(); document.querySelector('#toc a[href="#always"]')?.remove(); return; }
   const exact = c.method === "compiled";
-  $("always-note").textContent = exact
-    ? `Counts are exact, read from Lean's compiled files at commit ${SOURCE.sha.slice(0, 7)}. The five theorems depend on ${fmt(c.reached)} of the ${fmt(c.declarations)} declarations, directly or through other declarations.`
-    : "Counts are estimated from the Lean text. A module is counted as using a definition when its text contains a name that could refer to that definition. The text alone cannot show whether the five theorems depend on a definition.";
-  // other values that are the same for every input, from the text estimate
+  const commit = SOURCE.sha.slice(0, 7);
   const numbers = c.numberFunctions || [];
-  $("always-more").innerHTML = (c.disguised !== undefined ? `<p>${c.disguised ? `${plural(c.disguised, "proposition or set is", "propositions or sets are")} defined as <code>⊤</code>, <code>⊥</code>, <code>Set.univ</code> or <code>∅</code>, which is <code>True</code> or <code>False</code> under another name.` : "No proposition or set is defined as <code>⊤</code>, <code>⊥</code>, <code>Set.univ</code> or <code>∅</code>, which would be <code>True</code> or <code>False</code> under another name."}</p>` : "")
-    + (numbers.length ? `<details><summary>${plural(numbers.length, "function returns", "functions return")} the same number for every input, such as a zero map. These are ordinary in mathematics and are listed for completeness.</summary>
-      <table class="data"><tr><th>Definition</th><th>Value</th><th>Type</th></tr>${numbers.map((d) => `<tr><td><code>${breakable(d.name, ".")}</code><br><span class="note mono">${breakable(d.file, "/")}</span></td><td><code>${esc(d.value)}</code></td><td><code>${breakable(d.type, " ")}</code></td></tr>`).join("")}</table></details>` : "");
-  if (!c.defs.length) { $("always-none").hidden = false; $("always-table")?.remove(); return; }
+  // the explanation and the method, closed by default so that the tables come first
+  $("always-about").innerHTML = `<summary>What these definitions mean, and how they were counted</summary>
+    <p>A condition that is always <code>True</code> requires nothing, so a lemma that takes it as a condition is the same lemma without it. An example is <code>anyGeometry</code>, which was criticised in the original release.</p>
+    <p>A lemma that assumes an always-<code>False</code> definition can never be applied, because applying it needs a proof of <code>False</code>.</p>
+    <p>Neither kind can change what the five final theorems state, or whether their proofs are correct. The theorems are stated in <code>Statements.lean</code> using only Mathlib's definitions, and Lean's kernel checked every proof.</p>
+    <p>${exact
+      ? `Counts are exact, read from Lean's compiled files at commit ${commit}. The five theorems depend on ${fmt(c.reached)} of the ${fmt(c.declarations)} declarations, directly or through other declarations.`
+      : "Counts are estimated from the Lean text. A module is counted as using a definition when its text contains a name that could refer to that definition. The text alone cannot show whether the five theorems depend on a definition."}</p>`
+    + (c.disguised !== undefined ? `<p>${c.disguised ? `${plural(c.disguised, "proposition or set is", "propositions or sets are")} defined as` : "No proposition or set is defined as"} <code>⊤</code>, <code>⊥</code>, <code>Set.univ</code> or <code>∅</code>, which are other ways to write <code>True</code> or <code>False</code>.</p>` : "")
+    + (numbers.length ? "<p>Functions that return the same number for every input, such as a zero map, are ordinary in mathematics.</p>" : "");
+  // functions that return the same number for every input, from the text estimate: the first rows, then "Show all"
+  const SHOWN = 5;
+  const numberRow = (d) => `<tr><td><code>${breakable(d.name, ".")}</code><br><span class="note mono">${breakable(d.file, "/")}</span></td><td data-label="Value"><code>${esc(d.value)}</code></td><td data-label="Type"><code>${breakable(d.type, " ")}</code></td></tr>`;
+  $("always-more").innerHTML = numbers.length ? `<h3>${plural(numbers.length, "function that returns", "functions that return")} the same number for every input</h3>
+    <table id="always-numbers" class="data"><tbody><tr><th>Definition</th><th>Value</th><th>Type</th></tr>${numbers.slice(0, SHOWN).map(numberRow).join("")}</tbody>${numbers.length > SHOWN ? `<tbody hidden>${numbers.slice(SHOWN).map(numberRow).join("")}</tbody>` : ""}</table>
+    ${numbers.length > SHOWN ? `<button type="button" class="link" id="always-numbers-all">Show all ${fmt(numbers.length)} functions</button>` : ""}` : "";
+  if ($("always-numbers-all")) $("always-numbers-all").onclick = (e) => { $("always-numbers").tBodies[1].hidden = false; e.target.remove(); };
+  if (!c.defs.length) {
+    $("always-none").hidden = false;
+    $("always-none").textContent = exact ? `None in this version. Checked in Lean's compiled files at commit ${commit}.` : "None found in this version's Lean text. The compiled files were not checked.";
+    $("always-table")?.remove(); $("always-note").hidden = true;
+    return;
+  }
+  $("always-intro").hidden = false;
+  $("always-note").textContent = exact ? `Exact counts, from Lean's compiled files at commit ${commit}.` : "Counts estimated from the Lean text.";
   const dash = `<span class="none">–</span>`;
   // the "assumed" column applies only to always-False definitions; leave it out when there are none
   const anyFalse = c.defs.some((d) => d.value === "False");
   const assumed = exact ? "Assumed by declarations" : "Assumed in modules";
-  $("always-table").innerHTML = `<tr><th>Definition</th><th>Value</th><th class="num">Used in other modules</th>${anyFalse ? `<th class="num">${assumed}</th>` : ""}${exact ? "<th>In the theorems' proofs</th>" : ""}</tr>`
+  $("always-table").innerHTML = `<tr><th>Definition</th><th>Value</th><th class="num">Used in other modules</th>${anyFalse ? `<th class="num" title="A lemma that assumes an always-False definition can never be applied">${assumed}</th>` : ""}${exact ? "<th>In the theorems' proofs</th>" : ""}</tr>`
     // data-label names each cell where a phone stacks the cells; "na" cells are hidden there
     + c.defs.map((d, k) => `<tr class="hoverable" data-preview-const="${k}"><td><code>${breakable(d.name, ".")}</code><br><span class="note mono">${breakable(d.file, "/")}</span></td><td data-label="Value"><code${d.value === "False" ? ' class="exception"' : ""}>${d.value}</code></td><td class="num" data-label="Used in other modules">${d.modules.length ? `<button type="button" class="link" data-const-show="${k}" title="Show these modules on the map">${fmt(d.modules.length)}</button>` : "0"}</td>${!anyFalse ? "" : d.value === "False" ? `<td class="num" data-label="${assumed}">${fmt(d.hyp)}</td>` : `<td class="num na">${dash}</td>`}${exact ? `<td data-label="In the theorems' proofs">${d.used ? "Yes" : "No"}</td>` : ""}</tr>`).join("");
   $("always-table").onclick = (e) => {
