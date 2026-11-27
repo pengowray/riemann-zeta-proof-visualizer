@@ -45,7 +45,7 @@ version's two directories.
 
 The "What the modules use from Mathlib" table comes from Lean's compiled files, which the scan
 does not read. It has been measured for the cleanup of the original, at an earlier commit of the
-`alpoge` branch when it had 59,806 modules, and for `main` at `388ec43`. To refresh it after an update, install Lean with `elan`, then in the cleanup clone run
+`alpoge` branch when it had 59,806 modules, for `main` at `388ec43`, and for the readable edition (`grh`) at `72fead1`, built in `grh-lean/grh` with `lake exe cache get` and `lake build`. To refresh it after an update, install Lean with `elan`, then in the cleanup clone run
 `lake exe cache get` (about 80 GB) and:
 
 ```bash

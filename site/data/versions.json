@@ -142,9 +142,9 @@
   }
  },
  {
+  "primary": true,
   "id": "grh",
   "label": "Shorter rewrite, readable edition",
-  "primary": true,
   "family": "Shorter rewrite",
   "short": "Readable edition",
   "repo": "lsernau/grh-lean",
