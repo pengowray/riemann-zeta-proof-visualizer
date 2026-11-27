@@ -86,7 +86,7 @@ function renderPrinted() {
     });
     $("printed-table").innerHTML = `<tr><th>Version</th><th class="num">Pages with comments</th><th class="num">Pages without comments</th></tr>${rows.join("")}
       <tr class="claim"><td>Explanation of the original in prose, written by Claude and not published</td>
-        <td colspan="2">250,000+ pages, according to <a href="https://alpo.ge/remark.pdf">the announcement</a> (footnote 2). Alpöge <a href="https://x.com/__alpoge__/status/2124987173439209561">later called the figure a joke</a>.</td></tr>`;
+        <td colspan="2">250,000+ pages, according to <a href="https://alpo.ge/remark.pdf">the announcement</a> (footnote 2). Alpöge later wrote: <a href="https://x.com/__alpoge__/status/2124987173439209561">“250,000+ pages was a joke guys!”</a></td></tr>`;
     $("printed-note").textContent = PAGE_FORMATS[key]
       + (key === "text" ? "" : " A line longer than the page is wide continues on the next line.")
       + " Without comments: a line that holds only a comment is left out. The original release has no comments.";
