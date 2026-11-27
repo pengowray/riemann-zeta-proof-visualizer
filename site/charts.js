@@ -1,7 +1,7 @@
 // The charts and tables in the sections below the map. Loaded after the map has painted.
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import * as Plot from "https://cdn.jsdelivr.net/npm/@observablehq/plot@0.6.16/+esm";
-import { REPO, SOURCE, VERSION, SETTINGS, PARTS, partOf, listed, versionUrl, dateFmt, $, fmt, pct, bytesFmt, plural, esc, meta, N, col, ones, dirs, FAMILIES, fieldFamily, KIND_COLOURS, isDark, cssVar, state, names, pathOf, dirSum } from "./data.js";
+import { REPO, SOURCE, VERSION, SETTINGS, PARTS, partOf, listed, versionUrl, dateFmt, $, fmt, pct, bytesFmt, plural, esc, foldedTable, meta, N, col, ones, dirs, FAMILIES, fieldFamily, KIND_COLOURS, isDark, cssVar, state, names, pathOf, dirSum } from "./data.js";
 import { KEYWORDS } from "./speech.js";
 import { maskWhere, setPreview, luminance, setMask, labelOf, famOf, famColour, segmented } from "./map.js";
 
@@ -89,7 +89,7 @@ function renderConstProps() {
   const commit = SOURCE.sha.slice(0, 7);
   const numbers = c.numberFunctions || [];
   // the explanation and the method, closed by default so that the tables come first
-  $("always-about").innerHTML = `<summary>What these definitions mean, and how they were counted</summary>
+  $("always-about").innerHTML = `<summary>About these definitions</summary>
     <p>A condition that is always <code>True</code> requires nothing, so a lemma that takes it as a condition is the same lemma without it. An example is <code>anyGeometry</code>, which was criticised in the original release.</p>
     <p>A lemma that assumes an always-<code>False</code> definition can never be applied, because applying it needs a proof of <code>False</code>.</p>
     <p>Neither kind can change what the five final theorems state, or whether their proofs are correct. The theorems are stated in <code>Statements.lean</code> using only Mathlib's definitions, and Lean's kernel checked every proof.</p>
@@ -99,12 +99,9 @@ function renderConstProps() {
     + (c.disguised !== undefined ? `<p>${c.disguised ? `${plural(c.disguised, "proposition or set is", "propositions or sets are")} defined as` : "No proposition or set is defined as"} <code>⊤</code>, <code>⊥</code>, <code>Set.univ</code> or <code>∅</code>, which are other ways to write <code>True</code> or <code>False</code>.</p>` : "")
     + (numbers.length ? "<p>Functions that return the same number for every input, such as a zero map, are ordinary in mathematics.</p>" : "");
   // functions that return the same number for every input, from the text estimate: the first rows, then "Show all"
-  const SHOWN = 5;
   const numberRow = (d) => `<tr><td><code>${breakable(d.name, ".")}</code><br><span class="note mono">${breakable(d.file, "/")}</span></td><td data-label="Value"><code>${esc(d.value)}</code></td><td data-label="Type"><code>${breakable(d.type, " ")}</code></td></tr>`;
   $("always-more").innerHTML = numbers.length ? `<h3>${plural(numbers.length, "function that returns", "functions that return")} the same number for every input</h3>
-    <table id="always-numbers" class="data"><tbody><tr><th>Definition</th><th>Value</th><th>Type</th></tr>${numbers.slice(0, SHOWN).map(numberRow).join("")}</tbody>${numbers.length > SHOWN ? `<tbody hidden>${numbers.slice(SHOWN).map(numberRow).join("")}</tbody>` : ""}</table>
-    ${numbers.length > SHOWN ? `<button type="button" class="link" id="always-numbers-all">Show all ${fmt(numbers.length)} functions</button>` : ""}` : "";
-  if ($("always-numbers-all")) $("always-numbers-all").onclick = (e) => { $("always-numbers").tBodies[1].hidden = false; e.target.remove(); };
+    ${foldedTable('id="always-numbers" class="data"', "<tr><th>Definition</th><th>Value</th><th>Type</th></tr>", numbers.map(numberRow), "functions", 5)}` : "";
   if (!c.defs.length) {
     $("always-none").hidden = false;
     $("always-none").textContent = exact ? `None in this version. Checked in Lean's compiled files at commit ${commit}.` : "None found in this version's Lean text. The compiled files were not checked.";
@@ -189,7 +186,13 @@ export function renderCharts() {
   const sortedLines = Float64Array.from(col.lines).sort();
   for (let i = 0; i < N; i++) { kindCount[col.kind[i]]++; if (col.decls[i] === 1) one[col.kind[i] ? 1 : 0]++; }
   const shapeDup = d3.sum(col.shape, (s) => (s >= 10 ? 1 : 0));
-  $("modules-text").textContent = `The median module is ${sortedLines[N >> 1]} lines long, and ${fmt(one[0] + one[1])} modules (${pct((one[0] + one[1]) / N)}) contain exactly one declaration${(one[0] + one[1]) / N > 0.4 ? ": the source is split to roughly one result per file" : ""}. ${kindCount[1] ? `${fmt(kindCount[1])} modules (${pct(kindCount[1] / N)}) do no mathematics of their own. Each of them restates one theorem and proves it by citing the same theorem from another module. They account for ${pct(d3.sum(col.bytes, (b, i) => (col.kind[i] === 1 ? b : 0)) / meta.totals.bytes)} of the bytes. ` : ""}Each module imports ${(meta.totals.importEdges / N).toFixed(1)} other modules of the project on average, and ${fmt(meta.totals.wholeMathlibImports)} modules import all of Mathlib.`;
+  $("modules-facts").innerHTML = [
+    ["Median module length", `<b>${fmt(sortedLines[N >> 1])}</b> lines`],
+    ["Modules with exactly one declaration", `<b>${fmt(one[0] + one[1])}</b> (${pct((one[0] + one[1]) / N)})`],
+    kindCount[1] && ["Modules that only restate a theorem", `<b>${fmt(kindCount[1])}</b> (${pct(kindCount[1] / N)} of modules, ${pct(d3.sum(col.bytes, (b, i) => (col.kind[i] === 1 ? b : 0)) / meta.totals.bytes)} of bytes). Each one restates one theorem and proves it by citing the same theorem from another module.`],
+    ["Imports of other project modules", `<b>${(meta.totals.importEdges / N).toFixed(1)}</b> per module on average`],
+    ["Modules that import all of Mathlib", `<b>${fmt(meta.totals.wholeMathlibImports)}</b>`],
+  ].filter(Boolean).map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
   const edges = [1, 4, 10, 32, 100, 316, 1000, 1e9];
   const binLabel = (b) => (b === edges.length - 2 ? `${fmt(edges[b])}+` : `${fmt(edges[b])}–${fmt(edges[b + 1] - 1)}`);
   const lineBin = (i) => d3.bisectRight(edges, Math.max(col.lines[i], 1)) - 1;
@@ -267,7 +270,7 @@ export function renderCharts() {
     const rowTotal = d3.sum(used, (b) => meta.fieldMatrix[a][b]);
     for (const b of used) cells.push({ from: meta.fields[a].name, to: meta.fields[b].name, n: meta.fieldMatrix[a][b], share: meta.fieldMatrix[a][b] / rowTotal });
   }
-  $("imports-text").innerHTML = `The project has ${fmt(meta.totals.importEdges)} imports between its own modules. ${pct(same / total)} of them stay inside one field and ${pct(1 - same / total)} cross from one field to another. ${meta.totals.notReached ? `Following imports from ${esc(SETTINGS.main)} reaches all but ${fmt(meta.totals.notReached)} of the ${fmt(N)} modules. ${meta.notReached.includes("Challenge.lean") ? "One of them is Challenge.lean, which is meant to stand apart. " : ""}<button type="button" class="link" id="unreached-show" data-mask-key="unreached" aria-pressed="false">Show the ${fmt(meta.totals.notReached)} on the map</button>` : `Every module is imported: all ${fmt(N)} are reachable from ${esc(SETTINGS.main)} by following imports.`}`;
+  $("imports-text").innerHTML = `The project has ${fmt(meta.totals.importEdges)} imports between its own modules. ${pct(same / total)} of them are between modules of the same field and ${pct(1 - same / total)} are between modules of different fields. ${meta.totals.notReached ? `Following imports from ${esc(SETTINGS.main)} reaches all but ${fmt(meta.totals.notReached)} of the ${fmt(N)} modules. ${meta.notReached.includes("Challenge.lean") ? "One of them is Challenge.lean, which is not meant to be imported. " : ""}<button type="button" class="link" id="unreached-show" data-mask-key="unreached" aria-pressed="false">Show the ${fmt(meta.totals.notReached)} on the map</button>` : `Every module is imported: all ${fmt(N)} are reachable from ${esc(SETTINGS.main)} by following imports.`}`;
   renderMathlib();
   renderUsed();
   if ($("unreached-show")) $("unreached-show").onclick = () => {
@@ -300,10 +303,18 @@ export function renderCharts() {
   const tactics = meta.tactics.filter((t) => t[0] !== "sorry").slice(0, 24).map(([name, n]) => ({ name, n }));
   const tc = Object.fromEntries(meta.tactics);
   const longDigits = d3.sum(col.digits, (d) => (d >= 20 ? 1 : 0));
-  $("numbers-text").textContent = `The source is proof text, not data. It contains ${fmt(meta.totals.literals)} numeric literals such as 2 or 1/2, about ${Math.round(meta.totals.literals / N)} per module, but only ${fmt(meta.totals.longLiterals)} of them have seven or more digits, and those sit in ${fmt(meta.totals.modulesWithLongLiterals)} modules. Counting characters instead, ${fmt(longDigits)} of the ${fmt(N)} modules are 20% digits or more. Numbers in set_option lines are settings and are not counted. The proof never uses native_decide, and it uses decide ${fmt(tc.decide || 0)} times. The most common proof steps are have (state an intermediate fact, ${fmt(tc.have)} times), rw (rewrite with an equation, ${fmt(tc.rw)}) and exact (give the proof term, ${fmt(tc.exact)}).`;
+  const step = (name, does) => `<code>${name}</code> (${does}) ${fmt(tc[name] || 0)}`;
+  $("numbers-facts").innerHTML = [
+    ["Numeric literals, such as 2 or 1/2", `<b>${fmt(meta.totals.literals)}</b>, about ${Math.round(meta.totals.literals / N)} per module`],
+    ["Literals with seven or more digits", `<b>${fmt(meta.totals.longLiterals)}</b>${meta.totals.longLiterals ? `, in ${plural(meta.totals.modulesWithLongLiterals, "module")}` : ""}`],
+    ["Modules where 20% or more of the characters are digits", `<b>${fmt(longDigits)}</b> of ${fmt(N)}`],
+    ["Uses of <code>native_decide</code>", `<b>${fmt(tc.native_decide || 0)}</b>`],
+    ["Uses of <code>decide</code>", `<b>${fmt(tc.decide || 0)}</b>`],
+    ["Most common proof steps", `${step("have", "state an intermediate fact")}, ${step("rw", "rewrite with an equation")}, ${step("exact", "give the proof term")}`],
+  ].map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
   // notation and macros: both sentences end in a button that highlights those modules on the map
   const T = meta.totals;
-  $("syntax-text").innerHTML = `A Lean file can declare its own notations and macros. A notation is a symbol that stands for an expression. A macro is a new tactic name that stands for a sequence of existing tactics. The source declares ${fmt(T.notations)} notations in ${fmt(T.modulesWithNotation)} modules. ${fmt(T.localNotations)} of them are marked <code>local</code>, so they apply only inside the file that declares them. Most are shorthand for a long expression, such as <code>local notation "θ" => fontaineTheta (normInteger K) p</code>. It declares ${fmt(T.macros)} macros in ${fmt(T.modulesWithMacro)} modules. ${esc(SETTINGS.statements)} and ${esc(SETTINGS.main)} declare neither. Lean's kernel checks the expanded terms, so a notation cannot change what was proved. Show on the map: <button type="button" class="link" id="notation-show" data-mask-key="notation" aria-pressed="false">modules that declare a notation</button>, <button type="button" class="link" id="macro-show" data-mask-key="macro" aria-pressed="false">modules that declare a macro</button>.`;
+  $("syntax-text").innerHTML = `The source declares ${fmt(T.notations)} notations in ${fmt(T.modulesWithNotation)} modules and ${fmt(T.macros)} macros in ${fmt(T.modulesWithMacro)} modules. A notation is a symbol that stands for an expression, and a macro is a new tactic name that stands for a sequence of existing tactics. ${fmt(T.localNotations)} of the notations are marked <code>local</code>, so they apply only inside the file that declares them. Most are shorthand for a long expression, such as <code>local notation "θ" => fontaineTheta (normInteger K) p</code>. ${esc(SETTINGS.statements)} and ${esc(SETTINGS.main)} declare neither. Lean's kernel checks the expanded terms, so a notation cannot change what was proved. Show on the map: <button type="button" class="link" id="notation-show" data-mask-key="notation" aria-pressed="false">modules that declare a notation</button>, <button type="button" class="link" id="macro-show" data-mask-key="macro" aria-pressed="false">modules that declare a macro</button>.`;
   for (const [id, key, column, n, noun] of [["notation-show", "notation", col.notations, T.modulesWithNotation, "notation"], ["macro-show", "macro", col.macros, T.modulesWithMacro, "macro"]]) {
     $(id).onclick = () => { setMask(key, maskWhere((i) => column[i] > 0), `${fmt(n)} modules that declare a ${noun}`); $("map").scrollIntoView(); };
   }
@@ -325,7 +336,7 @@ function renderUsed() {
   const u = meta.mathlibUsed;
   if (!u) {
     $("used-text").innerHTML = `This was measured on the community cleanup of the original, whose compiled files are published: <a href="?v=cleanup#mathlib-use">see what its modules use from Mathlib</a>.`;
-    for (const id of ["used-facts", "used-table", "used-top", "used-not"]) $(id).remove();
+    for (const id of ["used-facts", "used-table", "used-top", "used-not"]) $(id)?.remove();
     return;
   }
   $("used-text").textContent = "A program read Lean's compiled file for each module and listed the Mathlib declarations that the module's own declarations mention in their statements and proofs. Nothing was compiled or checked again." + (u.fromSha && u.fromSha !== SOURCE.sha ? ` The compiled files are from commit ${u.fromSha.slice(0, 7)}, when this branch had ${fmt(u.fromModules)} modules.` : "");
@@ -351,12 +362,12 @@ function renderMathlib() {
     const k = m.modulesNaming;
     $("mathlib-text").innerHTML = `In the rewrite, the imports do not show which parts of Mathlib each module needs. <code>${esc(SETTINGS.statements)}</code> and <code>${hub}</code> import all of Mathlib, and every other module imports <code>${hub}</code>, directly or through other modules. `
       + (k === 0 ? "No module imports a single Mathlib module by name." : k === 1 ? "Only 1 module imports a single Mathlib module by name." : `Only ${fmt(k)} modules import single Mathlib modules by name.`);
-    $("mathlib-facts").remove(); $("mathlib-note").remove();
+    $("mathlib-facts")?.remove(); $("mathlib-note")?.remove();
     return;
   }
   if (m.modulesNaming < N / 2) {
     $("mathlib-text").innerHTML = `${fmt(whole)} of the ${fmt(N)} modules import all of Mathlib with <code>import Mathlib</code>, so the imports do not show which parts each module needs. The community cleanup replaced that line with imports of single Mathlib modules: <a href="?v=cleanup#imports">see its import counts</a>.`;
-    $("mathlib-facts").remove(); $("mathlib-note").remove();
+    $("mathlib-facts")?.remove(); $("mathlib-note")?.remove();
     return;
   }
   const sharedTactic = m.shared.filter((x) => x.startsWith("Mathlib.Tactic.")).length;
@@ -368,7 +379,7 @@ function renderMathlib() {
     m.sharedImporters && ["Modules that import one shared list", `<b>${fmt(m.sharedImporters)}</b> import the same ${fmt(m.shared.length)} Mathlib modules, ${fmt(sharedTactic)} of them from <code>Mathlib.Tactic</code>`],
     m.widelyImported && ["Other widely imported Mathlib modules", `<b>${fmt(m.widelyImported)}</b> are each imported by 1,000 or more modules`],
   ].filter(Boolean).map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("");
-  $("mathlib-note").textContent = "These counts show what modules import, which is more than what their proofs use: many of the imported modules come late in Mathlib's own import order and bring large parts of Mathlib with them. The table above shows what the proofs use.";
+  $("mathlib-note").textContent = "Modules import more of Mathlib than their proofs use, because many of the imported Mathlib modules themselves import large parts of Mathlib." + (meta.mathlibUsed ? " What the proofs use is counted under “What the modules use from Mathlib” above." : "");
 }
 
 /** The module the longest chain ends at: its path is known once the module names have loaded. */

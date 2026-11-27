@@ -1,7 +1,7 @@
 // The details drawer for a module or directory, and the hover text for Lean code.
 import * as d3 from "https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm";
 import { renderLean } from "./speech.js";
-import { blobUrl, treeUrl, rawUrl, $, fmt, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, state, names, namesReady, docs, docsReady, pathOf, dirSum } from "./data.js";
+import { SHOWN, foldedList, blobUrl, treeUrl, rawUrl, $, fmt, bytesFmt, plural, esc, meta, N, col, dirs, leafDir, state, names, namesReady, docs, docsReady, pathOf, dirSum } from "./data.js";
 import { secondsFmt, canvas, requestDraw, group, hasLabel, kindNote, moduleFacts, chainTip } from "./map.js";
 
 // ---------------------------------------------------------------- details drawer
@@ -63,11 +63,6 @@ export function moduleLookup(name) {
   return moduleIndex.get(name);
 }
 export const DECL_RE = /^[ \t]*(?:@\[[^\]\n]*\]\s*)*(?:(?:private|protected|noncomputable|nonrec|unsafe|partial|scoped|local)\s+)*(theorem|lemma|def|abbrev|instance|structure|class|inductive|example|opaque|axiom)\b[ \t]*([^\s:({\[]*)/gm;
-export const SHOWN = 12; // rows shown before "Show all"
-export function foldedList(items, noun) {
-  if (items.length <= SHOWN) return items.join("");
-  return items.slice(0, SHOWN).join("") + `<div class="more" hidden>${items.slice(SHOWN).join("")}</div><button type="button" class="link show-all">Show all ${fmt(items.length)} ${noun}</button>`;
-}
 /** Declarations and imports of a module, read from its source text. */
 export function outlineHtml(text) {
   const decls = [];
@@ -87,10 +82,6 @@ export function outlineHtml(text) {
   return `<h3>${plural(decls.length, "declaration")} in this module</h3>${decls.length ? foldedList(decls, "declarations") : '<p class="note">This module declares nothing of its own.</p>'}
     <h3>Imports ${plural(imports.length, "module")}</h3><div class="import-list">${foldedList(importRows, "imports")}</div>`;
 }
-document.addEventListener("click", (e) => {
-  const b = e.target.closest(".show-all");
-  if (b) { b.previousElementSibling.hidden = false; b.remove(); }
-});
 
 /** The directories on the way to d as buttons that open each one's list. `last` also makes d itself a button. */
 function crumbs(d, last = false) {

@@ -22,6 +22,26 @@ export const bytesFmt = (b) => (b >= 1e9 ? (b / 1e9).toFixed(2) + " GB" : b >= 1
 export const plural = (n, one, many) => `${fmt(n)} ${n === 1 ? one : many || one + "s"}`;
 export const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 
+// Long lists and tables show their first items, then a "Show all N" button that reveals the rest in place.
+export const SHOWN = 12; // items shown before "Show all"
+const showAll = (n, noun) => `<button type="button" class="link show-all">Show all ${fmt(n)} ${noun}</button>`;
+export function foldedList(items, noun, shown = SHOWN) {
+  if (items.length <= shown) return items.join("");
+  return items.slice(0, shown).join("") + `<div class="more" hidden>${items.slice(shown).join("")}</div>${showAll(items.length, noun)}`;
+}
+/** A table of `rows` (each a <tr>) under the header row `head`. `attrs` are the table's attributes. */
+export function foldedTable(attrs, head, rows, noun, shown = SHOWN) {
+  const rest = rows.length > shown ? `<tbody class="more" hidden>${rows.slice(shown).join("")}</tbody>` : "";
+  return `<table ${attrs}><tbody>${head}${rows.slice(0, shown).join("")}</tbody>${rest}</table>${rest && showAll(rows.length, noun)}`;
+}
+document.addEventListener("click", (e) => {
+  const b = e.target.closest(".show-all");
+  if (!b) return;
+  const before = b.previousElementSibling;
+  (before.matches(".more") ? before : before.querySelector(".more")).hidden = false;
+  b.remove();
+});
+
 // ---------------------------------------------------------------- data
 export const [meta, colBuf] = await Promise.all([
   fetch(DATA + "meta.json").then((r) => r.json()),

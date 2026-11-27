@@ -51,7 +51,7 @@ export async function renderGraph() {
       if ((M[a][b] >= minEdge && M[a][b] >= 0.04 * out) || (M[a][b] > 0 && ends.has(a))) { elements.push({ data: { id: `e${a}_${b}`, source: "r" + a, target: "r" + b, n: M[a][b], w: 0.6 + Math.log10(M[a][b]) * 1.1 } }); drawn += M[a][b]; }
     }
   }
-  $("graph-text").textContent = `Each circle is a directory, sized by its bytes and coloured by its most common field.${parents.length ? ` The boxes hold the directories of ${PARTS.map((d) => d.name).join(" and ")}.` : ""} An arrow from A to B means modules in A import modules in B. The ${fmt(elements.length - shown.length - parents.length)} arrows drawn carry ${pct(drawn / crossTotal)} of the imports between these directories; weaker links are left out. The ringed circle is ${SETTINGS.main}, where the final theorems are stated. Point at a circle to see that directory on the map. Circles can be dragged.`;
+  $("graph-text").textContent = `Each circle is a directory, sized by its bytes and coloured by its most common field.${parents.length ? ` The directories of ${PARTS.map((d) => d.name).join(" and of ")} are drawn inside one box each.` : ""} An arrow from A to B means modules in A import modules in B. An arrow is drawn only where those imports are at least 4% of A's imports from other directories. The ${fmt(elements.length - shown.length - parents.length)} arrows drawn account for ${pct(drawn / crossTotal)} of the imports between these directories. The ringed circle is ${SETTINGS.main}, where the final theorems are stated. Point at a circle to see that directory on the map. Circles can be dragged.`;
   const ink = cssVar("--ink"), ink3 = cssVar("--ink-3");
   const cy = cytoscape({
     container: $("graph"), elements,
@@ -92,7 +92,7 @@ export async function renderGraph() {
     // at most five to a row, so each name has room at the size it is drawn on screen
     const box = linked.boundingBox(), perRow = Math.min(5, strays.length), stepX = box.w / perRow, stepY = 150;
     const top = box.y2 + 120;
-    cy.add({ group: "nodes", data: { id: "caption", colour: "#000", size: 1, label: `${plural(strays.length, "directory", "directories")} with no link strong enough to draw` }, classes: "caption", position: { x: box.x1 + box.w / 2, y: top - 70 } });
+    cy.add({ group: "nodes", data: { id: "caption", colour: "#000", size: 1, label: `${plural(strays.length, "directory", "directories")} with no arrow drawn` }, classes: "caption", position: { x: box.x1 + box.w / 2, y: top - 70 } });
     strays.sort((a, b) => b.data("size") - a.data("size")).forEach((n, i) => n.position({ x: box.x1 + ((i % perRow) + 0.5) * stepX, y: top + Math.floor(i / perRow) * stepY }));
   }
   // Fitting the graph to its box scales everything, so label sizes are set afterwards to stay readable on screen.
@@ -119,7 +119,7 @@ export async function renderGraph() {
     const r = e.target.data("r"), st = stats[r];
     cy.elements().addClass("dim"); e.target.closedNeighborhood().removeClass("dim"); e.target.connectedEdges().addClass("lit");
     const top = shown.filter((b) => b !== r && M[r][b]).sort((a, b) => M[r][b] - M[r][a]).slice(0, 3);
-    showTip(`<b>${esc(meta.regions[r])}</b><br>${plural(st.modules, "module")} · ${bytesFmt(st.bytes)}<br>${pct(M[r][r] / d3.sum(M[r]))} of its imports stay inside it`
+    showTip(`<b>${esc(meta.regions[r])}</b><br>${plural(st.modules, "module")} · ${bytesFmt(st.bytes)}<br>${pct(M[r][r] / d3.sum(M[r]))} of its imports are within this directory`
       + (top.length ? `<br>Imports most from: ${top.map((b) => `${esc(meta.regions[b].split("/").pop())} (${fmt(M[r][b])})`).join(", ")}` : ""), e.renderedPosition);
     setPreview(maskWhere((i) => regionOfDir[leafDir[i]] === r), meta.regions[r]);
   });

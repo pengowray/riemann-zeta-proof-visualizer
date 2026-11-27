@@ -285,7 +285,7 @@ table.data tr.group-row td { padding-top: 14px; border-bottom: 1px solid var(--i
 #always-about summary { cursor: pointer; color: var(--ink-2); font-size: 0.88rem; }
 #always-numbers td:first-child { overflow-wrap: break-word; }
 #always-numbers td:first-child .note { font-size: 0.78rem; }
-#always-numbers-all { padding: 6px 0; }
+#always-more .show-all { padding: 6px 0; }
 /* the first sentence of a module's own comment, in the map popup */
 #tip .doc, .maptip .doc { display: block; font-style: italic; margin: 2px 0 4px; }
 /* full screen: the map section fills the screen, the map takes the height left under the controls */

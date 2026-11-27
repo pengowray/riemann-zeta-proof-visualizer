@@ -51,7 +51,7 @@
   <p data-only="cleanup"><code>Statements.lean</code> defines the propositions and <code>Main.lean</code> proves them, and Mathlib's own <code>RiemannHypothesis</code>, by citing theorems from the other modules. The cleanup also has <code>Challenge.lean</code>, which states the same theorems with <code>sorry</code> in place of each proof so that a checker can compare the two files. Point at a symbol to see how to say it and what type it has.</p>
   <p data-only="main grh compact"><code>Main.lean</code> proves the Riemann Hypothesis and the Generalized Riemann Hypothesis for Dirichlet <i>L</i>-functions as five theorems, using only Lean's three standard axioms (<code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>). <code>Statements.lean</code> states the five theorems in Mathlib's terms. Both editions of the rewrite also have <code>Challenge.lean</code>, which states the same five theorems with <code>sorry</code> in place of each proof, so that a checker can compare the two files. Point at a symbol to see how to say it and what type it has.</p>
   <p data-only="jamesyc" id="statement-gaps"></p>
-  <p data-only="original">These two files are the whole claim. <code>Statements.lean</code> defines four propositions. <code>Main.lean</code> proves them, and Mathlib's own <code>RiemannHypothesis</code>, by citing theorems from the other 175,185 modules. Point at a symbol to see how to say it and what type it has.</p>
+  <p data-only="original"><code>Statements.lean</code> defines four propositions. <code>Main.lean</code> proves them, and Mathlib's own <code>RiemannHypothesis</code>, by citing theorems from the other 175,185 modules. Point at a symbol to see how to say it and what type it has.</p>
   <div class="code-pair">
     <figure class="codebox"><figcaption id="code-statements-name"></figcaption><pre class="lean" id="code-statements"></pre></figure>
     <figure class="codebox"><figcaption id="code-main-name"></figcaption><pre class="lean" id="code-main"></pre></figure>
@@ -61,7 +61,7 @@
 
 <section id="map">
   <h2>Map of every module</h2>
-  <p>Each rectangle is one module. Modules are grouped by directory, and a larger rectangle means more of the chosen size measure.</p>
+  <p>Each rectangle is one module. Modules are grouped by directory and sized by the measure chosen under Size by.</p>
   <div class="controls">
     <div class="control"><span class="control-label">Size by</span><div class="seg" id="size-by" role="radiogroup" aria-label="Size by"></div></div>
     <div class="control"><span class="control-label">Colour by</span><div class="seg" id="colour-by" role="radiogroup" aria-label="Colour by"></div></div>
@@ -83,7 +83,7 @@
   <div id="terms" class="chips"></div>
   <p class="note">Terms come from Alpöge's announcement and from standard number theory. A module is counted if the term's identifier appears in its text, not counting import lines.</p>
   <h3 data-feature="steps">Highlight a step of Alpöge's timeline</h3>
-  <p class="note" data-feature="steps">Where each step appears to live in the Lean code, according to <a href="https://github.com/jae-63/rh-alpoge-blueprint/blob/main/BLUEPRINT.md">a blueprint of the proof by GitHub user jae-63</a>. ● found clearly &nbsp; ◐ names and position fit &nbsp; ○ weak evidence. The number is how many modules match. Point at a step to see it on the map; click to keep it highlighted.</p>
+  <p class="note" data-feature="steps">The modules that appear to contain each step, according to <a href="https://github.com/jae-63/rh-alpoge-blueprint/blob/main/BLUEPRINT.md">a blueprint of the proof by GitHub user jae-63</a>. ● found clearly &nbsp; ◐ names and position fit &nbsp; ○ weak evidence. The number after each step is the count of matching modules. Point at a step to see its modules on the map; click to keep them highlighted.</p>
   <ol id="steps" class="step-list" data-feature="steps"></ol>
 </section>
 
@@ -107,7 +107,7 @@
 
 <section id="modules">
   <h2>How the proof is split into modules</h2>
-  <p id="modules-text"></p>
+  <dl id="modules-facts" class="facts"></dl>
   <div class="chart-pair">
     <figure><figcaption>Modules by length</figcaption><div id="length-chart" class="chart"></div></figure>
     <figure><figcaption>How much of each module repeats the module before it in the same directory</figcaption><div id="repeat-chart" class="chart"></div></figure>
@@ -117,31 +117,30 @@
 
 <section id="printed">
   <h2>If it were printed</h2>
-  <p>Each row is one way to print the source. Long lines wrap onto the next line, and the stack height assumes printing on both sides of paper 0.1 mm thick.</p>
   <table id="printed-table" class="data"></table>
-  <p class="note">A4 listing: 80 characters by 60 lines a page, a 10-point monospaced font. Book page: 65 characters by 40 lines. Base64 is a way to write any file as text, using 4 characters for every 3 bytes.</p>
+  <p class="note">Long lines wrap onto the next line. Stack of paper: printed on both sides, on paper 0.1 mm thick. A4 listing: 80 characters by 60 lines a page, a 10-point monospaced font. Book page: 65 characters by 40 lines. Base64 is a way to write any file as text, using 4 characters for every 3 bytes.</p>
 </section>
 
 <section id="fields">
   <h2>Areas of mathematics</h2>
-  <p>Each module's field is predicted by a classifier from the Mathlib and project identifiers it uses. <span data-only="original cleanup">The prediction agrees with a language model's reading of the module about half the time (details under Sources and method).</span><span data-only="main grh compact jamesyc">The classifier was trained and tested on modules of the original release; it was not tested on this version, whose names differ.</span> Point at a row to see where that field sits on the map.</p>
+  <p>A classifier predicts each module's field from the Mathlib and project identifiers the module uses. <span data-only="original cleanup">Its prediction agrees with a language model's reading of the module about half the time (<a href="#sources">details under Sources and method</a>).</span><span data-only="main grh compact jamesyc">It was trained and tested on modules of the original release, and was not tested on this version, whose names differ.</span> Point at a row to see that field's modules on the map.</p>
   <div class="control" id="field-part" hidden><span class="control-label">Modules in</span><div class="seg" id="field-part-seg" role="radiogroup" aria-label="Modules in"></div></div>
   <table id="field-table" class="data"></table>
-  <p class="note" data-only="original cleanup">The line under each field lists objects and theorems named in the labels that a language model gave to each of 746 directories after reading a digest of its identifiers. Treat them as a guide, not a census.</p>
-  <p class="note" data-only="jamesyc">The line under each field lists objects and theorems named in the labels written for this version's two directories from the names of their modules. Treat them as a guide, not a census.</p>
-  <p class="note" data-only="main grh compact">The line under each field lists objects and theorems named in the labels that a language model gave to each of <span id="labelled-groups"></span> directories after reading the rewrite's guide, its list of files and the start of each module. Treat them as a guide, not a census.</p>
+  <p class="note" data-only="original cleanup">Under each field: objects and theorems named in the labels that a language model gave to each of 746 directories after reading a digest of its identifiers. They are examples, not a complete list.</p>
+  <p class="note" data-only="jamesyc">Under each field: objects and theorems named in the labels written for this version's two directories from the names of their modules. They are examples, not a complete list.</p>
+  <p class="note" data-only="main grh compact">Under each field: objects and theorems named in the labels that a language model gave to each of <span id="labelled-groups"></span> directories after reading the rewrite's guide, its list of files and the start of each module. They are examples, not a complete list.</p>
 </section>
 
 <section id="imports">
   <h2>How modules depend on each other</h2>
   <p id="imports-text"></p>
-  <p data-only="original">A <a href="https://news.ycombinator.com/item?id=50574968">comment on Hacker News</a> reported 204 modules "not referenced anywhere", without a list or a method. In the import graph no module is unreferenced: every module except Main.lean is imported by at least one other module. The comment may be counting something that imports do not show, such as declarations that nothing uses.</p>
-  <figure><figcaption>Imports between fields. Each row shows where that field's imports go. Point at a square to see those modules on the map.</figcaption><div id="matrix-chart" class="chart"></div></figure>
+  <p data-only="original">A <a href="https://news.ycombinator.com/item?id=50574968">comment on Hacker News</a> reported 204 modules "not referenced anywhere", without a list or a method. Every module except Main.lean is imported by at least one other module. The comment may be counting something else, such as declarations that nothing uses.</p>
+  <figure><figcaption>Imports between fields. Each square is the share of the row field's imports that are of modules in the column field. Point at a square to see those modules on the map.</figcaption><div id="matrix-chart" class="chart"></div></figure>
   <h3 id="mathlib-use">What the modules use from Mathlib</h3>
-  <p id="used-text"></p>
   <dl id="used-facts" class="facts"></dl>
   <table id="used-table" class="data"></table>
   <p id="used-top" class="note"></p>
+  <p id="used-text" class="note"></p>
   <div id="used-not" class="note">Not counted:<ul id="used-limits"></ul></div>
   <h3>Imports from Mathlib</h3>
   <p id="mathlib-text"></p>
@@ -170,7 +169,8 @@
 
 <section id="numbers">
   <h2>Numbers and tactics</h2>
-  <p id="numbers-text"></p>
+  <dl id="numbers-facts" class="facts"></dl>
+  <p class="note">Numbers in <code>set_option</code> lines are settings and are not counted.</p>
   <p>Colour the map by <button type="button" class="link" id="literals-on-map">numeric literals per 100 lines</button> or by <button type="button" class="link" id="digits-on-map">share of characters that are the digits 0–9</button>.</p>
   <h3>Modules with the largest share of digit characters</h3>
   <table id="digit-table" class="data"></table>
