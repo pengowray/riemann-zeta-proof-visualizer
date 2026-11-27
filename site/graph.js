@@ -51,7 +51,15 @@ export async function renderGraph() {
       if ((M[a][b] >= minEdge && M[a][b] >= 0.04 * out) || (M[a][b] > 0 && ends.has(a))) { elements.push({ data: { id: `e${a}_${b}`, source: "r" + a, target: "r" + b, n: M[a][b], w: 0.6 + Math.log10(M[a][b]) * 1.1 } }); drawn += M[a][b]; }
     }
   }
-  $("graph-text").textContent = `Each circle is a directory, sized by its bytes and coloured by its most common field.${parents.length ? ` The directories of ${PARTS.map((d) => d.name).join(" and of ")} are drawn inside one box each.` : ""} An arrow from A to B means modules in A import modules in B. An arrow is drawn only where those imports are at least 4% of A's imports from other directories. ${pct(drawn / crossTotal)} of the imports between these directories are along the ${fmt(elements.length - shown.length - parents.length)} arrows drawn. The ringed circle is ${SETTINGS.main}, where the final theorems are stated. Point at a circle to see that directory on the map. Circles can be dragged.`;
+  // the key: each mark drawn the way the graph draws it, then what it stands for
+  const icon = (inner) => `<svg viewBox="0 0 36 20" width="36" height="20" aria-hidden="true">${inner}</svg>`;
+  $("graph-key").innerHTML = [
+    [icon(`<circle cx="9" cy="10" r="4" fill="var(--ink-3)"/><circle cx="25" cy="10" r="8" fill="var(--ink-3)"/>`), "Directory", "sized by bytes, coloured by its most common field"],
+    [icon(`<path d="M2 10H28" stroke="var(--ink-3)" stroke-width="2"/><path d="M34 10l-8-5v10z" fill="var(--ink-3)"/>`), "Arrow from A to B", "modules in A import modules in B"],
+    [icon(`<circle cx="18" cy="10" r="8" fill="none" stroke="var(--ink)" stroke-width="1.2"/><circle cx="18" cy="10" r="5.5" fill="var(--ink-3)" stroke="var(--ink)" stroke-width="1.2"/>`), esc(SETTINGS.main), "where the final theorems are stated"],
+    parents.length && [icon(`<rect x="3" y="2" width="30" height="16" rx="3" fill="var(--paper-3)" stroke="var(--ink-3)"/>`), `Box: ${PARTS.map((d) => esc(d.name)).join(", ")}`, "the directories of that part"],
+  ].filter(Boolean).map(([mark, name, what]) => `<li>${mark}<b>${name}</b><span>${what}</span></li>`).join("");
+  $("graph-text").textContent = `An arrow is drawn where the imports from A to B are at least 4% of A's imports from other directories. ${pct(drawn / crossTotal)} of the imports between these directories are along the ${fmt(elements.length - shown.length - parents.length)} arrows drawn.`;
   const ink = cssVar("--ink"), ink3 = cssVar("--ink-3");
   const cy = cytoscape({
     container: $("graph"), elements,

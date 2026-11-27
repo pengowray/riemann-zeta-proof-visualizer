@@ -45,7 +45,15 @@ function renderChanges() {
     + row("Lines without imports", c.before.lines, c.after.lines)
     + row("Declarations", c.before.decls, c.after.decls)
     + row("Source size", c.before.bytes, c.after.bytes, bytesFmt, meta.totals.mergeRecordBytes ? `. ${bytesFmt(meta.totals.mergeRecordBytes)} of the new size is records written by the merge script` : "");
-  $("change-text").textContent = `${fmt(c.gone)} modules of the original release were removed or joined into another module. ${fmt(c.merged)} of the cleanup's modules were made by a script that joins several smaller modules into one. ${fmt(c.samePath)} modules are at the same path as before, and ${fmt(c.sameShape)} of those have the same text once names, numbers and import lines are ignored. ${fmt(c.newPaths)} modules are at paths the original did not have.`;
+  // where the modules went: the rows of each column add up to that version's total
+  const none = `<span class="none">–</span>`;
+  $("change-modules").innerHTML = `<tr><th>Modules</th><th class="num">Original release</th><th class="num">Cleanup</th></tr>`
+    + [["At the same path in both", fmt(c.samePath), fmt(c.samePath)],
+      ["Removed, or joined into another module", fmt(c.gone), none],
+      ["At a path the original did not have", none, fmt(c.newPaths)],
+    ].map(([k, a, b]) => `<tr><td>${k}</td><td class="num">${a}</td><td class="num">${b}</td></tr>`).join("")
+    + `<tr class="total"><td>Total</td><td class="num">${fmt(c.before.modules)}</td><td class="num">${fmt(c.after.modules)}</td></tr>`;
+  $("change-text").textContent = `Of the ${fmt(c.samePath)} modules at the same path, ${fmt(c.sameShape)} have the same text once names, numbers and import lines are ignored. ${fmt(c.merged)} of the cleanup's modules were made by a script that joins several smaller modules into one.`;
   const max = d3.max(c.regions, (r) => r[2]);
   $("change-table").innerHTML = `<tr><th>Directory</th><th class="num">Modules before</th><th class="num">Modules now</th><th class="num">Change</th><th>Lines before and now</th><th class="num">Change</th></tr>`
     + c.regions.filter((r) => r[1] >= 20).map(([path, m0, l0, m1, l1]) => {
@@ -292,7 +300,7 @@ export function renderCharts() {
 
   // --- longest chain
   const chainRows = meta.chain.map((i, j) => ({ j: j + 1, i, family: FAMILIES[famOf(i)].name }));
-  $("chain-text").innerHTML = `The longest chain of imports is ${meta.chain.length} modules: each module in it imports the one before. It ends at <span class="chain-end"></span>. Each cell below is one module in the chain, coloured by field. Point at a cell to see where that module is on the map, and click it to read it. <button type="button" class="link" id="chain-show" data-mask-key="chain" aria-pressed="false">Draw the chain on the map</button>`;
+  $("chain-text").innerHTML = `The longest chain of imports is ${meta.chain.length} modules: each module in it imports the one before. The chain ends at <span class="chain-end"></span>. Each cell below is one module in the chain, coloured by field. <button type="button" class="link" id="chain-show" data-mask-key="chain" aria-pressed="false">Draw the chain on the map</button>`;
   $("chain-show").onclick = () => { const m = new Uint8Array(N); for (const i of meta.chain) m[i] = 1; setMask("chain", m, `the longest import chain, ${meta.chain.length} modules`, true); $("map").scrollIntoView(); };
   $("chain-strip").innerHTML = `<div class="chain-cells">${chainRows.map((d) => `<button type="button" class="chain-cell" data-chain="${d.j}" data-open="${d.i}" style="background:${famColour(famOf(d.i))}" aria-label="Module ${d.j} of ${chainRows.length} in the chain"></button>`).join("")}</div>
     <div class="chain-axis"><span>1: imports no project module</span><span>${chainRows.length}: <span class="chain-end"></span></span></div>`;
@@ -337,7 +345,7 @@ function renderUsed() {
   const u = meta.mathlibUsed;
   if (!u) {
     $("used-text").innerHTML = `Not measured for this version. It was measured for the community cleanup of the original, whose compiled files are published: <a href="?v=cleanup#mathlib-use">see what the cleanup's modules use from Mathlib</a>.`;
-    for (const id of ["used-facts", "used-table", "used-top", "used-not"]) $(id)?.remove();
+    for (const id of ["used-facts", "used-hint", "used-table", "used-top", "used-not"]) $(id)?.remove();
     return;
   }
   $("used-text").textContent = "A program read Lean's compiled file for each module and listed the Mathlib declarations that the module's own declarations mention in their statements and proofs. Nothing was compiled or checked again." + (u.fromSha && u.fromSha !== SOURCE.sha ? ` The compiled files are from commit ${u.fromSha.slice(0, 7)}, when this branch had ${fmt(u.fromModules)} modules.` : "");
@@ -349,7 +357,7 @@ function renderUsed() {
   const max = u.areas[0][1];
   $("used-table").innerHTML = `<tr><th>Part of Mathlib</th><th class="num">Mathlib modules mentioned</th><th>Project modules that mention it</th></tr>`
     + u.areas.map(([name, modules, distinct], bit) => `<tr class="hoverable" data-preview-used="${bit}"><td class="mono">Mathlib.${esc(name)}</td><td class="num">${fmt(distinct)}</td><td style="white-space:nowrap"><span class="bar" style="width:${(220 * modules) / max}px;background:${cssVar("--ink-3")}"></span>${fmt(modules)} (${pct(modules / N)})</td></tr>`).join("");
-  $("used-top").innerHTML = `Mentioned by the most modules: ${u.top.slice(0, 8).map(([name, n]) => `<code>${esc(name)}</code> (${fmt(n)})`).join(", ")}. Point at a row to see the modules on the map, or <button type="button" class="link" id="used-on-map">colour the map by Mathlib declarations used</button>.`;
+  $("used-top").innerHTML = `Mentioned by the most modules: ${u.top.slice(0, 8).map(([name, n]) => `<code>${esc(name)}</code> (${fmt(n)})`).join(", ")}.`;
   $("used-limits").innerHTML = `<li>Declarations that a mentioned declaration itself depends on.</li><li>Tactics and notation used to write a proof. They are not stored in Lean's compiled files.</li>`;
   $("used-on-map").onclick = () => { [...$("colour-by").children].find((b) => b.textContent === "Mathlib declarations used")?.click(); $("map").scrollIntoView(); };
 }

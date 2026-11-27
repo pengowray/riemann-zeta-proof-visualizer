@@ -282,7 +282,14 @@ table.data .none { color: var(--ink-3); }
 #always-table code.exception { font-weight: 700; }
 /* a top-level directory's heading row inside the directory table */
 table.data tr.group-row td { padding-top: 14px; border-bottom: 1px solid var(--ink-3); }
-#always-about summary { cursor: pointer; color: var(--ink-2); font-size: 0.88rem; }
+main details > summary { cursor: pointer; color: var(--ink-2); font-size: 0.88rem; }
+/* key of the import graph: mark, name, meaning */
+.graph-key { list-style: none; margin: 4px 0 8px; padding: 0; display: grid; grid-template-columns: 36px max-content 1fr; gap: 4px 12px; align-items: center; max-width: 1100px; }
+.graph-key li { display: contents; }
+.graph-key span { color: var(--ink-2); }
+@media (max-width: 700px) { .graph-key { grid-template-columns: 36px 1fr; } .graph-key span { grid-column: 2; margin-bottom: 4px; } }
+table.data tr.total td { font-weight: 600; border-top: 1px solid var(--ink-3); }
+#change-modules { max-width: 640px; }
 #always-numbers td:first-child { overflow-wrap: break-word; }
 #always-numbers td:first-child .note { font-size: 0.78rem; }
 #always-more .show-all { padding: 6px 0; }

@@ -48,10 +48,11 @@
 
 <section id="statement">
   <h2>The statement</h2>
-  <p data-only="cleanup"><code>Statements.lean</code> defines the propositions and <code>Main.lean</code> proves them, and Mathlib's own <code>RiemannHypothesis</code>, by citing theorems from the other modules. The cleanup also has <code>Challenge.lean</code>, which states the same theorems with <code>sorry</code> in place of each proof so that a checker can compare the two files. Point at a symbol to see how to say it and what type it has.</p>
-  <p data-only="main grh compact"><code>Main.lean</code> proves the Riemann Hypothesis and the Generalized Riemann Hypothesis for Dirichlet <i>L</i>-functions as five theorems, using only Lean's three standard axioms (<code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>). <code>Statements.lean</code> states the five theorems in Mathlib's terms. Both editions of the rewrite also have <code>Challenge.lean</code>, which states the same five theorems with <code>sorry</code> in place of each proof, so that a checker can compare the two files. Point at a symbol to see how to say it and what type it has.</p>
+  <p data-only="cleanup"><code>Statements.lean</code> defines the propositions and <code>Main.lean</code> proves them, and Mathlib's own <code>RiemannHypothesis</code>, by citing theorems from the other modules. The cleanup also has <code>Challenge.lean</code>, which states the same theorems with <code>sorry</code> in place of each proof so that a checker can compare the two files.</p>
+  <p data-only="main grh compact"><code>Main.lean</code> proves the Riemann Hypothesis and the Generalized Riemann Hypothesis for Dirichlet <i>L</i>-functions as five theorems, using only Lean's three standard axioms (<code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>). <code>Statements.lean</code> states the five theorems in Mathlib's terms. Both editions of the rewrite also have <code>Challenge.lean</code>, which states the same five theorems with <code>sorry</code> in place of each proof, so that a checker can compare the two files.</p>
   <p data-only="jamesyc" id="statement-gaps"></p>
-  <p data-only="original"><code>Statements.lean</code> defines four propositions. <code>Main.lean</code> proves them, and Mathlib's own <code>RiemannHypothesis</code>, by citing theorems from the other 175,185 modules. Point at a symbol to see how to say it and what type it has.</p>
+  <p data-only="original"><code>Statements.lean</code> defines four propositions. <code>Main.lean</code> proves them, and Mathlib's own <code>RiemannHypothesis</code>, by citing theorems from the other 175,185 modules.</p>
+  <p class="hint">Point at a symbol to see how to say it and what type it has.</p>
   <div class="code-pair">
     <figure class="codebox"><figcaption id="code-statements-name"></figcaption><pre class="lean" id="code-statements"></pre></figure>
     <figure class="codebox"><figcaption id="code-main-name"></figcaption><pre class="lean" id="code-main"></pre></figure>
@@ -83,16 +84,20 @@
   <div id="terms" class="chips"></div>
   <p class="note">Terms come from Alpöge's announcement and from standard number theory. A module is counted if the term's identifier appears in its text, not counting import lines.</p>
   <h3 data-feature="steps">Highlight a step of Alpöge's timeline</h3>
-  <p class="note" data-feature="steps">The modules that appear to contain each step, according to <a href="https://github.com/jae-63/rh-alpoge-blueprint/blob/main/BLUEPRINT.md">a blueprint of the proof by GitHub user jae-63</a>. ● found clearly &nbsp; ◐ names and position fit &nbsp; ○ weak evidence. The number after each step is the count of matching modules. Point at a step to see its modules on the map; click to keep them highlighted.</p>
+  <p class="note" data-feature="steps">The modules that appear to contain each step, according to <a href="https://github.com/jae-63/rh-alpoge-blueprint/blob/main/BLUEPRINT.md">a blueprint of the proof by GitHub user jae-63</a>. ● found clearly &nbsp; ◐ names and position fit &nbsp; ○ weak evidence. The number after each step is the count of matching modules.</p>
+  <p class="hint" data-feature="steps">Point at a step to see its modules on the map. Click a step to keep them highlighted.</p>
   <ol id="steps" class="step-list" data-feature="steps"></ol>
 </section>
 
 <section id="changes" data-feature="changes">
   <h2>What the cleanup changed</h2>
   <dl id="change-facts" class="facts"></dl>
-  <p id="change-text"></p>
+  <table id="change-modules" class="data"></table>
+  <p id="change-text" class="note"></p>
+  <h3>By directory</h3>
+  <p class="hint">Point at a row to see its modules on the map.</p>
   <table id="change-table" class="data"></table>
-  <p class="note">Lines are counted without import lines, because the cleanup writes one import line for each Mathlib module. Point at a row to see that directory on the map.</p>
+  <p class="note">Lines are counted without import lines, because the cleanup writes one import line for each Mathlib module.</p>
 </section>
 
 <section id="space">
@@ -123,8 +128,9 @@
 
 <section id="fields">
   <h2>Areas of mathematics</h2>
-  <p>A classifier predicts each module's field from the Mathlib and project identifiers the module uses. <span data-only="original cleanup">Its prediction agrees with a language model's reading of the module about half the time (<a href="#sources">details under Sources and method</a>).</span><span data-only="main grh compact jamesyc">It was trained and tested on modules of the original release, and was not tested on this version, whose names differ.</span> Point at a row to see that field's modules on the map.</p>
+  <p>A classifier predicts each module's field from the Mathlib and project identifiers the module uses. <span data-only="original cleanup">Its prediction agrees with a language model's reading of the module about half the time (<a href="#sources">details under Sources and method</a>).</span><span data-only="main grh compact jamesyc">It was trained and tested on modules of the original release, and was not tested on this version, whose names differ.</span></p>
   <div class="control" id="field-part" hidden><span class="control-label">Modules in</span><div class="seg" id="field-part-seg" role="radiogroup" aria-label="Modules in"></div></div>
+  <p class="hint">Point at a row to see its modules on the map.</p>
   <table id="field-table" class="data"></table>
   <p class="note" data-only="original cleanup">Under each field: objects and theorems named in the labels that a language model gave to each of 746 directories after reading a digest of its identifiers. They are examples, not a complete list.</p>
   <p class="note" data-only="jamesyc">Under each field: objects and theorems named in the labels written for this version's two directories from the names of their modules. They are examples, not a complete list.</p>
@@ -134,10 +140,13 @@
 <section id="imports">
   <h2>How modules depend on each other</h2>
   <p id="imports-text"></p>
-  <p data-only="original">A <a href="https://news.ycombinator.com/item?id=50574968">comment on Hacker News</a> reported 204 modules "not referenced anywhere", without a list or a method. Every module except Main.lean is imported by at least one other module. The comment may be counting something else, such as declarations that nothing uses.</p>
-  <figure><figcaption>Imports between fields. Each square: of the imports made by modules of the row's field, the share that import modules of the column's field. Point at a square to see those modules on the map.</figcaption><div id="matrix-chart" class="chart"></div></figure>
+  <figure><figcaption>Imports between fields. Each square: of the imports made by modules of the row's field, the share that import modules of the column's field.</figcaption><p class="hint">Point at a square to see its modules on the map.</p><div id="matrix-chart" class="chart"></div></figure>
+  <details data-only="original"><summary>A Hacker News comment reported 204 modules "not referenced anywhere"</summary>
+    <p>The <a href="https://news.ycombinator.com/item?id=50574968">comment</a> gave no list and no method. Every module except Main.lean is imported by at least one other module. The comment may be counting something else, such as declarations that nothing uses.</p>
+  </details>
   <h3 id="mathlib-use">What the modules use from Mathlib</h3>
   <dl id="used-facts" class="facts"></dl>
+  <p id="used-hint" class="hint">Point at a row to see its modules on the map, or <button type="button" class="link" id="used-on-map">colour the map by Mathlib declarations used</button>.</p>
   <table id="used-table" class="data"></table>
   <p id="used-top" class="note"></p>
   <p id="used-text" class="note"></p>
@@ -147,11 +156,14 @@
   <dl id="mathlib-facts" class="facts"></dl>
   <p id="mathlib-note"></p>
   <h3>Import graph of the main directories</h3>
-  <p id="graph-text"></p>
+  <ul id="graph-key" class="graph-key"></ul>
+  <p id="graph-text" class="note"></p>
+  <p class="hint">Point at a circle to see its modules on the map. Circles can be dragged.</p>
   <p class="note phone-only">Scroll the graph sideways to see all of it.</p>
   <div id="graph-wrap"><div id="graph"></div><div id="graph-tip" class="maptip"></div></div>
   <h3>Longest import chain</h3>
   <p id="chain-text"></p>
+  <p class="hint">Point at a cell to see its module on the map. Click a cell to read the module.</p>
   <div id="chain-strip" class="chart"></div>
   <h3>Modules that the most other modules depend on</h3>
   <table id="hub-table" class="data"></table>
@@ -177,7 +189,7 @@
   <h3>Notation and macros</h3>
   <p id="syntax-text"></p>
   <h3>Tactics used</h3>
-  <p class="note">Point at a bar to see what the tactic does and which modules use it.</p>
+  <p class="hint">Point at a bar to see what the tactic does, and its modules on the map.</p>
   <div id="tactic-chart" class="chart"></div>
 </section>
 
