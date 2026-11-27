@@ -96,13 +96,16 @@ function renderConstProps() {
   const exact = c.method === "compiled";
   const commit = SOURCE.sha.slice(0, 7);
   const numbers = c.numberFunctions || [];
+  // the "assumed" column applies only to always-False definitions; leave it out when there are none
+  const anyFalse = c.defs.some((d) => d.value === "False");
+  const assumed = exact ? "Assumed by declarations" : "Assumed in modules";
   // the explanation and the method, closed by default so that the tables come first
   $("always-about").innerHTML = `<summary>About these definitions</summary>
     <p>A condition that is always <code>True</code> requires nothing, so a lemma that takes it as a condition is the same lemma without it. An example is <code>anyGeometry</code>, which was criticised in the original release.</p>
-    <p>A lemma that assumes an always-<code>False</code> definition can never be applied, because applying it needs a proof of <code>False</code>.</p>
+    <p>A lemma that assumes an always-<code>False</code> definition can never be applied, because applying it needs a proof of <code>False</code>.${anyFalse ? ` “${assumed}” is the number of ${exact ? "declarations" : "modules"} that assume the definition, and is given for always-<code>False</code> definitions only.` : ""}</p>
     ${VERSION === "jamesyc" ? "<p>Neither kind can change what the five theorems state.</p>" : `<p>Neither kind can change what the five final theorems state, or whether their proofs are correct. The theorems are stated in <code>${esc(SETTINGS.statements)}</code> using only Mathlib's definitions, and Lean's kernel checked every proof.</p>`}
     ${!c.defs.length ? "" : `<p>${exact
-      ? `Counts are exact, read from Lean's compiled files at commit ${commit}. The five theorems depend on ${fmt(c.reached)} of the ${fmt(c.declarations)} declarations, directly or through other declarations.`
+      ? `Counts are exact, read from Lean's compiled files at commit ${commit}. The five theorems depend on ${fmt(c.reached)} of the ${fmt(c.declarations)} declarations in the compiled files, directly or through other declarations. The compiled files have more declarations than the source text, because Lean generates auxiliary declarations.`
       : "Counts are estimated from the Lean text. A module is counted as using a definition when its text contains a name that could refer to that definition. The text alone cannot show whether the five theorems depend on a definition."}</p>`}`
     + (c.disguised !== undefined ? `<p>${c.disguised ? `${plural(c.disguised, "proposition or set is", "propositions or sets are")} defined as` : "No proposition or set is defined as"} <code>⊤</code>, <code>⊥</code>, <code>Set.univ</code> or <code>∅</code>, which are other ways to write <code>True</code> or <code>False</code>.</p>` : "")
     + (numbers.length ? "<p>Functions that return the same number for every input, such as a zero map, are ordinary in mathematics.</p>" : "");
@@ -119,12 +122,9 @@ function renderConstProps() {
   $("always-intro").hidden = false;
   $("always-note").textContent = exact ? `Exact counts, from Lean's compiled files at commit ${commit}.` : "Counts estimated from the Lean text.";
   const dash = `<span class="none">–</span>`;
-  // the "assumed" column applies only to always-False definitions; leave it out when there are none
-  const anyFalse = c.defs.some((d) => d.value === "False");
-  const assumed = exact ? "Assumed by declarations" : "Assumed in modules";
   $("always-table").innerHTML = `<tr><th>Definition</th><th>Value</th><th class="num">Used in other modules</th>${anyFalse ? `<th class="num" title="A lemma that assumes an always-False definition can never be applied">${assumed}</th>` : ""}${exact ? "<th>In the theorems' proofs</th>" : ""}</tr>`
     // data-label names each cell where a phone stacks the cells; "na" cells are hidden there
-    + c.defs.map((d, k) => `<tr class="hoverable" data-preview-const="${k}"><td><code>${breakable(d.name, ".")}</code><br><span class="note mono">${breakable(d.file, "/")}</span></td><td data-label="Value"><code${d.value === "False" ? ' class="exception"' : ""}>${d.value}</code></td><td class="num" data-label="Used in other modules">${d.modules.length ? `<button type="button" class="link" data-const-show="${k}" title="Show these modules on the map">${fmt(d.modules.length)}</button>` : "0"}</td>${!anyFalse ? "" : d.value === "False" ? `<td class="num" data-label="${assumed}">${fmt(d.hyp)}</td>` : `<td class="num na">${dash}</td>`}${exact ? `<td data-label="In the theorems' proofs">${d.used ? "Yes" : "No"}</td>` : ""}</tr>`).join("");
+    + c.defs.map((d, k) => `<tr class="hoverable" data-preview-const="${k}"><td><code>${breakable(d.name, ".")}</code><br><span class="note mono">${breakable(d.file, "/")}</span></td><td data-label="Value"><code${d.value === "False" ? ' class="exception"' : ""}>${d.value}</code></td><td class="num" data-label="Used in other modules">${d.modules.length ? `<button type="button" class="link" data-const-show="${k}" title="Show these modules on the map">${fmt(d.modules.length)}</button>` : "0"}</td>${!anyFalse ? "" : d.value === "False" ? `<td class="num" data-label="${assumed}">${fmt(d.hyp)}</td>` : `<td class="num na" title="Counted for always-False definitions only">${dash}</td>`}${exact ? `<td data-label="In the theorems' proofs">${d.used ? "Yes" : "No"}</td>` : ""}</tr>`).join("");
   $("always-table").onclick = (e) => {
     const b = e.target.closest("[data-const-show]");
     if (!b) return;
