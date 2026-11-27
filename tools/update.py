@@ -44,6 +44,8 @@ ORIGINAL_SHA = "40e56bab026552e089d7afcfeff08d2defb9c005"  # tip of the reposito
 #   hidden          left out of the version lists, but still shown at ?v=<id>
 #   compare         false: left out of the other versions' comparison rows (the printed-pages table)
 #   mapOrder        top-level directories to place first on the map, in this order (the rest follow)
+#   project         the folder of the Lake project inside the clone, when it is not the clone's root; compiled
+#                   files are looked for in its .lake folder (not copied to the page)
 #   mathlibHub      the one module the others reach Mathlib through, when the imports do not name Mathlib modules
 VERSIONS = [
     {"id": "original", "label": "Original release", "primary": True, "family": "Original", "short": "Release", "repo": REPO, "src": "src/",
@@ -57,10 +59,10 @@ VERSIONS = [
      "clone": "main_clone", "branch": "main", "src": "src/", "statements": "Statements.lean", "main": "Main.lean",
      "mathlibHub": "Lib/Speed.lean", "mapOrder": ["New", "Lib"], "hidden": True},
     {"id": "grh", "label": "Shorter rewrite, readable edition", "primary": True, "family": "Shorter rewrite", "short": "Readable edition",
-     "repo": "lsernau/grh-lean", "clone": "grh_clone", "branch": "main", "src": "grh/src/",
+     "repo": "lsernau/grh-lean", "clone": "grh_clone", "branch": "main", "project": "grh", "src": "grh/src/",
      "statements": "Statements.lean", "main": "Main.lean", "mathlibHub": "Lib/Speed.lean", "mapOrder": ["New", "Lib"]},
     {"id": "compact", "label": "Shorter rewrite, compact edition", "family": "Shorter rewrite", "short": "Compact edition",
-     "repo": "lsernau/grh-lean", "clone": "grh_clone", "branch": "main", "src": "grh-compact/src/",
+     "repo": "lsernau/grh-lean", "clone": "grh_clone", "branch": "main", "project": "grh-compact", "src": "grh-compact/src/",
      "statements": "Statements.lean", "main": "Main.lean", "mathlibHub": "Lib/General/LinearAlgebra/Base.lean",
      "mapOrder": ["New", "Lib"]},
     # An unfinished new formalization written with GPT-6.2 Sol; holes.md lists the open obligations.
@@ -175,7 +177,7 @@ def main():
             extra += ("--labels", labels)
         sha = git(clone, "rev-parse", "HEAD")
         os.makedirs(os.path.join(ROOT, "data", "cache", *folder(v["id"])), exist_ok=True)
-        from_compiled(clone, os.path.join(ROOT, "data", "cache", *folder(v["id"])), sha)
+        from_compiled(os.path.join(clone, v.get("project", "")), os.path.join(ROOT, "data", "cache", *folder(v["id"])), sha)
         build(v["id"], os.path.join(clone, v["src"]), {
             **source, "sha": sha, "date": git(clone, "log", "-1", "--format=%cI")[:10],
         }, extra)
