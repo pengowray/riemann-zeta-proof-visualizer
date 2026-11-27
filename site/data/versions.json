@@ -20,9 +20,16 @@
   "printed": {
    "a4NewPage": 463733,
    "a4": 374453,
-   "a4Code": 319765,
    "book": 535938,
    "text": 310073,
+   "noComments": {
+    "a4NewPage": 463733,
+    "a4": 374453,
+    "book": 535938,
+    "text": 310073
+   },
+   "a4Code": 319765,
+   "parts": {},
    "xzBytes": 145252336,
    "xzPages": 40348,
    "compiledBytes": 94586330328,
@@ -51,9 +58,16 @@
   "printed": {
    "a4NewPage": 349002,
    "a4": 320142,
-   "a4Code": 271986,
    "book": 460983,
    "text": 282897,
+   "noComments": {
+    "a4NewPage": 309310,
+    "a4": 280457,
+    "book": 388307,
+    "text": 221032
+   },
+   "a4Code": 271986,
+   "parts": {},
    "xzBytes": 112611552,
    "xzPages": 31281,
    "compiledBytes": 9235609776,
@@ -83,9 +97,43 @@
   "printed": {
    "a4NewPage": 11047,
    "a4": 10656,
-   "a4Code": 9885,
    "book": 16653,
    "text": 9130,
+   "noComments": {
+    "a4NewPage": 7306,
+    "a4": 6905,
+    "book": 10846,
+    "text": 5652
+   },
+   "a4Code": 9885,
+   "parts": {
+    "New": {
+     "modules": 305,
+     "a4NewPage": 4484,
+     "a4": 4333,
+     "book": 6815,
+     "text": 3760,
+     "noComments": {
+      "a4NewPage": 2950,
+      "a4": 2797,
+      "book": 4443,
+      "text": 2321
+     }
+    },
+    "Lib": {
+     "modules": 495,
+     "a4NewPage": 6561,
+     "a4": 6324,
+     "book": 9837,
+     "text": 5370,
+     "noComments": {
+      "a4NewPage": 4354,
+      "a4": 4108,
+      "book": 6403,
+      "text": 3332
+     }
+    }
+   },
    "xzBytes": 5853788,
    "xzPages": 1627,
    "compiledBytes": 2362230816,
@@ -114,9 +162,43 @@
   "printed": {
    "a4NewPage": 11062,
    "a4": 10670,
-   "a4Code": 9898,
    "book": 16674,
    "text": 9142,
+   "noComments": {
+    "a4NewPage": 7313,
+    "a4": 6913,
+    "book": 10858,
+    "text": 5659
+   },
+   "a4Code": 9898,
+   "parts": {
+    "New": {
+     "modules": 306,
+     "a4NewPage": 4499,
+     "a4": 4347,
+     "book": 6836,
+     "text": 3772,
+     "noComments": {
+      "a4NewPage": 2957,
+      "a4": 2805,
+      "book": 4455,
+      "text": 2327
+     }
+    },
+    "Lib": {
+     "modules": 495,
+     "a4NewPage": 6561,
+     "a4": 6324,
+     "book": 9837,
+     "text": 5370,
+     "noComments": {
+      "a4NewPage": 4354,
+      "a4": 4109,
+      "book": 6403,
+      "text": 3332
+     }
+    }
+   },
    "xzBytes": 5859392,
    "xzPages": 1628,
    "compiledBytes": 0,
@@ -145,9 +227,43 @@
   "printed": {
    "a4NewPage": 3103,
    "a4": 2703,
-   "a4Code": 2383,
    "book": 3954,
    "text": 2279,
+   "noComments": {
+    "a4NewPage": 2562,
+    "a4": 2169,
+    "book": 3150,
+    "text": 1803
+   },
+   "a4Code": 2383,
+   "parts": {
+    "New": {
+     "modules": 219,
+     "a4NewPage": 960,
+     "a4": 846,
+     "book": 1274,
+     "text": 732,
+     "noComments": {
+      "a4NewPage": 791,
+      "a4": 683,
+      "book": 1025,
+      "text": 584
+     }
+    },
+    "Lib": {
+     "modules": 573,
+     "a4NewPage": 2141,
+     "a4": 1856,
+     "book": 2680,
+     "text": 1547,
+     "noComments": {
+      "a4NewPage": 1769,
+      "a4": 1486,
+      "book": 2125,
+      "text": 1219
+     }
+    }
+   },
    "xzBytes": 1924764,
    "xzPages": 535,
    "compiledBytes": 0,
@@ -172,9 +288,16 @@
   "printed": {
    "a4NewPage": 880,
    "a4": 765,
-   "a4Code": 681,
    "book": 1199,
    "text": 627,
+   "noComments": {
+    "a4NewPage": 842,
+    "a4": 729,
+    "book": 1115,
+    "text": 583
+   },
+   "a4Code": 681,
+   "parts": {},
    "xzBytes": 368136,
    "xzPages": 103,
    "compiledBytes": 0,

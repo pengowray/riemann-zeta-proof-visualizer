@@ -63,26 +63,36 @@ function renderChanges() {
     }).join("");
 }
 
-/** Page counts for the source under several layouts, with the other version's count for comparison. */
+/** Page counts of the listed versions side by side, with and without comments, in the chosen page format. */
+const PAGE_FORMATS = {
+  a4NewPage: "A4 listing: 80 characters by 60 lines a page, in a 10-point monospaced font. Each module starts a new page.",
+  a4: "A4 listing: 80 characters by 60 lines a page, in a 10-point monospaced font. Modules are printed one after another.",
+  book: "Book pages: 65 characters by 40 lines a page, without blank lines and import lines.",
+  text: "Continuous text: line breaks are removed, and a page is 3,000 characters.",
+};
 function renderPrinted() {
-  const p = meta.printed;
-  const stack = (pages) => { const m = (pages / 2) * 0.0001; return m >= 1000 ? `${(m / 1000).toFixed(1)} km` : m >= 10 ? `${Math.round(m)} m` : m >= 1 ? `${m.toFixed(1)} m` : `${(m * 100).toFixed(1)} cm`; };
-  const rows = [
-    ["A4 listing, each module starting a new page", p.a4NewPage],
-    ["A4 listing, modules printed one after another", p.a4],
-    ["The same without blank lines and import lines", p.a4Code],
-    ["Book pages, without blank lines and import lines", p.book],
-    ["Set as continuous text with line breaks removed, 3,000 characters a page", p.text],
-    p.xzPages && [`Compressed into one xz archive (${bytesFmt(p.xzBytes)}) and printed as base64 in the A4 listing layout`, p.xzPages],
-    p.compiledPages && [`Lean's compiled files for these modules (${bytesFmt(p.compiledBytes)}), printed as base64 in the A4 listing layout`, p.compiledPages],
-  ].filter(Boolean);
-  const draw = (extra = []) => {
-    $("printed-table").innerHTML = `<tr><th>Layout</th><th class="num">Pages</th><th class="num">Stack of paper</th></tr>`
-      + [...rows, ...extra].map(([label, pages]) => `<tr><td>${label}</td><td class="num">${fmt(pages)}</td><td class="num">${stack(pages)}</td></tr>`).join("");
+  const select = $("printed-format");
+  // the versions offered in the lists, and the version shown when it is not one of them
+  const shown = listed.filter((v) => v.printed && (v.compare !== false || v.id === VERSION));
+  const cells = (p, key) => `<td class="num">${fmt(p[key])}</td><td class="num">${fmt(p.noComments[key])}</td>`;
+  const draw = () => {
+    const key = select.value;
+    const rows = shown.flatMap((v) => {
+      const name = `${esc(v.label)}, ${dateFmt(v.date)}`;
+      const row = `<tr${v.id === VERSION ? ' class="current"' : ""}><td>${v.id === VERSION ? name : `<a href="${versionUrl(v.id)}#printed">${name}</a>`}</td>${cells(v.printed, key)}</tr>`;
+      // the rewrite's New directory printed alone
+      const part = (v.mapOrder || []).map((dir) => [dir, (v.printed.parts || {})[dir]]).find(([, p]) => p);
+      return part ? [row, `<tr class="part"><td>its <code>${esc(part[0])}</code> directory alone, ${plural(part[1].modules, "module")}</td>${cells(part[1], key)}</tr>`] : [row];
+    });
+    $("printed-table").innerHTML = `<tr><th>Version</th><th class="num">Pages with comments</th><th class="num">Pages without comments</th></tr>${rows.join("")}
+      <tr class="claim"><td>Explanation of the original in prose, written by Claude and not published</td>
+        <td colspan="2">250,000+ pages, according to <a href="https://alpo.ge/remark.pdf">the announcement</a> (footnote 2). Alpöge <a href="https://x.com/__alpoge__/status/2124987173439209561">later called the figure a joke</a>.</td></tr>`;
+    $("printed-note").textContent = PAGE_FORMATS[key]
+      + (key === "text" ? "" : " A line longer than the page is wide continues on the next line.")
+      + " Without comments: a line that holds only a comment is left out. The original release has no comments.";
   };
-  // the other versions in the same layout, for comparison
-  draw(listed.filter((v) => v.id !== VERSION && v.printed && v.compare !== false).map((v) =>
-    [`<a href="${versionUrl(v.id)}#printed">${esc(v.label)}</a> of ${dateFmt(v.date)}: A4 listing, modules printed one after another`, v.printed.a4]));
+  select.onchange = draw;
+  draw();
 }
 
 /** Escaped text with a line-break opportunity after each separator, for long Lean names and paths. */

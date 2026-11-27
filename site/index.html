@@ -38,6 +38,13 @@
     <h1>The Lean proof of the Riemann Hypothesis, as a treemap</h1>
     <p class="lede" data-only="cleanup main grh compact jamesyc" id="version-lede"></p>
     <p class="lede" data-only="original">On 20 November 2026 Levent Alpöge released a Lean 4 formalization, written with Claude, that states and proves the Riemann Hypothesis and its generalization to Dirichlet <i>L</i>-functions. The source is 175,187 modules (a module is one <code>.lean</code> file). This page shows what is in them.</p>
+    <figure class="epigraph">
+      <blockquote>
+        <p lang="de">Hiervon wäre allerdings ein strenger Beweis zu wünschen …</p>
+        <p>“Certainly one would wish for a stricter proof here …”</p>
+      </blockquote>
+      <figcaption>Bernhard Riemann, 1859, after writing that all the roots are very probably real. That statement is now called the Riemann Hypothesis.</figcaption>
+    </figure>
     <dl id="facts"></dl>
   </div>
   <figure class="hero-art">
@@ -122,8 +129,15 @@
 
 <section id="printed">
   <h2>If it were printed</h2>
+  <p><label for="printed-format">Page format</label>
+    <select id="printed-format">
+      <option value="a4NewPage">A4 listing, each module on a new page</option>
+      <option value="a4">A4 listing, modules one after another</option>
+      <option value="book">Book pages</option>
+      <option value="text">Continuous text</option>
+    </select></p>
   <table id="printed-table" class="data"></table>
-  <p class="note">Long lines wrap onto the next line. Stack of paper: printed on both sides, on paper 0.1 mm thick. A4 listing: 80 characters by 60 lines a page, a 10-point monospaced font. Book page: 65 characters by 40 lines. Base64 is a way to write any file as text, using 4 characters for every 3 bytes.</p>
+  <p id="printed-note" class="note"></p>
 </section>
 
 <section id="fields">

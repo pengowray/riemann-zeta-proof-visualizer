@@ -8,7 +8,8 @@
     python3 tools/update.py original    # rescan the original release, rebuild site/data
     python3 tools/update.py all
 
-Add --no-fetch to rebuild from the commit already checked out, and --no-compiled-check to skip reading
+Add --no-fetch to rebuild from the commit already checked out, --pages-only to rescan without recomputing
+the archive size (the original, which has no comments, is not rescanned), and --no-compiled-check to skip reading
 which definitions are always True or False from a clone's compiled files (see from_compiled).
 
 Where the checkouts are on this machine is read from tools/local.json (not committed):
@@ -121,20 +122,25 @@ def build(version, src, source, extra=()):
     os.makedirs(cache, exist_ok=True)
     source_path = os.path.join(cache, "source.json")
     json.dump(source, open(source_path, "w"))
-    run(sys.executable, "-I", os.path.join(ROOT, "tools", "scan.py"), src, cache)
-    # definitions that are always True or False, estimated from the text (build_data prefers the
-    # exact count from compiled files when tools/constprops_run.py has been run for this commit)
-    run(sys.executable, "-I", os.path.join(ROOT, "tools", "constprops_text.py"), src, os.path.join(cache, "constprops-text.json"),
-        stdout=subprocess.DEVNULL)
-    # size of the whole source as one xz archive, for the page count of the compressed form
-    files = subprocess.run(["find", ".", "-name", "*.lean"], cwd=src, capture_output=True, text=True, check=True).stdout
-    tar = subprocess.Popen(["tar", "-cf", "-", "--sort=name", "--mtime=2026-11-20", "--owner=0", "--group=0", "-T", "-"],
-                           cwd=src, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-    xz = subprocess.Popen(["xz", "-9", "-T0", "-c"], stdin=tar.stdout, stdout=subprocess.PIPE)
-    count = subprocess.Popen(["wc", "-c"], stdin=xz.stdout, stdout=subprocess.PIPE)
-    tar.stdin.write(files.encode())
-    tar.stdin.close()
-    json.dump({"xzBytes": int(count.communicate()[0])}, open(os.path.join(cache, "solid.json"), "w"))
+    # --pages-only: only the page counts changed. The xz size and the text estimate are reused, and so is
+    # the original's scan, because the original has no comments.
+    pages_only = "--pages-only" in sys.argv and os.path.exists(os.path.join(cache, "solid.json"))
+    if not (pages_only and version == "original"):
+        run(*capped(sys.executable, "-I", os.path.join(ROOT, "tools", "scan.py"), src, cache))
+    if not pages_only:
+        # definitions that are always True or False, estimated from the text (build_data prefers the
+        # exact count from compiled files when tools/constprops_run.py has been run for this commit)
+        run(sys.executable, "-I", os.path.join(ROOT, "tools", "constprops_text.py"), src, os.path.join(cache, "constprops-text.json"),
+            stdout=subprocess.DEVNULL)
+        # size of the whole source as one xz archive, for the page count of the compressed form
+        files = subprocess.run(["find", ".", "-name", "*.lean"], cwd=src, capture_output=True, text=True, check=True).stdout
+        tar = subprocess.Popen(["tar", "-cf", "-", "--sort=name", "--mtime=2026-11-20", "--owner=0", "--group=0", "-T", "-"],
+                               cwd=src, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        xz = subprocess.Popen(["xz", "-9", "-T0", "-c"], stdin=tar.stdout, stdout=subprocess.PIPE)
+        count = subprocess.Popen(["wc", "-c"], stdin=xz.stdout, stdout=subprocess.PIPE)
+        tar.stdin.write(files.encode())
+        tar.stdin.close()
+        json.dump({"xzBytes": int(count.communicate()[0])}, open(os.path.join(cache, "solid.json"), "w"))
     run(sys.executable, os.path.join(ROOT, "tools", "build_data.py"), cache, os.path.join(ROOT, "data", "labels"), out,
         "--source", source_path, *extra)
     return out

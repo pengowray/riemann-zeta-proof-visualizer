@@ -55,7 +55,7 @@ python3 tools/usage_run.py /path/to/clone data/cache/cleanup/usage
 and run `python3 tools/update.py cleanup` again. For another version, use its own cache folder,
 such as `data/cache/main/usage`. `usage_run.py` records the commit it measured, and the page says so
 when that is not the commit shown. When a clone holds compiled files that match its commit
-(`lake build --no-build` succeeds), `update.py` records their size for the printed-pages table.
+(`lake build --no-build` succeeds), `update.py` records their size in `meta.json` (`printed.compiledBytes`); the page no longer shows it.
 
 Definitions that are always `True` or always `False` (such as `def anyGeometry : GeoP := fun _ _ _ => True`)
 are listed in their own section. `update.py` estimates them from the text for every version

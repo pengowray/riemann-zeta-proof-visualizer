@@ -134,7 +134,7 @@ def scan_file(root, rel, prev_raw=b""):
     digits = sum(len(x) for x in NUM_RE.findall(maths))
     # ---- how the file would print: lines after wrapping at 80 and at 65 characters, counted for
     # the whole file ("all") and again without blank lines and import lines ("code")
-    wrap = {"a80": 0, "a65": 0, "c80": 0, "c65": 0}
+    wrap = {"a80": 0, "a65": 0, "c80": 0, "c65": 0, "n80": 0, "m65": 0}
     for line in text.split("\n")[:lines]:
         size = len(line.rstrip())
         n80, n65 = max(1, -(-size // 80)), max(1, -(-size // 65))
@@ -143,10 +143,24 @@ def scan_file(root, rel, prev_raw=b""):
         if size and not IMPORT_RE.match(line) and not HEADER_RE.match(line):
             wrap["c80"] += n80
             wrap["c65"] += n65
+    # The same with comments removed: "n80" is "a80" and "m65" is "c65" without the comments. A line that
+    # held only a comment is left out; a line with code and a comment keeps its code. \x00 marks where a
+    # comment was, so that a line emptied by removing a comment can be told from a blank line.
+    marked = BLOCK_COMMENT_RE.sub(lambda m: "\x00" + "\n\x00" * m.group(0).count("\n"), text)
+    marked = LINE_COMMENT_RE.sub("\x00", marked)
+    for line in marked.split("\n")[:lines]:
+        kept = line.replace("\x00", "").rstrip()
+        if not kept and "\x00" in line:
+            continue
+        size = len(kept)
+        wrap["n80"] += max(1, -(-size // 80))
+        if size and not IMPORT_RE.match(kept) and not HEADER_RE.match(kept):
+            wrap["m65"] += max(1, -(-size // 65))
     row = {
         "p": rel,
         "wr": wrap,
         "ch": len(WS_RE.sub(" ", text)),  # characters when every run of spaces and line breaks is one space
+        "chn": len(WS_RE.sub(" ", marked.replace("\x00", ""))),  # the same with comments removed
         "b": len(raw),
         "l": lines,
         "z": len(zlib.compress(raw, 6)),

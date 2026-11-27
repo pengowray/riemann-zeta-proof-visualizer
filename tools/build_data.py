@@ -544,6 +544,27 @@ def main():
             const_props["disguised"] = text_cp.get("disguised", 0)
 
     # ---- page counts if the source were printed (see the "If it were printed" section of the page)
+    # A4 listing: 80 characters by 60 lines a page. Book page: 65 by 40, without blank lines and import
+    # lines. Continuous text: 3,000 characters a page. Long lines are wrapped (see "wr" in tools/scan.py).
+    def without_comments(r):
+        if "n80" in r["wr"]:
+            return r["wr"]["n80"], r["wr"]["m65"], r["chn"]
+        if r["cb"]:
+            sys.exit(f"{r['p']}: scanned before comment-free page counts were added; run tools/scan.py again")
+        return r["wr"]["a80"], r["wr"]["c65"], r["ch"]  # a module with no comments prints the same either way
+
+    def page_counts(rs, comments=True):
+        sizes = [(r["wr"]["a80"], r["wr"]["c65"], r["ch"]) if comments else without_comments(r) for r in rs]
+        return {
+            "a4NewPage": sum(-(-a // 60) for a, _c, _t in sizes),  # every module starts a new page
+            "a4": -(-sum(a for a, _c, _t in sizes) // 60),
+            "book": -(-sum(c for _a, c, _t in sizes) // 40),
+            "text": -(-sum(t for _a, _c, t in sizes) // 3000),
+        }
+
+    def printed_of(rs):
+        return {**page_counts(rs), "noComments": page_counts(rs, comments=False)}
+
     def pages_of(per_page, key):
         return -(-sum(r["wr"][key] for r in rows) // per_page)
     solid_path = os.path.join(cache, "solid.json")
@@ -554,11 +575,12 @@ def main():
         compiled = {}  # counted at another commit (see record_compiled in tools/update.py)
     base64_pages = lambda size: -(-(-(-size // 3) * 4) // 4800)  # base64 writes 4 characters for 3 bytes; 80 x 60 per page
     printed = {
-        "a4NewPage": sum(-(-r["wr"]["a80"] // 60) for r in rows),  # every module starts a new page
-        "a4": pages_of(60, "a80"),
+        **printed_of(rows),
         "a4Code": pages_of(60, "c80"),
-        "book": pages_of(40, "c65"),
-        "text": -(-sum(r["ch"] for r in rows) // 3000),
+        # the version's separate parts (the rewrite's New and Lib), each printed alone
+        "parts": {name: {"modules": len(rs), **printed_of(rs)}
+                  for name in source.get("mapOrder", [])
+                  for rs in [[r for r in rows if r["p"].startswith(name + "/")]] if rs},
         "xzBytes": solid.get("xzBytes", 0),
         "xzPages": base64_pages(solid["xzBytes"]) if solid.get("xzBytes") else 0,
         "compiledBytes": compiled.get("bytes", 0),
