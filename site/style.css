@@ -325,3 +325,10 @@ body.map-full #map { position: fixed; inset: 0; z-index: 50; margin: 0; max-widt
 #printed-table tr.claim td { border-top: 2px solid var(--ink-3); }
 #printed label { color: var(--ink-2); margin-right: 8px; }
 #printed select { font: inherit; color: var(--ink); background: var(--paper); border: 1px solid var(--ink-3); border-radius: 4px; padding: 2px 6px; }
+
+/* version lists: the two main choices, then the rest folded under "Other versions" in smaller type */
+.other-versions > summary { cursor: pointer; color: var(--ink-2); font-size: 0.8rem; margin-top: 4px; }
+#version-pick .other-versions > summary { padding: 3px 8px; }
+#version-pick .other-versions a { font-size: 0.82rem; }
+#versions .other-versions { grid-column: 1 / -1; }
+#versions .other-versions a { margin-top: 4px; font-size: 0.85rem; }

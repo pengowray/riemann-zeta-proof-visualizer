@@ -40,12 +40,13 @@ ORIGINAL_SHA = "40e56bab026552e089d7afcfeff08d2defb9c005"  # tip of the reposito
 #                   and where the import graph and the longest import chain end)
 #   features        optional sections: "steps" (jae-63's blueprint, which names the original's paths),
 #                   "checks" (independent checks of the original), "changes" (comparison with the original)
+#   primary         one of the two main choices in the version lists; the rest are under "Other versions"
 #   hidden          left out of the version lists, but still shown at ?v=<id>
 #   compare         false: left out of the other versions' comparison rows (the printed-pages table)
 #   mapOrder        top-level directories to place first on the map, in this order (the rest follow)
 #   mathlibHub      the one module the others reach Mathlib through, when the imports do not name Mathlib modules
 VERSIONS = [
-    {"id": "original", "label": "Original release", "family": "Original", "short": "Release", "repo": REPO, "src": "src/",
+    {"id": "original", "label": "Original release", "primary": True, "family": "Original", "short": "Release", "repo": REPO, "src": "src/",
      "statements": "Statements.lean", "main": "Main.lean", "features": ["steps", "checks"]},
     # The community cleaned up the original here until 25 November 2026, then moved main to the rewrite.
     {"id": "cleanup", "label": "Original, community cleanup", "family": "Original", "short": "Community cleanup", "repo": REPO,
@@ -55,7 +56,7 @@ VERSIONS = [
     {"id": "main", "label": "Shorter rewrite, community cleanup", "family": "Shorter rewrite", "short": "Community cleanup", "repo": REPO,
      "clone": "main_clone", "branch": "main", "src": "src/", "statements": "Statements.lean", "main": "Main.lean",
      "mathlibHub": "Lib/Speed.lean", "mapOrder": ["New", "Lib"], "hidden": True},
-    {"id": "grh", "label": "Shorter rewrite, readable edition", "family": "Shorter rewrite", "short": "Readable edition",
+    {"id": "grh", "label": "Shorter rewrite, readable edition", "primary": True, "family": "Shorter rewrite", "short": "Readable edition",
      "repo": "lsernau/grh-lean", "clone": "grh_clone", "branch": "main", "src": "grh/src/",
      "statements": "Statements.lean", "main": "Main.lean", "mathlibHub": "Lib/Speed.lean", "mapOrder": ["New", "Lib"]},
     {"id": "compact", "label": "Shorter rewrite, compact edition", "family": "Shorter rewrite", "short": "Compact edition",
@@ -70,7 +71,7 @@ VERSIONS = [
 
 
 # the settings copied into the page's data
-PAGE_KEYS = ("id", "label", "family", "short", "repo", "statements", "main", "features", "mathlibHub", "hidden", "mapOrder", "compare")
+PAGE_KEYS = ("primary", "id", "label", "family", "short", "repo", "statements", "main", "features", "mathlibHub", "hidden", "mapOrder", "compare")
 
 
 def run(*args, **kw):

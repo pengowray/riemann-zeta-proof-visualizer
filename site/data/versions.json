@@ -2,6 +2,7 @@
  {
   "id": "original",
   "label": "Original release",
+  "primary": true,
   "family": "Original",
   "short": "Release",
   "repo": "leanprover-community/riemann-hypothesis",
@@ -143,6 +144,7 @@
  {
   "id": "grh",
   "label": "Shorter rewrite, readable edition",
+  "primary": true,
   "family": "Shorter rewrite",
   "short": "Readable edition",
   "repo": "lsernau/grh-lean",
