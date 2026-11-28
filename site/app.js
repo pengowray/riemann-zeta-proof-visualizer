@@ -22,10 +22,13 @@ const versionList = (count) => {
   return listed.filter((v) => v.primary).map((v) => versionLink(v, v.family === "Original" ? v.label : v.family, count(v))).join("")
     + (others.length ? `<details class="other-versions"${others.some((v) => v.id === VERSION) ? " open" : ""}><summary>Other versions</summary>${others.map((v) => versionLink(v, v.label, count(v))).join("")}</details>` : "");
 };
+// a version's size in lines, rounded to whole thousands or millions (17M, 477K); the exact count is the tooltip
+const shortLines = (n) => (n >= 1e6 ? `${Math.round(n / 1e6)}M` : `${Math.round(n / 1e3)}K`);
+const linesOf = (v, unit) => `<span class="n" title="${fmt(v.lines)} lines">${shortLines(v.lines)}${unit}</span>`;
 // above the title on a phone
-$("versions").innerHTML = `<span class="control-label">Version of the proof</span>` + versionList((v) => ` <span class="n">${fmt(v.modules)} modules</span>`);
+$("versions").innerHTML = `<span class="control-label">Version of the proof</span>` + versionList((v) => " " + linesOf(v, " lines"));
 // the sidebar's list: the same choice, kept in view while the page scrolls
-$("version-pick").innerHTML = `<span class="control-label"><span>Version</span><span>Modules</span></span>` + versionList((v) => `<span class="n">${fmt(v.modules)}</span>`);
+$("version-pick").innerHTML = `<span class="control-label"><span>Version</span><span>Lines</span></span>` + versionList((v) => linesOf(v, ""));
 const sizeNow = `${fmt(N)} modules and ${fmt(meta.totals.lines)} lines`;
 const sizeBefore = `${fmt(ORIGINAL.modules)} modules and ${fmt(ORIGINAL.lines)} lines`;
 const grhLink = repoLink("lsernau/grh-lean");
